@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { combineClassNames } from '@/submodules/javascript-functions/general';
 import { DropdownProps, OptionProps } from '../types/dropdown';
+import { combineClassNames } from '../../javascript-functions/general';
 
 
 export default function Dropdown(props: DropdownProps) {
@@ -35,7 +35,7 @@ export default function Dropdown(props: DropdownProps) {
                 <Menu.Items className="absolute z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
                         {props.options.map((option: OptionProps) => (
-                            <div key={option.name}>
+                            <div key={option.id}>
                                 <Menu.Item >
                                     {({ active }) => (
                                         <a key={option.id}
