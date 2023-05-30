@@ -1,8 +1,10 @@
 export type DropdownProps = {
-    options: OptionProps[];
+    options: any[];
     buttonName: string;
     disabled?: boolean;
     selectedOption: (event: any) => void;
+    itemsClasses?: string;
+    hasIconClock?: boolean;
 }
 
 export type OptionProps = {
