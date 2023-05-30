@@ -7,6 +7,7 @@
  * @itemsClasses {string} - The classes that will be applied to the dropdown items
  * @onlyArray {boolean} - If the dropdown has only an array of strings
  * @dropdownWidth {string} - The width of the dropdown
+ * @doNotUseTextArray {boolean} - If the dropdown should not use the text array
 */
 export type DropdownProps = {
     options: string[] | any[];
@@ -16,6 +17,7 @@ export type DropdownProps = {
     itemsClasses?: string;
     onlyArray?: boolean;
     dropdownWidth?: string;
+    doNotUseTextArray?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
