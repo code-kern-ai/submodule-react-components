@@ -3,13 +3,13 @@ import { Menu, Transition } from '@headlessui/react'
 import { Tooltip } from '@nextui-org/react'
 import Image from 'next/image';
 import { combineClassNames } from '../../javascript-functions/general';
-import { LayoutDropdownProps } from '../types/dropdown';
+import { AppSelectionDropdownProps } from '../types/dropdown';
 import kernLogo from '../assets/kern-icon.png';
 import refineryLogo from '../assets/refinery-icon.png';
 import gatesLogo from '../assets/gates-icon.png';
 import workflowLogo from '../assets/workflow-icon.png';
 
-export default function LayoutDropdown(props: LayoutDropdownProps) {
+export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps) {
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -35,7 +35,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
             >
                 <Menu.Items className="fixed bottom-[74px] left-20 z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                        {props.visibility[0] ? (
+                        {props.cockpit ? (
                             <Menu.Item>
                                 {({ active }) => (
                                     <a
@@ -53,7 +53,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                             </Menu.Item>
                         ) : null}
 
-                        {props.visibility[1] ? (
+                        {props.refinery ? (
                             <Menu.Item>
                                 {({ active }) => (
                                     <a
@@ -72,7 +72,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                         ) : null}
 
 
-                        {props.visibility[2] ? (
+                        {props.gates ? (
                             <Menu.Item>
                                 {({ active }) => (
                                     <a
@@ -90,7 +90,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                             </Menu.Item>
                         ) : null}
 
-                        {props.visibility[3] ? (
+                        {props.workflow ? (
                             <Menu.Item>
                                 {({ active }) => (
                                     <a

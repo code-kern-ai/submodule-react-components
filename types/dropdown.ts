@@ -18,6 +18,9 @@ export type DropdownProps = {
     dropdownWidth?: string;
 }
 
-export type LayoutDropdownProps = {
-    visibility: boolean[];
+export type AppSelectionDropdownProps = {
+    cockpit?: boolean;
+    refinery?: boolean;
+    gates?: boolean;
+    workflow?: boolean;
 };
