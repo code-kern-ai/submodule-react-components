@@ -3,7 +3,6 @@ import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
-import { IconClock } from '@tabler/icons';
 
 
 export default function Dropdown(props: DropdownProps) {
@@ -17,7 +16,6 @@ export default function Dropdown(props: DropdownProps) {
             ${isDisabled ? "opacity-50" : ""}`}
                     disabled={isDisabled}
                 >
-                    {props.hasIconClock ? <IconClock className="h-5 w-5 text-gray-900" aria-hidden="true" /> : null}
                     {props.buttonName}
                     <ChevronDownIcon
                         className="-mr-1 ml-2 h-5 w-5"
