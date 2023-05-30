@@ -4,6 +4,10 @@ import { Tooltip } from '@nextui-org/react'
 import Image from 'next/image';
 import { combineClassNames } from '../../javascript-functions/general';
 import { LayoutDropdownProps } from '../types/dropdown';
+import kernLogo from '../assets/kern-icon.png';
+import refineryLogo from '../assets/refinery-icon.png';
+import gatesLogo from '../assets/gates-icon.png';
+import workflowLogo from '../assets/workflow-icon.png';
 
 export default function LayoutDropdown(props: LayoutDropdownProps) {
     return (
@@ -14,7 +18,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                         <div
                             className='cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border border-gray-200 hover:bg-gray-50'
                         >
-                            <Image src="/workflow/kern-icon.png" width="32" height="32" />
+                            <Image src={kernLogo} width="32" height="32" alt='Kern' />
                         </div>
                     </Tooltip>
                 </Menu.Button>
@@ -42,7 +46,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                                             'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
                                         )}
                                     >
-                                        <Image src="/workflow/kern-icon.png" width="21" height="21" />
+                                        <Image src={kernLogo} width="21" height="21" alt='cockpit' />
                                         <span className='ml-2'>cockpit</span>
                                     </a>
                                 )}
@@ -60,7 +64,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                                             'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
                                         )}
                                     >
-                                        <Image src="/workflow/refinery-icon.png" width="21" height="21" />
+                                        <Image src={refineryLogo} width="21" height="21" alt='refinery' />
                                         <span className='ml-2'>refinery</span>
                                     </a>
                                 )}
@@ -79,7 +83,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                                             'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
                                         )}
                                     >
-                                        <Image src="/workflow/gates-icon.png" width="21" height="21" />
+                                        <Image src={gatesLogo} width="21" height="21" alt='gates' />
                                         <span className='ml-2'>gates</span>
                                     </a>
                                 )}
@@ -98,7 +102,7 @@ export default function LayoutDropdown(props: LayoutDropdownProps) {
                                         )}
                                     >
                                         <Image
-                                            src="/gates/workflow-icon.png"
+                                            src={workflowLogo}
                                             width={21}
                                             height={21}
                                             alt="workflow"
