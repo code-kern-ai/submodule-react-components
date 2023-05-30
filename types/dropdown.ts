@@ -19,3 +19,7 @@ export type DropdownProps = {
     onlyArray?: boolean;
     dropdownWidth?: string;
 }
+
+export type LayoutDropdownProps = {
+    visibility: boolean[];
+};
