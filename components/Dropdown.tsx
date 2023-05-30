@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { DropdownProps, OptionProps } from '../types/dropdown';
+import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { IconClock } from '@tabler/icons';
 
@@ -9,7 +9,7 @@ import { IconClock } from '@tabler/icons';
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length < 1;
     return (
-        <Menu as="div" className="relative inline-block text-left w-full">
+        <Menu as="div" className={`relative inline-block text-left ${props.dropdownWidth ? props.dropdownWidth : 'w-full'}`}>
             <div>
                 <Menu.Button className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300
             bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2
@@ -36,7 +36,7 @@ export default function Dropdown(props: DropdownProps) {
             >
                 <Menu.Items className={`absolute z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.itemsClasses ? props.itemsClasses : ''}`}>
                     <div className="py-1">
-                        {props.options.map((option: OptionProps) => (
+                        {props.options.map((option: any) => (
                             <div key={option.id}>
                                 <Menu.Item >
                                     {({ active }) => (
@@ -49,7 +49,7 @@ export default function Dropdown(props: DropdownProps) {
                                                 props.selectedOption(option);
                                             }}
                                         >
-                                            {option.name}
+                                            {props.onlyArray ? option : option.name}
                                         </a>
                                     )}
                                 </Menu.Item>

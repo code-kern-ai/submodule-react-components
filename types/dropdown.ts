@@ -5,9 +5,6 @@ export type DropdownProps = {
     selectedOption: (event: any) => void;
     itemsClasses?: string;
     hasIconClock?: boolean;
-}
-
-export type OptionProps = {
-    name: string;
-    id: string;
+    onlyArray?: boolean;
+    dropdownWidth?: string;
 }
