@@ -16,7 +16,7 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                 <Menu.Button>
                     <Tooltip color="invert" content="Kern AI" placement="right">
                         <div
-                            className='cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border border-gray-200 hover:bg-gray-50'
+                            className={`cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border ${props.gates ? '' : 'border-gray-200 hover:bg-gray-50'}`}
                         >
                             <Image src={kernLogo} width="32" height="32" alt='Kern' />
                         </div>
@@ -33,7 +33,7 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="fixed bottom-[74px] left-20 z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="fixed z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" style={{ bottom: '74px', left: '80px' }}>
                     <div className="py-1">
                         {props.cockpit ? (
                             <Menu.Item>
