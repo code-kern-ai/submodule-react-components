@@ -33,7 +33,7 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="fixed z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" style={{ bottom: '74px', left: '80px' }}>
+                <Menu.Items className="fixed bottom-[74px] left-20 z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
                         {props.cockpit ? (
                             <Menu.Item>
