@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 type ItemWithExpiration<T> = {
   value: T;
-  expiration?: number;
+  expiration?: number | null;
 };
 
 function readItemGroupFromLocalStorage(group: string): any {
