@@ -12,9 +12,9 @@
  * @doNotUseTextArray {boolean} - If the dropdown should not use the text array
 */
 export type DropdownProps = {
-    options?: string[] | any[];
-    buttonName?: string;
-    selectedOption?: (event: any) => void;
+    options: string[] | any[];
+    buttonName: string;
+    selectedOption: (event: any) => void;
     disabled?: boolean;
     onlyArray?: boolean;
     dropdownClasses?: string;
