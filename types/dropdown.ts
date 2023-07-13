@@ -1,7 +1,7 @@
 /**
  * Optionset for kern dropdown
- * @options {string[] | any[]} - Can be any array of strings or objects
  * @buttonName {string} - The name of the button
+ * @options {string[] | any[]} - Can be any array of strings or objects
  * @selectedOption {function} - The function that will be called when an option is selected
  * @disabled {DropdownOptionsProps} - If the dropdown is disabled
  * @onlyArray {boolean} - If the dropdown has only an array of strings
@@ -12,9 +12,9 @@
  * @doNotUseTextArray {boolean} - If the dropdown should not use the text array
 */
 export type DropdownProps = {
+    buttonName: string;
     options?: string[] | any[];
-    buttonName?: string;
-    selectedOption?: (event: any) => void;
+    selectedOption?: (value: any) => void;
     disabled?: boolean;
     onlyArray?: boolean;
     dropdownClasses?: string;
