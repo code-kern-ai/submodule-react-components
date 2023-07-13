@@ -11,7 +11,7 @@ export default function Dropdown(props: DropdownProps) {
 
     useEffect(() => {
         if (props.doNotUseTextArray) {
-            setDropdownCaptions(props.options);
+            setDropdownCaptions(props.options ?? []);
         } else {
             setDropdownCaptions(getTextArray(props.options));
         }
@@ -54,7 +54,7 @@ export default function Dropdown(props: DropdownProps) {
                                                 "block px-4 py-2 text-sm cursor-pointer"
                                             )}
                                             onClick={() => {
-                                                props.selectedOption(option);
+                                                if (props.selectedOption) props.selectedOption(option);
                                             }}
                                         >
                                             {props.doNotUseTextArray ? option.name : option}
