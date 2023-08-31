@@ -10,6 +10,8 @@
  * @dropdownItemsClasses {string} - The classes that will be applied to the dropdown items
  * @dropdownItemsWidth {string} - The width of the dropdown items
  * @doNotUseTextArray {boolean} - If the dropdown should not use the text array
+ * @disabledOptions {boolean[], optional} - disables the dropdown option (needs to be the exact same length as the optionArray)
+ * @buttonClasses {string} - The classes that will be applied to the button
 */
 export type DropdownProps = {
     buttonName: string;
@@ -22,6 +24,8 @@ export type DropdownProps = {
     dropdownItemsClasses?: string;
     dropdownItemsWidth?: string;
     doNotUseTextArray?: boolean;
+    disabledOptions?: boolean[];
+    buttonClasses?: string;
 }
 
 export type AppSelectionDropdownProps = {

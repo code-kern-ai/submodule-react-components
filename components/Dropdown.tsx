@@ -8,6 +8,7 @@ import { getTextArray } from '../helpers/dropdown-helper';
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length < 1;
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
+    const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
 
     useEffect(() => {
         if (props.doNotUseTextArray) {
@@ -17,13 +18,21 @@ export default function Dropdown(props: DropdownProps) {
         }
     }, [props.options]);
 
+    useEffect(() => {
+        if (props.disabledOptions) {
+            setDisabledOptions(props.disabledOptions);
+        } else {
+            setDisabledOptions(Array(props.options.length).fill(false));
+        }
+    }, [props.disabledOptions]);
+
     return (
         <Menu as="div" className={`relative inline-block text-left ${props.dropdownWidth ? props.dropdownWidth : 'w-full'} ${props.dropdownClasses ? props.dropdownClasses : ''}`}>
             <div>
                 <Menu.Button className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300
             bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2
             focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100
-            ${isDisabled ? "opacity-50" : ""}`}
+            ${isDisabled ? "opacity-50" : ""} ${props.buttonClasses ? props.buttonClasses : ''}`}
                     disabled={isDisabled}
                 >
                     {props.buttonName}
@@ -46,12 +55,13 @@ export default function Dropdown(props: DropdownProps) {
                     <div className="py-1">
                         {dropdownCaptions.map((option: any, index: number) => (
                             <div key={option + '-' + index}>
-                                <Menu.Item >
+                                <Menu.Item disabled={disabledOptions[index]}>
                                     {({ active }) => (
                                         <a key={option.id}
                                             className={combineClassNames(
                                                 active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                                                "block px-4 py-2 text-sm cursor-pointer"
+                                                disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
+                                                "block px-4 py-2 text-sm"
                                             )}
                                             onClick={() => {
                                                 if (props.selectedOption) props.selectedOption(option);
