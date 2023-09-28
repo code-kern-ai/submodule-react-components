@@ -4,6 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { getTextArray } from '../helpers/dropdown-helper';
+import { Tooltip } from '@nextui-org/react';
 
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length < 1;
@@ -67,7 +68,9 @@ export default function Dropdown(props: DropdownProps) {
                                                 if (props.selectedOption) props.selectedOption(option);
                                             }}
                                         >
-                                            {props.doNotUseTextArray ? option.name : option}
+                                            <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ? props.tooltipArrayPlacement : 'left'} color="invert">
+                                                {props.doNotUseTextArray ? option.name : option}
+                                            </Tooltip>
                                         </a>
                                     )}
                                 </Menu.Item>

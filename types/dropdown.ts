@@ -12,6 +12,8 @@
  * @doNotUseTextArray {boolean} - If the dropdown should not use the text array
  * @disabledOptions {boolean[], optional} - disables the dropdown option (needs to be the exact same length as the optionArray)
  * @buttonClasses {string} - The classes that will be applied to the button
+ * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
+ * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
 */
 export type DropdownProps = {
     buttonName: string;
@@ -26,6 +28,8 @@ export type DropdownProps = {
     doNotUseTextArray?: boolean;
     disabledOptions?: boolean[];
     buttonClasses?: string;
+    tooltipsArray?: string[];
+    tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd"
 }
 
 export type AppSelectionDropdownProps = {
