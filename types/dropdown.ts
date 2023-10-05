@@ -17,7 +17,7 @@
  * @hasSearchBar {boolean} - If the dropdown has a search bar
 */
 export type DropdownProps = {
-    buttonName: string;
+    buttonName?: string;
     options?: string[] | any[];
     selectedOption?: (value: any) => void;
     disabled?: boolean;

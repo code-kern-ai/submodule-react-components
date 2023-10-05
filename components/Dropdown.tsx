@@ -67,7 +67,7 @@ export default function Dropdown(props: DropdownProps) {
                         setSearchText(e.target.value);
                         setIsOpen(true);
                     }}
-                        className="h-9 w-full border-gray-300 rounded-md placeholder-italic border text-gray-900 pl-4 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100" placeholder="Type to search..." />
+                        className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pl-4 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100" placeholder="Type to search..." />
                     <ChevronDownIcon
                         className="h-5 w-5 absolute right-0 mr-3 -mt-7"
                         aria-hidden="true"
