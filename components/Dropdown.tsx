@@ -13,6 +13,7 @@ export default function Dropdown(props: DropdownProps) {
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [searchText, setSearchText] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
 
     const dropdownRef = useRef(null);
 
@@ -24,6 +25,17 @@ export default function Dropdown(props: DropdownProps) {
                 option.toLowerCase().includes(searchText.toLowerCase())
             );
             setDropdownCaptions(filtered);
+        } else if (props.hasCheckboxes) {
+            if (selectedCheckboxes.length > 0) return;
+            const newSelectedCheckboxes = [];
+            props.options.forEach((option: any, index: number) => {
+                newSelectedCheckboxes.push({
+                    name: option,
+                    checked: false
+                });
+            });
+            setSelectedCheckboxes(newSelectedCheckboxes);
+            setDropdownCaptions(props.options);
         }
         else {
             setDropdownCaptions(getTextArray(props.options));
@@ -57,6 +69,32 @@ export default function Dropdown(props: DropdownProps) {
         if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
             setIsOpen(false);
         }
+    }
+
+    function handleSelectedCheckboxes(option: string, index: number, e: any) {
+        const newSelectedCheckboxes = [...selectedCheckboxes];
+        if (option == 'Select all') {
+            newSelectedCheckboxes.forEach((checkbox, index) => {
+                newSelectedCheckboxes[index] = {
+                    name: checkbox.name,
+                    checked: e.target.checked
+                }
+            });
+
+        } else {
+            if (newSelectedCheckboxes[newSelectedCheckboxes.length - 1].checked) {
+                newSelectedCheckboxes[newSelectedCheckboxes.length - 1] = {
+                    name: newSelectedCheckboxes[newSelectedCheckboxes.length - 1].name,
+                    checked: false
+                }
+            }
+            newSelectedCheckboxes[index] = {
+                name: option,
+                checked: e.target.checked
+            }
+        }
+        setSelectedCheckboxes(newSelectedCheckboxes);
+        props.selectedOption(newSelectedCheckboxes);
     }
 
     return (
@@ -105,9 +143,10 @@ export default function Dropdown(props: DropdownProps) {
                                             className={combineClassNames(
                                                 active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                                                 disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
-                                                "block px-4 py-2 text-sm"
+                                                "px-4 py-2 text-sm flex items-center"
                                             )}
                                             onClick={() => {
+                                                if (props.hasCheckboxes) return;
                                                 if (props.selectedOption) {
                                                     props.selectedOption(option);
                                                     if (props.hasSearchBar) {
@@ -115,8 +154,10 @@ export default function Dropdown(props: DropdownProps) {
                                                     }
                                                     setIsOpen(false);
                                                 }
-                                            }}
-                                        >
+                                            }}>
+                                            {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} type="checkbox" className="mr-3" onChange={(e) => {
+                                                handleSelectedCheckboxes(option, index, e);
+                                            }} />}
                                             <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ? props.tooltipArrayPlacement : 'left'} color="invert">
                                                 {props.doNotUseTextArray ? option.name : option}
                                             </Tooltip>

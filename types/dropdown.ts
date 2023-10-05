@@ -15,6 +15,7 @@
  * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
  * @hasSearchBar {boolean} - If the dropdown has a search bar
+ * @hasCheckboxes {boolean} - If the dropdown has checkboxes (needs to be the exact same length as the optionArray)
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -32,6 +33,7 @@ export type DropdownProps = {
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;
+    hasCheckboxes?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
