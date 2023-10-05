@@ -14,6 +14,7 @@
  * @buttonClasses {string} - The classes that will be applied to the button
  * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
+ * @hasSearchBar {boolean} - If the dropdown has a search bar
 */
 export type DropdownProps = {
     buttonName: string;
@@ -29,7 +30,8 @@ export type DropdownProps = {
     disabledOptions?: boolean[];
     buttonClasses?: string;
     tooltipsArray?: string[];
-    tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd"
+    tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
+    hasSearchBar?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
