@@ -31,7 +31,7 @@ export default function Dropdown(props: DropdownProps) {
             props.options.forEach((option: any, index: number) => {
                 newSelectedCheckboxes.push({
                     name: option,
-                    checked: false
+                    checked: props.selectedCheckboxes ? props.selectedCheckboxes[index] : false
                 });
             });
             setSelectedCheckboxes(newSelectedCheckboxes);
