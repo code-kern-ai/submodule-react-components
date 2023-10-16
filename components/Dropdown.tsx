@@ -112,7 +112,7 @@ export default function Dropdown(props: DropdownProps) {
             });
         } else {
             const lastIdx = newSelectedCheckboxes.length - 1;
-            if (newSelectedCheckboxes[lastIdx].checked) {
+            if (props.hasSelectAll && newSelectedCheckboxes[lastIdx].checked) {
                 newSelectedCheckboxes[lastIdx].checked = false;
             }
             newSelectedCheckboxes[index].checked = e.target.checked;
