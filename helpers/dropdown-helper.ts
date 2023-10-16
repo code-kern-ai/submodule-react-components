@@ -1,3 +1,5 @@
+export const SELECT_ALL = 'Select all';
+
 export function getTextArray(arr: string[] | any[]): string[] {
     if (!arr) return [];
     if (arr.length == 0) return [];
@@ -18,6 +20,13 @@ export function getTextArray(arr: string[] | any[]): string[] {
     }
     if (!firstStringKey) throw new Error("Cant find text in given array - dropdown");
     return valueArray.map(a => a[firstStringKey]);
+}
+
+export function prepareDropdownOptionsToArray(options: string[] | any[], doNotUseTextArray: boolean) {
+    if (!options) return [];
+    if (options.length == 0) return [];
+    if (doNotUseTextArray) return options.map(x => x.name)
+    else return getTextArray(options);
 }
 
 export function setOptionsWithSearchBar(options: string[], searchText: string) {

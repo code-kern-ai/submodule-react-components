@@ -3,7 +3,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
-import { getTextArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
+import { prepareDropdownOptionsToArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
 
 const SELECT_ALL = 'Select all';
@@ -24,16 +24,13 @@ export default function Dropdown(props: DropdownProps) {
     }, [props]);
 
     useEffect(() => {
-        // Set the dropdown captions based on the provided props (checkboxes, search bar, etc.)
-        if (props.doNotUseTextArray) {
-            setDropdownCaptions(props.options ?? []);
-        } else if (props.hasSearchBar) {
-            setDropdownCaptions(setOptionsWithSearchBar(props.options, searchText));
+        const prepareOptions = prepareDropdownOptionsToArray(props.options, props.doNotUseTextArray);
+        if (props.hasSearchBar) {
+            setDropdownCaptions(setOptionsWithSearchBar(prepareOptions, searchText));
         } else if (props.hasCheckboxes) {
-            setOptionsWithCheckboxes();
-        }
-        else {
-            setDropdownCaptions(getTextArray(props.options));
+            setOptionsWithCheckboxes(prepareOptions);
+        } else {
+            setDropdownCaptions(prepareOptions);
         }
     }, [props.options, searchText, selectedCheckboxes, props.doNotUseTextArray, props.hasSearchBar, props.hasCheckboxes, props.selectedCheckboxes, props.hasSelectAll]);
 
@@ -59,7 +56,6 @@ export default function Dropdown(props: DropdownProps) {
     function checkDropdownProps() {
         if (props.options.length == 0) return;
         if (props.disabledOptions && (props.options.length != props.disabledOptions.length)) {
-            console.log('Dropdown: options length', props.options.length)
             console.error('Dropdown: options length must be equal to disabledOptions length');
         } else if (props.tooltipsArray && (props.options.length != props.tooltipsArray.length)) {
             console.error('Dropdown: options length must be equal to tooltipsArray length');
@@ -79,9 +75,9 @@ export default function Dropdown(props: DropdownProps) {
         }
     }
 
-    function setOptionsWithCheckboxes() {
+    function setOptionsWithCheckboxes(options: any[]) {
         if (selectedCheckboxes.length > 0) return;
-        const newSelectedCheckboxes = props.options.map((option: any, index: number) => {
+        const newSelectedCheckboxes = options.map((option: any, index: number) => {
             return {
                 name: option,
                 checked: props.selectedCheckboxes ? props.selectedCheckboxes[index] : false
@@ -165,7 +161,7 @@ export default function Dropdown(props: DropdownProps) {
                 <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ? props.dropdownItemsWidth : 'w-full'} ${props.dropdownItemsClasses ? props.dropdownItemsClasses : ''}`}>
                     <div className="py-1">
                         {dropdownCaptions.map((option: any, index: number) => (
-                            <div key={option + '-' + index}>
+                            <div key={option}>
                                 <Menu.Item>
                                     {({ active }) => (
                                         <label key={option.id} htmlFor="option"
@@ -190,7 +186,7 @@ export default function Dropdown(props: DropdownProps) {
                                             {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
                                                 onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
                                             <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ?? 'left'} color="invert">
-                                                {props.doNotUseTextArray ? option.name : option}
+                                                {option}
                                             </Tooltip>
                                         </label>
                                     )}
