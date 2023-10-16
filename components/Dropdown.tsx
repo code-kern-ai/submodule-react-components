@@ -158,11 +158,11 @@ export default function Dropdown(props: DropdownProps) {
                 leaveTo="transform opacity-0 scale-95"
                 show={isOpen}
             >
-                <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ? props.dropdownItemsWidth : 'w-full'} ${props.dropdownItemsClasses ? props.dropdownItemsClasses : ''}`}>
+                <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ?? 'w-full'} ${props.dropdownItemsClasses ?? ''}`}>
                     <div className="py-1">
                         {dropdownCaptions.map((option: any, index: number) => (
                             <div key={option}>
-                                <Menu.Item>
+                                <Menu.Item disabled={disabledOptions[index]}>
                                     {({ active }) => (
                                         <label key={option.id} htmlFor="option"
                                             className={combineClassNames(
