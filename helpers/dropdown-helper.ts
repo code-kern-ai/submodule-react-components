@@ -19,3 +19,11 @@ export function getTextArray(arr: string[] | any[]): string[] {
     if (!firstStringKey) throw new Error("Cant find text in given array - dropdown");
     return valueArray.map(a => a[firstStringKey]);
 }
+
+export function setOptionsWithSearchBar(options: string[], searchText: string) {
+    if (!searchText) return options;
+    const filtered = options.filter(option =>
+        option.toLowerCase().includes(searchText.toLowerCase())
+    );
+    return filtered;
+}

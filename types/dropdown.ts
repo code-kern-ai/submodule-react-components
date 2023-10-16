@@ -21,7 +21,7 @@
 */
 export type DropdownProps = {
     buttonName?: string;
-    options?: string[] | any[];
+    options?: any;
     selectedOption?: (value: any) => void;
     disabled?: boolean;
     onlyArray?: boolean;

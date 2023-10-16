@@ -3,7 +3,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
-import { getTextArray } from '../helpers/dropdown-helper';
+import { getTextArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
 
 const SELECT_ALL = 'Select all';
@@ -24,10 +24,11 @@ export default function Dropdown(props: DropdownProps) {
     }, [props]);
 
     useEffect(() => {
+        // Set the dropdown captions based on the provided props (checkboxes, search bar, etc.)
         if (props.doNotUseTextArray) {
             setDropdownCaptions(props.options ?? []);
         } else if (props.hasSearchBar) {
-            setOptionsWithSearchBar();
+            setDropdownCaptions(setOptionsWithSearchBar(props.options, searchText));
         } else if (props.hasCheckboxes) {
             setOptionsWithCheckboxes();
         }
@@ -68,15 +69,14 @@ export default function Dropdown(props: DropdownProps) {
             console.error('Dropdown: selectedCheckboxes can only be used with hasCheckboxes');
         } else if (!props.hasCheckboxes && props.hasSelectAll) {
             console.error('Dropdown: hasSelectAll can only be used with hasCheckboxes');
+        } else if (props.hasCheckboxes) {
+            const checkIfSelectAll = props.options.find((option: any) => option.trim().toLowerCase() == SELECT_ALL.trim().toLowerCase());
+            if (checkIfSelectAll != undefined && props.hasSelectAll) {
+                console.error('Dropdown: "select all" is included twice');
+            } else if (checkIfSelectAll == undefined && !props.hasSelectAll) {
+                console.error('Dropdown: "select all" should be used with hasSelectAll')
+            }
         }
-    }
-
-    function setOptionsWithSearchBar() {
-        if (!searchText) return setDropdownCaptions(props.options);
-        const filtered = props.options.filter(option =>
-            option.toLowerCase().includes(searchText.toLowerCase())
-        );
-        setDropdownCaptions(filtered);
     }
 
     function setOptionsWithCheckboxes() {
@@ -87,7 +87,6 @@ export default function Dropdown(props: DropdownProps) {
                 checked: props.selectedCheckboxes ? props.selectedCheckboxes[index] : false
             }
         });
-        console.log(newSelectedCheckboxes)
         if (props.hasSelectAll) {
             newSelectedCheckboxes.push({
                 name: SELECT_ALL,
@@ -188,9 +187,8 @@ export default function Dropdown(props: DropdownProps) {
                                                     setIsOpen(false);
                                                 }
                                             }}>
-                                            {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3" onChange={(e) => {
-                                                handleSelectedCheckboxes(option, index, e);
-                                            }} />}
+                                            {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
+                                                onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
                                             <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ?? 'left'} color="invert">
                                                 {props.doNotUseTextArray ? option.name : option}
                                             </Tooltip>
