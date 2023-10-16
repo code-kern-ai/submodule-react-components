@@ -15,8 +15,9 @@
  * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
  * @hasSearchBar {boolean} - If the dropdown has a search bar
- * @hasCheckboxes {boolean} - If the dropdown has checkboxes (needs to be the exact same length as the optionArray)
+ * @hasCheckboxes {boolean} - If the dropdown has checkboxes
  * @selectedCheckboxes {boolean[]} - The array of selected checkboxes (needs to be the exact same length as the optionArray)
+ * @addSelectAllOption {boolean} - Adds a select all option to the dropdown if true
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -36,6 +37,8 @@ export type DropdownProps = {
     hasSearchBar?: boolean;
     hasCheckboxes?: boolean;
     selectedCheckboxes?: boolean[];
+    hasSelectAll?: boolean;
+    addSelectAllOption?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
