@@ -40,7 +40,7 @@ export function setOptionsWithSearchBar(options: string[], searchText: string) {
 }
 
 export function checkDropdownProps(props: DropdownProps) {
-    if (props.options.length == 0) return;
+    if (!props.options || props.options.length == 0) return;
     if (props.disabledOptions && (props.options.length != props.disabledOptions.length)) {
         throw new Error('Dropdown: options length must be equal to disabledOptions length');
     } else if (props.tooltipsArray && (props.options.length != props.tooltipsArray.length)) {

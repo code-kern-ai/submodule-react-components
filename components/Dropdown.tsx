@@ -33,6 +33,7 @@ export default function Dropdown(props: DropdownProps) {
     }, [props.options, searchText, selectedCheckboxes, props.doNotUseTextArray, props.hasSearchBar, props.hasCheckboxes, props.selectedCheckboxes, props.hasSelectAll]);
 
     useEffect(() => {
+        if (!props.disabledOptions || !props.options) return;
         if (props.disabledOptions) {
             setDisabledOptions(props.disabledOptions);
         } else {
