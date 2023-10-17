@@ -1,3 +1,5 @@
+import { DropdownProps } from "../types/dropdown";
+
 export const SELECT_ALL = 'Select all';
 
 export function getTextArray(arr: string[] | any[]): string[] {
@@ -35,4 +37,27 @@ export function setOptionsWithSearchBar(options: string[], searchText: string) {
         option.toLowerCase().includes(searchText.toLowerCase())
     );
     return filtered;
+}
+
+export function checkDropdownProps(props: DropdownProps) {
+    if (props.options.length == 0) return;
+    if (props.disabledOptions && (props.options.length != props.disabledOptions.length)) {
+        throw new Error('Dropdown: options length must be equal to disabledOptions length');
+    } else if (props.tooltipsArray && (props.options.length != props.tooltipsArray.length)) {
+        throw new Error('Dropdown: options length must be equal to tooltipsArray length');
+    } else if (props.selectedCheckboxes && (props.selectedCheckboxes.length != props.options.length)) {
+        throw new Error('Dropdown: selectedCheckboxes length must be equal to options length');
+    } else if (props.selectedCheckboxes && props.selectedCheckboxes.length > 0 && !props.hasCheckboxes) {
+        throw new Error('Dropdown: selectedCheckboxes can only be used with hasCheckboxes');
+    } else if (!props.hasCheckboxes && props.hasSelectAll) {
+        throw new Error('Dropdown: hasSelectAll can only be used with hasCheckboxes');
+    } else if (props.hasCheckboxes) {
+        const compare = SELECT_ALL.trim().toLowerCase();
+        const hasSelectAll = props.options.indexOf((option: any) => option.trim().toLowerCase() == compare) != -1;
+        if (hasSelectAll && props.hasSelectAll) {
+            throw new Error('Dropdown: "select all" is included twice');
+        } else if (hasSelectAll && !props.hasSelectAll) {
+            throw new Error('Dropdown: "select all" should be used with hasSelectAll');
+        }
+    }
 }

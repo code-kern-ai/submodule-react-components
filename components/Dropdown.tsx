@@ -3,10 +3,8 @@ import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
-import { prepareDropdownOptionsToArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
+import { SELECT_ALL, checkDropdownProps, prepareDropdownOptionsToArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
-
-const SELECT_ALL = 'Select all';
 
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
@@ -20,7 +18,7 @@ export default function Dropdown(props: DropdownProps) {
     const dropdownRef = useRef(null);
 
     useEffect(() => {
-        checkDropdownProps();
+        checkDropdownProps(props);
     }, [props]);
 
     useEffect(() => {
@@ -52,28 +50,6 @@ export default function Dropdown(props: DropdownProps) {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpen]);
-
-    function checkDropdownProps() {
-        if (props.options.length == 0) return;
-        if (props.disabledOptions && (props.options.length != props.disabledOptions.length)) {
-            console.error('Dropdown: options length must be equal to disabledOptions length');
-        } else if (props.tooltipsArray && (props.options.length != props.tooltipsArray.length)) {
-            console.error('Dropdown: options length must be equal to tooltipsArray length');
-        } else if (props.selectedCheckboxes && (props.selectedCheckboxes.length != props.options.length)) {
-            console.error('Dropdown: selectedCheckboxes length must be equal to options length');
-        } else if (props.selectedCheckboxes && props.selectedCheckboxes.length > 0 && !props.hasCheckboxes) {
-            console.error('Dropdown: selectedCheckboxes can only be used with hasCheckboxes');
-        } else if (!props.hasCheckboxes && props.hasSelectAll) {
-            console.error('Dropdown: hasSelectAll can only be used with hasCheckboxes');
-        } else if (props.hasCheckboxes) {
-            const checkIfSelectAll = props.options.find((option: any) => option.trim().toLowerCase() == SELECT_ALL.trim().toLowerCase());
-            if (checkIfSelectAll != undefined && props.hasSelectAll) {
-                console.error('Dropdown: "select all" is included twice');
-            } else if (checkIfSelectAll == undefined && !props.hasSelectAll) {
-                console.error('Dropdown: "select all" should be used with hasSelectAll')
-            }
-        }
-    }
 
     function setOptionsWithCheckboxes(options: any[]) {
         if (selectedCheckboxes.length > 0) return;
