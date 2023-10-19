@@ -5,6 +5,7 @@ import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, prepareDropdownOptionsToArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
+import { IconDotsVertical } from '@tabler/icons-react';
 
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
@@ -114,17 +115,27 @@ export default function Dropdown(props: DropdownProps) {
                         className="h-5 w-5 absolute right-0 mr-3 -mt-7"
                         aria-hidden="true"
                     />
-                </div> : <Menu.Button onClick={toggleDropdown} className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300
+                </div> : <>
+                    {props.hasButtonDots ? (<Menu.Button onClick={toggleDropdown} className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full">
+                        <span className="flex h-full w-full items-center justify-center rounded-full">
+                            <IconDotsVertical
+                                size={24}
+                                strokeWidth={2}
+                                className='text-gray-700 font-bold' />
+                        </span>
+                    </Menu.Button>
+                    ) : (<Menu.Button onClick={toggleDropdown} className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300
             bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2
             focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed ${props.buttonClasses ?? ''}`}
-                    disabled={isDisabled && !props.hasCheckboxes}>
-                    {props.buttonName}
-                    <ChevronDownIcon
-                        className="-mr-1 ml-2 h-5 w-5"
-                        aria-hidden="true"
-                    />
-                </Menu.Button>}
-            </div>
+                        disabled={isDisabled && !props.hasCheckboxes}>
+                        {props.buttonName}
+                        <ChevronDownIcon
+                            className="-mr-1 ml-2 h-5 w-5"
+                            aria-hidden="true"
+                        />
+                    </Menu.Button>)}
+                </>}
+            </div >
             <Transition
                 as={Fragment}
                 enter="transition ease-out duration-100"
@@ -173,6 +184,6 @@ export default function Dropdown(props: DropdownProps) {
                     </div>
                 </Menu.Items>
             </Transition>
-        </Menu>
+        </Menu >
     );
 }

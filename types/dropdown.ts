@@ -39,6 +39,7 @@ export type DropdownProps = {
     selectedCheckboxes?: boolean[];
     hasSelectAll?: boolean;
     addSelectAllOption?: boolean;
+    hasButtonDots?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
