@@ -18,6 +18,7 @@
  * @hasCheckboxes {boolean} - If the dropdown has checkboxes
  * @selectedCheckboxes {boolean[]} - The array of selected checkboxes (needs to be the exact same length as the optionArray)
  * @addSelectAllOption {boolean} - Adds a select all option to the dropdown if true
+ * @backgroundColors {string[]} - The array of background colors that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -40,6 +41,7 @@ export type DropdownProps = {
     hasSelectAll?: boolean;
     addSelectAllOption?: boolean;
     hasButtonDots?: boolean;
+    backgroundColors?: string[];
 }
 
 export type AppSelectionDropdownProps = {

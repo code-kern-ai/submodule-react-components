@@ -1,6 +1,7 @@
 import { DropdownProps } from "../types/dropdown";
 
 export const SELECT_ALL = 'Select all';
+export const COLOR_WITHOUT_NUMBER = ['kernindigo', 'black', 'white'];
 
 export function getTextArray(arr: string[] | any[]): string[] {
     if (!arr) return [];
@@ -59,5 +60,22 @@ export function checkDropdownProps(props: DropdownProps) {
         } else if (hasSelectAll && !props.hasSelectAll) {
             throw new Error('Dropdown: "select all" should be used with hasSelectAll');
         }
+    } else if (props.backgroundColors && (props.backgroundColors.length != props.options.length)) {
+        throw new Error('Dropdown: backgroundColors length must be equal to options length');
     }
+}
+
+export function reduceColorProperty(property: string, defaultShade: string): string {
+    if (!property) return "";
+    let splitted = property.split(":");
+    if (splitted.length > 1) property = splitted[splitted.length - 1];
+
+    splitted = property.split("-");
+    if (['bg', 'text'].includes(splitted[0])) splitted = splitted.slice(1);
+
+    if (splitted.length == 1) {
+        if (COLOR_WITHOUT_NUMBER.includes(splitted[0])) return splitted[0] + " ";
+        return splitted[0] + "-" + defaultShade;
+    }
+    return splitted.join("-");
 }
