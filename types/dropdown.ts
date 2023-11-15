@@ -20,6 +20,8 @@
  * @addSelectAllOption {boolean} - Adds a select all option to the dropdown if true
  * @backgroundColors {string[]} - The array of background colors that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @keepDrownOpen {boolean} - If the dropdown should stay open after an option is selected
+ * @useDifferentTextColor {boolean[]} - If the dropdown should use a different text color for each option (needs to be the exact same length as the optionArray)
+ * @differentTextColor {string} - The color that will be applied to the text of the dropdown items if useDifferentTextColor is true
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -44,6 +46,8 @@ export type DropdownProps = {
     hasButtonDots?: boolean;
     backgroundColors?: string[];
     keepDrownOpen?: boolean;
+    useDifferentTextColor?: boolean[];
+    differentTextColor?: string;
 }
 
 export type AppSelectionDropdownProps = {

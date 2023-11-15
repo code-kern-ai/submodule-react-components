@@ -62,6 +62,10 @@ export function checkDropdownProps(props: DropdownProps) {
         }
     } else if (props.backgroundColors && (props.backgroundColors.length != props.options.length)) {
         throw new Error('Dropdown: backgroundColors length must be equal to options length');
+    } else if (props.useDifferentTextColor && props.useDifferentTextColor.length > 0 && (props.useDifferentTextColor.length != props.options.length)) {
+        throw new Error('Dropdown: useDifferentTextColor length must be equal to options length');
+    } else if (props.useDifferentTextColor && !props.differentTextColor) {
+        throw new Error('Dropdown: differentTextColor must be defined if useDifferentTextColor is provided');
     }
 }
 

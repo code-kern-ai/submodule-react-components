@@ -161,10 +161,9 @@ export default function Dropdown(props: DropdownProps) {
                                     {({ active }) => (
                                         <label key={option.id} htmlFor="option"
                                             className={combineClassNames(
-                                                active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                                                 disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
                                                 "px-4 py-2 text-sm flex items-center",
-                                                backgroundColors[index]
+                                                backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                                             )}
                                             onClick={() => {
                                                 if (props.hasCheckboxes) {
