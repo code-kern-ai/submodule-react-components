@@ -79,6 +79,7 @@ export default function Dropdown(props: DropdownProps) {
 
     function toggleDropdown() {
         if (isDisabled && !props.hasCheckboxes) return; // if the dropdown has checkboxes, it shouldn't be disabled because the user can still select options
+        if (isOpen && props.keepDrownOpen) return;
         setIsOpen(!isOpen);
     }
 
