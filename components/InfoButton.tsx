@@ -71,9 +71,7 @@ export function InfoButton(_props: InfoButtonProps) {
     const [config, setConfig] = useState<InfoConfig>(null);
     const [open, setOpen] = useState(false);
 
-
     useEffect(() => setConfig(generateAndCheckConfig(props, setOpen)), [props.size, props.access, props.display]);
-    useConsoleLog(config);
 
     if (!config) return null;
 
