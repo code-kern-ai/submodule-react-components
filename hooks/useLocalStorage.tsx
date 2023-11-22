@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 type ItemWithExpiration<T> = {
   value: T;
   expiration?: number;
 };
 
-function readItemGroupFromLocalStorage(group: string): any {
+export function readItemGroupFromLocalStorage(group: string): any {
   const itemGroupString = localStorage.getItem(group);
   if (itemGroupString) {
     return JSON.parse(itemGroupString);
@@ -18,7 +18,8 @@ export function useLocalStorage<T>(
   group: string,
   timeoutSeconds?: number,
   defaultValue?: T
-): [T | null, (value: T) => void] {
+): [T | null, Dispatch<SetStateAction<T>>] {
+
   const [state, setState] = useState<T | any>(() => {
     const itemGroup = readItemGroupFromLocalStorage(group)
     if (itemGroup) {
