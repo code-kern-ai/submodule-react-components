@@ -26,6 +26,8 @@ function readFromLocalStorage(group: string, key: string): string[] {
 }
 
 function extendLocalStorage(group: string, key: string, addValue: string): string[] {
+
+
     const itemGroupString = localStorage.getItem(group);
     let itemGroup = {};
     if (itemGroupString) {
@@ -33,6 +35,9 @@ function extendLocalStorage(group: string, key: string, addValue: string): strin
     }
     if (!itemGroup[key]) itemGroup[key] = [];
     if (!Array.isArray(itemGroup[key])) throw new Error("LocalStorageDropdown - extendLocalStorage - itemGroup[key] is not an array");
+    const lowerTrimmed = addValue?.trim().toLocaleLowerCase();
+    if (!lowerTrimmed || lowerTrimmed.length == 0 || lowerTrimmed.startsWith("select") || lowerTrimmed.startsWith("enter")) return itemGroup[key]; //don't add empty or select/enter
+
     if (itemGroup[key].includes(addValue)) return itemGroup[key]; //already in list
     itemGroup[key].push(addValue);
     localStorage.setItem(group, JSON.stringify(itemGroup));
@@ -74,7 +79,7 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
     useImperativeHandle(ref, () => ({
         persistValue() {
             if (inputTextRef.current && inputTextRef.current.trim().length > 0) {
-                extendLocalStorage(propRef.current.storageGroupKey, propRef.current.storageKey, inputTextRef.current);
+                setOptions(extendLocalStorage(propRef.current.storageGroupKey, propRef.current.storageKey, inputTextRef.current));
             }
         }
     }), []);
