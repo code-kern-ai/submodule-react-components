@@ -22,6 +22,7 @@
  * @keepDrownOpen {boolean} - If the dropdown should stay open after an option is selected
  * @useDifferentTextColor {boolean[]} - If the dropdown should use a different text color for each option (needs to be the exact same length as the optionArray)
  * @differentTextColor {string} - The color that will be applied to the text of the dropdown items if useDifferentTextColor is true
+ * @buttonCaptionBgColor {string} - The color that will be applied to the button caption
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -48,6 +49,7 @@ export type DropdownProps = {
     keepDrownOpen?: boolean;
     useDifferentTextColor?: boolean[];
     differentTextColor?: string;
+    buttonCaptionBgColor?: string;
 }
 
 export type AppSelectionDropdownProps = {
