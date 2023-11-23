@@ -15,6 +15,8 @@
  * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
  * @hasSearchBar {boolean} - If the dropdown has a search bar
+ * @onSearchChange {function} - The function that will be called when the search bar value changes
+ * @searchDefaultValue {string} - The default value of the search bar
  * @hasCheckboxes {boolean} - If the dropdown has checkboxes
  * @selectedCheckboxes {boolean[]} - The array of selected checkboxes (needs to be the exact same length as the optionArray)
  * @addSelectAllOption {boolean} - Adds a select all option to the dropdown if true
@@ -23,6 +25,7 @@
  * @useDifferentTextColor {boolean[]} - If the dropdown should use a different text color for each option (needs to be the exact same length as the optionArray)
  * @differentTextColor {string} - The color that will be applied to the text of the dropdown items if useDifferentTextColor is true
  * @buttonCaptionBgColor {string} - The color that will be applied to the button caption
+ * @onClickDelete {function} - The function that will be called when the delete button is clicked (delete button will only be rendered if the function is provided)
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -40,6 +43,8 @@ export type DropdownProps = {
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;
+    onSearchChange?: (value: string) => void;
+    searchDefaultValue?: string;
     hasCheckboxes?: boolean;
     selectedCheckboxes?: boolean[];
     hasSelectAll?: boolean;
@@ -50,6 +55,7 @@ export type DropdownProps = {
     useDifferentTextColor?: boolean[];
     differentTextColor?: string;
     buttonCaptionBgColor?: string;
+    onClickDelete?: (value: any) => void;
 }
 
 export type AppSelectionDropdownProps = {

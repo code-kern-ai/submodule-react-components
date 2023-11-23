@@ -6,6 +6,8 @@ import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
 import { IconDotsVertical } from '@tabler/icons-react';
+import { IconTrashXFilled } from '@tabler/icons-react';
+import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
@@ -13,15 +15,22 @@ export default function Dropdown(props: DropdownProps) {
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState(props.searchDefaultValue ?? '');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
 
+
     const dropdownRef = useRef(null);
+    useOnClickOutside(dropdownRef, () => setIsOpen(false));
 
     useEffect(() => {
         checkDropdownProps(props);
     }, [props]);
+
+    useEffect(() => {
+        if (!props.onSearchChange) return;
+        props.onSearchChange(searchText)
+    }, [props.onSearchChange, searchText]);
 
     useEffect(() => {
         const prepareOptions = prepareDropdownOptionsToArray(props.options, props.doNotUseTextArray);
@@ -48,17 +57,6 @@ export default function Dropdown(props: DropdownProps) {
         setBackgroundColors(props.backgroundColors.map((x) => "bg-" + reduceColorProperty(x, '100')));
     }, [props.backgroundColors]);
 
-    useEffect(() => {
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen]);
-
     function setOptionsWithCheckboxes(options: any[]) {
         if (selectedCheckboxes.length > 0) return;
         const newSelectedCheckboxes = options.map((option: any, index: number) => {
@@ -81,12 +79,6 @@ export default function Dropdown(props: DropdownProps) {
         if (isDisabled && !props.hasCheckboxes) return; // if the dropdown has checkboxes, it shouldn't be disabled because the user can still select options
         if (isOpen && props.keepDrownOpen) return;
         setIsOpen(!isOpen);
-    }
-
-    function handleClickOutside(e: any) {
-        if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-            setIsOpen(false);
-        }
     }
 
     function handleSelectedCheckboxes(option: string, index: number, e: any) {
@@ -116,8 +108,12 @@ export default function Dropdown(props: DropdownProps) {
                     <input value={searchText} onChange={(e) => {
                         setSearchText(e.target.value);
                         if (!isOpen) setIsOpen(true);
-                    }}
-                        className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pl-4 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100" placeholder="Type to search..." />
+                    }
+                    }
+                        onFocus={(event) => event.target.select()}
+
+                        className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
+                        placeholder="Type to search..." />
                     <ChevronDownIcon
                         className="h-5 w-5 absolute right-0 mr-3 -mt-7"
                         aria-hidden="true"
@@ -155,36 +151,40 @@ export default function Dropdown(props: DropdownProps) {
                 <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ?? 'w-full'} ${props.dropdownItemsClasses ?? ''}`}>
                     <div className="py-1">
                         {dropdownCaptions.map((option: any, index: number) => (
-                            <div key={option}>
+                            <div key={option} className='relative'>
                                 <Menu.Item disabled={disabledOptions[index]}>
                                     {({ active }) => (
-                                        <label key={option.id} htmlFor="option"
-                                            className={combineClassNames(
-                                                disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
-                                                "px-4 py-2 text-sm flex items-center",
-                                                backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active ? "bg-gray-100 text-gray-900" : "text-gray-700"
-                                            )}
-                                            onClick={() => {
-                                                if (props.hasCheckboxes) {
-                                                    handleSelectedCheckboxes(option, index, { target: { checked: !selectedCheckboxes[index].checked } });
-                                                    return;
-                                                }
-                                                if (props.selectedOption) {
-                                                    props.selectedOption(option);
-                                                    if (props.hasSearchBar) {
-                                                        setSearchText(option);
-                                                    }
-                                                    setIsOpen(false);
-                                                }
-                                            }}>
-                                            {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
-                                                onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
-                                            <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ?? 'left'} color="invert">
-                                                {option}
+                                        <div className='w-full'>
+                                            <Tooltip key={option.id} content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ?? 'left'} color="invert" style={{ width: '100%' }}>
+                                                <label htmlFor="option"
+                                                    className={combineClassNames(
+                                                        disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
+                                                        backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                                                        "px-4 py-2 text-sm flex items-center"
+                                                    )}
+                                                    onClick={() => {
+                                                        if (props.hasCheckboxes) {
+                                                            handleSelectedCheckboxes(option, index, { target: { checked: !selectedCheckboxes[index].checked } });
+                                                            return;
+                                                        }
+                                                        if (props.selectedOption) {
+                                                            props.selectedOption(option);
+                                                            if (props.hasSearchBar) {
+                                                                setSearchText(option);
+                                                            }
+                                                            setIsOpen(false);
+                                                        }
+                                                    }}>
+                                                    {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
+                                                        onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
+                                                    <span className='truncate'>{option}</span>
+                                                    {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
+                                                </label>
                                             </Tooltip>
-                                        </label>
+                                        </div>
                                     )}
                                 </Menu.Item>
+
                             </div>
                         ))}
                     </div>
