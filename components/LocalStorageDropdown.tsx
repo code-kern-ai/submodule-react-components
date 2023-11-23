@@ -3,6 +3,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDefaults, useDefaultsByRef } from "../hooks/useDefaults";
 import Dropdown from "./Dropdown";
+import { CompareOptions, inStringList } from "@/submodules/javascript-functions/validations";
 
 type LocalStorageDropdownProps = {
     buttonName: string;
@@ -10,10 +11,12 @@ type LocalStorageDropdownProps = {
     storageGroupKey?: string; //defaults to localDropdown
     onOptionSelected?: (option: string) => void;
     searchDefaultValue?: string;
+    excludedFromStorage?: { values: string[]; compareOptions?: CompareOptions[] }; // if the value is in this list it will not be added to the storage //setting this to null will assume all values are valid
 }
 
 const DEFAULTS = {
-    storageGroupKey: "localDropdown"
+    storageGroupKey: "localDropdown",
+    excludedFromStorage: { values: ["select", "enter"], compareOptions: [CompareOptions.IGNORE_CASE, CompareOptions.TRIM, CompareOptions.STARTS_WITH] }
 }
 
 function readFromLocalStorage(group: string, key: string): string[] {
@@ -25,8 +28,15 @@ function readFromLocalStorage(group: string, key: string): string[] {
     return [];
 }
 
-function extendLocalStorage(group: string, key: string, addValue: string): string[] {
 
+function valueIsValid(addValue: string, excludedFromStorage?: { values: string[]; compareOptions?: CompareOptions[] }): boolean {
+    if (!addValue || addValue.trim().length == 0) return false;
+
+    if (excludedFromStorage && inStringList(addValue, excludedFromStorage.values, excludedFromStorage.compareOptions)) return false;
+    return true;
+}
+
+function extendLocalStorage(group: string, key: string, addValue: string): string[] {
 
     const itemGroupString = localStorage.getItem(group);
     let itemGroup = {};
@@ -35,8 +45,6 @@ function extendLocalStorage(group: string, key: string, addValue: string): strin
     }
     if (!itemGroup[key]) itemGroup[key] = [];
     if (!Array.isArray(itemGroup[key])) throw new Error("LocalStorageDropdown - extendLocalStorage - itemGroup[key] is not an array");
-    const lowerTrimmed = addValue?.trim().toLocaleLowerCase();
-    if (!lowerTrimmed || lowerTrimmed.length == 0 || lowerTrimmed.startsWith("select") || lowerTrimmed.startsWith("enter")) return itemGroup[key]; //don't add empty or select/enter
 
     if (itemGroup[key].includes(addValue)) return itemGroup[key]; //already in list
     itemGroup[key].push(addValue);
@@ -78,7 +86,7 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
 
     useImperativeHandle(ref, () => ({
         persistValue() {
-            if (inputTextRef.current && inputTextRef.current.trim().length > 0) {
+            if (valueIsValid(inputTextRef.current, propRef.current.excludedFromStorage)) {
                 setOptions(extendLocalStorage(propRef.current.storageGroupKey, propRef.current.storageKey, inputTextRef.current));
             }
         }
@@ -96,7 +104,7 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
         // since this can't collect data from outdated references & can't use the change array since this would then run on every change & setter aren't available anymore
         // we need to use a ref to access the data
         return () => {
-            if (inputTextRef.current && inputTextRef.current.trim().length > 0 && !(inputTextRef.current.trim().startsWith('select ') || inputTextRef.current.trim().startsWith('enter '))) {
+            if (valueIsValid(inputTextRef.current, propRef.current.excludedFromStorage)) {
                 extendLocalStorage(propRef.current.storageGroupKey, propRef.current.storageKey, inputTextRef.current);
             }
         }
