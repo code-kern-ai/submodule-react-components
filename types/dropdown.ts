@@ -35,10 +35,13 @@ export type DropdownProps = {
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;
+    onSearchChange?: (value: string) => void;
+    searchDefaultValue?: string;
     hasCheckboxes?: boolean;
     selectedCheckboxes?: boolean[];
     hasSelectAll?: boolean;
     addSelectAllOption?: boolean;
+    onClickDelete?: (value: any) => void;
 }
 
 export type AppSelectionDropdownProps = {
