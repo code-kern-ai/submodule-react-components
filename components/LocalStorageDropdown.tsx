@@ -128,7 +128,8 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
                 onOptionSelected(e.target.value);
             }}
                 className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pl-4 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
-                placeholder="Enter value..." />
+                placeholder="Enter value..."
+                onFocus={(event) => event.target.select()} />
         }
 
 
