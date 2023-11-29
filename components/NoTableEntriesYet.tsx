@@ -1,28 +1,10 @@
 import { memo } from "react";
 import { useDefaults } from "../hooks/useDefaults";
+import { NO_TABLE_ENTRIES_YET_DEFAULTS, NoTableEntriesYetProps } from "../types/noTableEntriesYet";
 
 
-type Props = {
-    tableColumns: number;
-    text?: string;
-    heightClass?: string;
-    backgroundColorClass?: string;
-    textColorClass?: string;
-    marginBottomClass?: string; // can be used to offset common table paddings, usually negative
-}
-
-const DEFAULTS = {
-    text: 'No data yet',
-    heightClass: 'h-16',
-    backgroundColorClass: 'bg-gray-50',
-    textColorClass: 'text-gray-700',
-    marginBottomClass: "",
-}
-
-
-
-function GetNoTableEntriesYet(_props: Props) {
-    const [props] = useDefaults<Props>(_props, DEFAULTS);
+function GetNoTableEntriesYet(_props: NoTableEntriesYetProps) {
+    const [props] = useDefaults<NoTableEntriesYetProps>(_props, NO_TABLE_ENTRIES_YET_DEFAULTS);
 
     return <tr>
         <td colSpan={props.tableColumns}>
