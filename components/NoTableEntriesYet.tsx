@@ -12,7 +12,7 @@ type Props = {
 }
 
 const DEFAULTS = {
-    text: 'No entries yet',
+    text: 'No data yet',
     heightClass: 'h-16',
     backgroundColorClass: 'bg-gray-50',
     textColorClass: 'text-gray-700',
