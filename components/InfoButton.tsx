@@ -6,26 +6,10 @@ import BaseModal from "../../../src/components/Common/Modal";
 import { InformationCircleIcon } from "@heroicons/react/20/solid";
 import useOnClickOutside from "@/submodules/react-components/hooks/useHooks/useOnClickOutside";
 import { Transition } from "@headlessui/react";
+import { INFO_BUTTON_DEFAULT_VALUES, InfoButtonConfig, InfoButtonProps } from "../types/infoButton";
 
-type InfoButtonProps = {
-    content: string | JSX.Element;
-    infoButtonSize?: "xs" | "sm" | "md" | "lg";
-    infoButtonColorClass?: string;
-    access?: "hover" | "click";
-    display?: "absoluteDiv" | "modal"
-    divPosition?: "top" | "bottom" | "left" | "right"; // only for absoluteDiv relevant
-    divZIndexClass?: string;
-}
 
-type InfoConfig = {
-    size: number;
-    cursorClass: string;
-    positionClass: string;
-    hideInfo: () => void;
-    showInfo: () => void;
-}
-
-function generateAndCheckConfig(props: InfoButtonProps, setOpen: Dispatch<SetStateAction<boolean>>): InfoConfig {
+function generateAndCheckConfig(props: InfoButtonProps, setOpen: Dispatch<SetStateAction<boolean>>): InfoButtonConfig {
     if (props.access == "hover" && props.display == "modal") console.warn("InfoButton - Hover access and modal display are not recommended")
     const config: any = {};
     switch (props.infoButtonSize) {
@@ -53,17 +37,10 @@ function generateAndCheckConfig(props: InfoButtonProps, setOpen: Dispatch<SetSta
     return config;
 }
 
-const DEFAULT_VALUES = {
-    size: "sm",
-    access: "hover",
-    display: "absoluteDiv",
-    divPosition: "top",
-    divZIndexClass: "z-10"
-}
 
 export function InfoButton(_props: InfoButtonProps) {
-    const [props] = useDefaults<InfoButtonProps>(_props, DEFAULT_VALUES);
-    const [config, setConfig] = useState<InfoConfig>(null);
+    const [props] = useDefaults<InfoButtonProps>(_props, INFO_BUTTON_DEFAULT_VALUES);
+    const [config, setConfig] = useState<InfoButtonConfig>(null);
     const [open, setOpen] = useState(false);
 
     useEffect(() => setConfig(generateAndCheckConfig(props, setOpen)), [props.infoButtonSize, props.access, props.display, props.divPosition]);

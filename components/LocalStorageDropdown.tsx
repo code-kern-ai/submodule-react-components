@@ -4,20 +4,8 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useSta
 import { useDefaults, useDefaultsByRef } from "../hooks/useDefaults";
 import Dropdown from "./Dropdown";
 import { CompareOptions, inStringList } from "@/submodules/javascript-functions/validations";
+import { LOCAL_STORAGE_DROPDOWN_DEFAULTS, LocalStorageDropdownProps } from "../types/localStorageDropdown";
 
-type LocalStorageDropdownProps = {
-    buttonName: string;
-    storageKey: string;
-    storageGroupKey?: string; //defaults to localDropdown
-    onOptionSelected?: (option: string) => void;
-    searchDefaultValue?: string;
-    excludedFromStorage?: { values: string[]; compareOptions?: CompareOptions[] }; // if the value is in this list it will not be added to the storage //setting this to null will assume all values are valid
-}
-
-const DEFAULTS = {
-    storageGroupKey: "localDropdown",
-    excludedFromStorage: { values: ["select", "enter"], compareOptions: [CompareOptions.IGNORE_CASE, CompareOptions.TRIM, CompareOptions.STARTS_WITH] }
-}
 
 function readFromLocalStorage(group: string, key: string): string[] {
     const itemGroupString = localStorage.getItem(group);
@@ -68,8 +56,8 @@ function removeFromLocalStorage(group: string, key: string, rValue: string): str
 export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProps, ref) => {
 
 
-    const [props] = useDefaults<LocalStorageDropdownProps>(_props, DEFAULTS);
-    const [propRef] = useDefaultsByRef<LocalStorageDropdownProps>(_props, DEFAULTS); // for unmounting
+    const [props] = useDefaults<LocalStorageDropdownProps>(_props, LOCAL_STORAGE_DROPDOWN_DEFAULTS);
+    const [propRef] = useDefaultsByRef<LocalStorageDropdownProps>(_props, LOCAL_STORAGE_DROPDOWN_DEFAULTS); // for unmounting
     const [options, setOptions] = useState<string[]>(); // initially built with useLocalStorage however as state setters don't work during unmount changed to a common state
     const [inputText, setInputText] = useState(props.buttonName ?? ''); // holds the current option independent of input field or dropdown so it can be collected if necessary
     const inputTextRef = useRef<string>(); //ref is used to access data from a pointer which in turn can be access in the unmounting
