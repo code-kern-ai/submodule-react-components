@@ -2,7 +2,6 @@ import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { useDefaults } from "@/submodules/react-components/hooks/useDefaults";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { Dispatch, Fragment, SetStateAction, useEffect, useRef, useState } from "react";
-import BaseModal from "../../../src/components/Common/Modal";
 import { InformationCircleIcon } from "@heroicons/react/20/solid";
 import useOnClickOutside from "@/submodules/react-components/hooks/useHooks/useOnClickOutside";
 import { Transition } from "@headlessui/react";
@@ -10,7 +9,6 @@ import { INFO_BUTTON_DEFAULT_VALUES, InfoButtonConfig, InfoButtonProps } from ".
 
 
 function generateAndCheckConfig(props: InfoButtonProps, setOpen: Dispatch<SetStateAction<boolean>>): InfoButtonConfig {
-    if (props.access == "hover" && props.display == "modal") console.warn("InfoButton - Hover access and modal display are not recommended")
     const config: any = {};
     switch (props.infoButtonSize) {
         case "xs": config.size = 16; break;
@@ -59,7 +57,6 @@ export function InfoButton(_props: InfoButtonProps) {
                 onMouseLeave={config.hideInfo}
                 zIndexClass={props.divZIndexClass} /> : null}
         </div>
-        {props.display == "modal" ? <RenderModal content={props.content} open={open} setOpen={setOpen} /> : null}
     </>
 }
 
@@ -89,26 +86,5 @@ function RenderDiv({ positionClass, open, content, access, onMouseEnter, onMouse
             </Transition.Child>
         </Transition.Root>
     </>
-    )
-}
-
-function RenderModal({ open, setOpen, content }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, content: string | JSX.Element }) {
-    return (
-        <BaseModal
-            open={open}
-            setOpen={setOpen}
-            maxWidth='fit'
-        >
-            {typeof content == "string" ?
-                <div className="flex flex-col items-center p-4">
-                    <div className="flex flex-row items-center">
-                        <InformationCircleIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
-                        <span>Info</span>
-                    </div>
-                    <div className="flex-1">
-                        <p className="text-sm text-blue-700">{content}</p>
-                    </div>
-                </div> : content}
-        </BaseModal>
     )
 }
