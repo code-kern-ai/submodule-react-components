@@ -83,3 +83,51 @@ export function reduceColorProperty(property: string, defaultShade: string): str
     }
     return splitted.join("-");
 }
+
+export function getDropdownDisplayText(
+    formControls: any[],
+    labelFor: string
+): string {
+    let text = '';
+    let atLeastOneNegated: boolean = false;
+    for (let c of formControls) {
+        const hasNegate = Boolean(c['negate']);
+        if (labelFor == 'EMPTY' && c['active']) return '';
+        else if (
+            labelFor == 'NOT_NEGATED' &&
+            c['active'] &&
+            (!hasNegate || (hasNegate && !c['negate']))
+        ) {
+            text += (text == '' ? '' : ', ') + c['name'];
+        } else if (
+            labelFor == 'NEGATED' &&
+            c['active'] &&
+            hasNegate &&
+            c['negate']
+        ) {
+            text += (text == '' ? '' : ', ') + c['name'];
+        }
+        if (
+            !atLeastOneNegated &&
+            c['active'] &&
+            hasNegate &&
+            c['negate']
+        )
+            atLeastOneNegated = true;
+    }
+    if (labelFor == 'EMPTY') return 'None Selected';
+
+    if (labelFor == 'NOT_NEGATED' && atLeastOneNegated && text != '')
+        return text + ', ';
+
+    return text;
+}
+
+export function getActiveNegateGroupColor(group: any) {
+    if (!group['active']) return null;
+    if (group['negate']) {
+        return group['negate'] ? '#ef4444' : '#2563eb';
+    }
+    return '#2563eb';
+
+}

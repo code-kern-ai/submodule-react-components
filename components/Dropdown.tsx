@@ -3,7 +3,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
-import { SELECT_ALL, checkDropdownProps, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
+import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { IconTrashXFilled } from '@tabler/icons-react';
@@ -101,6 +101,19 @@ export default function Dropdown(props: DropdownProps) {
         props.selectedOption(newSelectedCheckboxes);
     }
 
+    function handleSelectedCheckboxesThreeStates(option: string, index: number) {
+        const optionSave = { ...props.options[index] };
+        if (!optionSave['active'])
+            optionSave['active'] = true;
+        else if (optionSave['active'] && !optionSave['negate'])
+            optionSave['negate'] = true;
+        else {
+            optionSave['negate'] = false;
+            optionSave['active'] = false;
+        }
+        props.selectedOption(optionSave);
+    }
+
     return (
         <Menu ref={dropdownRef} as="div" className={`relative inline-block text-left ${props.dropdownWidth ?? 'w-full'} ${props.dropdownClasses ?? ''}`}>
             <div>
@@ -130,7 +143,12 @@ export default function Dropdown(props: DropdownProps) {
                     ) : (<Menu.Button onClick={toggleDropdown} className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm  focus:outline-none focus:ring-2
             focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed ${props.buttonClasses ?? ''} ${props.buttonCaptionBgColor ?? 'bg-white hover:bg-gray-50'}`}
                         disabled={isDisabled && !props.hasCheckboxes}>
-                        {props.buttonName}
+                        {!props.hasCheckboxesThreeStates && props.buttonName}
+                        {props.hasCheckboxesThreeStates && <label
+                            className="truncate cursor-pointer text-sm">{getDropdownDisplayText(props.options, "EMPTY")}
+                            <span style={{ color: '#2563eb' }}>{getDropdownDisplayText(props.options, "NOT_NEGATED")}</span>
+                            <span style={{ color: '#ef4444' }}>{getDropdownDisplayText(props.options, "NEGATED")}</span>
+                        </label>}
                         <ChevronDownIcon
                             className="-mr-1 ml-2 h-5 w-5"
                             aria-hidden="true"
@@ -167,6 +185,10 @@ export default function Dropdown(props: DropdownProps) {
                                                             handleSelectedCheckboxes(option, index, { target: { checked: !selectedCheckboxes[index].checked } });
                                                             return;
                                                         }
+                                                        if (props.hasCheckboxesThreeStates) {
+                                                            handleSelectedCheckboxesThreeStates(option, index)
+                                                            return;
+                                                        }
                                                         if (props.selectedOption) {
                                                             props.selectedOption(option);
                                                             if (props.hasSearchBar) {
@@ -177,6 +199,9 @@ export default function Dropdown(props: DropdownProps) {
                                                     }}>
                                                     {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
                                                         onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
+                                                    {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 border rounded hover:bg-gray-200"
+                                                        style={{ backgroundColor: getActiveNegateGroupColor(props.options[index]), borderColor: getActiveNegateGroupColor(props.options[index]) }}>
+                                                    </div>}
                                                     <span className='truncate'>{option}</span>
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
                                                 </label>

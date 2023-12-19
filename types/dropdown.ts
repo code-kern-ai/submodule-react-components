@@ -26,6 +26,7 @@
  * @differentTextColor {string} - The color that will be applied to the text of the dropdown items if useDifferentTextColor is true
  * @buttonCaptionBgColor {string} - The color that will be applied to the button caption
  * @onClickDelete {function} - The function that will be called when the delete button is clicked (delete button will only be rendered if the function is provided)
+ * @hasCheckboxesThreeStates {boolean} - If the dropdown has checkboxes with three states
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -56,6 +57,7 @@ export type DropdownProps = {
     differentTextColor?: string;
     buttonCaptionBgColor?: string;
     onClickDelete?: (value: any) => void;
+    hasCheckboxesThreeStates?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
