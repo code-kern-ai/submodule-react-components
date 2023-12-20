@@ -27,6 +27,7 @@
  * @buttonCaptionBgColor {string} - The color that will be applied to the button caption
  * @onClickDelete {function} - The function that will be called when the delete button is clicked (delete button will only be rendered if the function is provided)
  * @hasCheckboxesThreeStates {boolean} - If the dropdown has checkboxes with three states
+ * @fontClass {string} - The font class that will be applied to the dropdown items
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -58,6 +59,7 @@ export type DropdownProps = {
     buttonCaptionBgColor?: string;
     onClickDelete?: (value: any) => void;
     hasCheckboxesThreeStates?: boolean;
+    fontClass?: string;
 }
 
 export type AppSelectionDropdownProps = {

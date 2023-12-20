@@ -115,7 +115,7 @@ export default function Dropdown(props: DropdownProps) {
     }
 
     return (
-        <Menu ref={dropdownRef} as="div" className={`relative inline-block text-left ${props.dropdownWidth ?? 'w-full'} ${props.dropdownClasses ?? ''}`}>
+        <Menu ref={dropdownRef} as="div" className={`relative inline-block text-left ${props.dropdownWidth ?? 'w-full'} ${props.dropdownClasses ?? ''} ${props.fontClass ?? ''}`}>
             <div>
                 {props.hasSearchBar ? <div className="w-full" onClick={toggleDropdown}>
                     <input value={searchText} onChange={(e) => {
