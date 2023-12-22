@@ -199,7 +199,7 @@ export default function Dropdown(props: DropdownProps) {
                                                     }}>
                                                     {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
                                                         onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
-                                                    {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 border rounded hover:bg-gray-200"
+                                                    {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 mr-3 border rounded hover:bg-gray-200"
                                                         style={{ backgroundColor: getActiveNegateGroupColor(props.options[index]), borderColor: getActiveNegateGroupColor(props.options[index]) }}>
                                                     </div>}
                                                     <span className='truncate'>{option}</span>
