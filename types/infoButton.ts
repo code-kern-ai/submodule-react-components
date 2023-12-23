@@ -4,7 +4,7 @@
  * @infoButtonSize {"xs" | "sm" | "md" | "lg", optional} - The size of the info icon used as button
  * @infoButtonColorClass {string, optional} - The color of the info icon used as button
  * @access {"hover" | "click", optional} - How to access the info content
- * @display {"absoluteDiv" | "modal"} - The display of the info button
+ * @display {"absoluteDiv" | "modal"} - The display of the info button --> modal DISABLED for now / no effect
  * @divPosition {"top" | "bottom" | "left" | "right", optional} - The position of the info div - only used if display is absoluteDiv
  * @divZIndexClass {string, optional} - The z-index of the info div - only used if display is absoluteDiv
 */

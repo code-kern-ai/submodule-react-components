@@ -24,7 +24,7 @@ export function useDefaults<T>(props: AnyProps, defaultValues: DefaultValues) {
         }
         const newProps = { ...props };
         for (const key in defaultValues) {
-            if (!newProps[key]) newProps[key] = defaultValues[key];
+            if (newProps[key] === undefined) newProps[key] = defaultValues[key];
         }
         setPropsWithDefault(newProps);
     }, [props])
