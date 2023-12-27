@@ -1,11 +1,10 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, prepareDropdownOptionsToArray, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
-import { IconTrashXFilled } from '@tabler/icons-react';
+import { IconChevronDown, IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 
 export default function Dropdown(props: DropdownProps) {
@@ -107,7 +106,7 @@ export default function Dropdown(props: DropdownProps) {
 
                         className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
                         placeholder="Type to search..." />
-                    <ChevronDownIcon
+                    <IconChevronDown
                         className="h-5 w-5 absolute right-0 mr-3 -mt-7"
                         aria-hidden="true"
                     />
@@ -116,7 +115,7 @@ export default function Dropdown(props: DropdownProps) {
             focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed ${props.buttonClasses ?? ''}`}
                     disabled={isDisabled && !props.hasCheckboxes}>
                     {props.buttonName}
-                    <ChevronDownIcon
+                    <IconChevronDown
                         className="-mr-1 ml-2 h-5 w-5"
                         aria-hidden="true"
                     />
