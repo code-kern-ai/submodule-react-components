@@ -2,7 +2,6 @@ import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { useDefaults } from "@/submodules/react-components/hooks/useDefaults";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { Dispatch, Fragment, SetStateAction, useEffect, useRef, useState } from "react";
-import { InformationCircleIcon } from "@heroicons/react/20/solid";
 import useOnClickOutside from "@/submodules/react-components/hooks/useHooks/useOnClickOutside";
 import { Transition } from "@headlessui/react";
 import { INFO_BUTTON_DEFAULT_VALUES, InfoButtonConfig, InfoButtonProps } from "../types/infoButton";
@@ -45,7 +44,7 @@ export function InfoButton(_props: InfoButtonProps) {
 
     if (!config) return null;
 
-    return <>
+    return (
         <div className={combineClassNames("relative w-fit p-1", config.cursorClass)} onClick={props.access == 'click' ? config.showInfo : undefined} onMouseEnter={props.access == 'hover' ? config.showInfo : undefined} onMouseLeave={props.access == 'hover' ? config.hideInfo : undefined}>
             <IconInfoCircle size={config.size} className={props.infoButtonColorClass} />
             {props.display == "absoluteDiv" ? <RenderDiv
@@ -57,13 +56,13 @@ export function InfoButton(_props: InfoButtonProps) {
                 onMouseLeave={config.hideInfo}
                 zIndexClass={props.divZIndexClass} /> : null}
         </div>
-    </>
+    )
 }
 
 function RenderDiv({ positionClass, open, content, access, onMouseEnter, onMouseLeave, zIndexClass }: { positionClass: string, open: boolean, content: string | JSX.Element, access: string, onMouseEnter: () => void, onMouseLeave: () => void, zIndexClass: string }) {
     const ref = useRef(null);
     useOnClickOutside(ref, onMouseLeave);
-    return (<>
+    return (
         <Transition.Root show={open} as={Fragment} >
             <Transition.Child
                 as={Fragment}
@@ -78,13 +77,12 @@ function RenderDiv({ positionClass, open, content, access, onMouseEnter, onMouse
                     {typeof content == "string" ?
                         <div className="flex items-center gap-x-2">
                             <div className="flex-shrink-0">
-                                <InformationCircleIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
+                                <IconInfoCircle className="h-5 w-5 text-blue-400" aria-hidden="true" />
                             </div>
                             <p className="text-sm text-blue-700 w-max max-w-sm">{content}</p>
                         </div> : content}
                 </div>
             </Transition.Child>
         </Transition.Root>
-    </>
     )
 }
