@@ -5,7 +5,7 @@ import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
-import { IconDotsVertical } from '@tabler/icons-react';
+import { IconDotsVertical, IconExternalLink } from '@tabler/icons-react';
 import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 
@@ -18,7 +18,8 @@ export default function Dropdown(props: DropdownProps) {
     const [searchText, setSearchText] = useState(props.searchDefaultValue ?? '');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
-
+    const [position, setPosition] = useState(null);
+    const [savedIndex, setSavedIndex] = useState(null);
 
     const dropdownRef = useRef(null);
     useOnClickOutside(dropdownRef, () => setIsOpen(false));
@@ -114,6 +115,16 @@ export default function Dropdown(props: DropdownProps) {
         props.selectedOption(optionSave);
     }
 
+    function setHoverBoxPosition(e, index?: number) {
+        if (!e) {
+            setPosition(null);
+            return;
+        }
+        const dataBoundingBox: DOMRect = e.target.getBoundingClientRect();
+        setPosition({ top: dataBoundingBox.height * index, left: dataBoundingBox.width });
+        setSavedIndex(index);
+    }
+
     return (
         <Menu ref={dropdownRef} as="div" className={`relative inline-block text-left ${props.dropdownWidth ?? 'w-full'} ${props.dropdownClasses ?? ''} ${props.fontClass ?? ''}`}>
             <div>
@@ -196,6 +207,13 @@ export default function Dropdown(props: DropdownProps) {
                                                             }
                                                             setIsOpen(false);
                                                         }
+                                                    }} onMouseEnter={(e) => {
+                                                        if (!props.optionsHaveHoverBox) return;
+                                                        setHoverBoxPosition(e, index);
+
+                                                    }} onMouseLeave={() => {
+                                                        if (!props.optionsHaveHoverBox) return;
+                                                        setHoverBoxPosition(null);
                                                     }}>
                                                     {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3"
                                                         onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
@@ -204,17 +222,40 @@ export default function Dropdown(props: DropdownProps) {
                                                     </div>}
                                                     <span className='truncate'>{option}</span>
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
+                                                    {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
                                                 </label>
                                             </Tooltip>
                                         </div>
                                     )}
                                 </Menu.Item>
-
                             </div>
                         ))}
                     </div>
                 </Menu.Items>
-            </Transition>
+            </Transition >
+            <HoverBox position={position} hoverBox={props.hoverBoxList && props.hoverBoxList[savedIndex]} />
         </Menu >
     );
+}
+
+function HoverBox(props: { position: any, hoverBox: any }) {
+    return (<>
+        {props.position && <div className={`absolute top-0 w-fit h-fit rounded-2xl card shadow bg-white z-10 ${props.position ? 'block' : 'hidden'}`}
+            style={{ top: props.position.top, left: props.position.left }}>
+            <div className="card-body p-6 flex flex-col w-64">
+                <div className="flex justify-center">
+                    <span className="card-title mb-2 label-text">Info</span>
+                </div>
+                <div className="grid grid-cols-2  gap-2 items-center" style={{ gridTemplateColumns: 'max-content auto' }}>
+                    <span className="label-text text-sm font-bold">Avg Time</span>
+                    <span
+                        className="label-text text-sm">{props.hoverBox.avgTime}</span>
+                    <span className="label-text text-sm font-bold">Based on</span>
+                    <span className="label-text text-sm">{props.hoverBox.base}</span>
+                    <span className="label-text text-sm font-bold">Size</span>
+                    <span className="label-text text-sm">{props.hoverBox.size}</span>
+                </div>
+            </div>
+        </div>}
+    </>)
 }

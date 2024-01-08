@@ -28,6 +28,10 @@
  * @onClickDelete {function} - The function that will be called when the delete button is clicked (delete button will only be rendered if the function is provided)
  * @hasCheckboxesThreeStates {boolean} - If the dropdown has checkboxes with three states
  * @fontClass {string} - The font class that will be applied to the dropdown items
+ * @optionsHaveLink {boolean} - If the dropdown options have a link
+ * @linkList {string[]} - The array of links that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
+ * @optionsHaveHoverBox {boolean} - If the dropdown options have a hover box
+ * @hoverBoxList {string[]} - The array of hover boxes that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -60,6 +64,10 @@ export type DropdownProps = {
     onClickDelete?: (value: any) => void;
     hasCheckboxesThreeStates?: boolean;
     fontClass?: string;
+    optionsHaveLink?: boolean;
+    linkList?: string[];
+    optionsHaveHoverBox?: boolean;
+    hoverBoxList?: string[];
 }
 
 export type AppSelectionDropdownProps = {
