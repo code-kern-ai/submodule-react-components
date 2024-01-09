@@ -71,7 +71,7 @@ export function checkDropdownProps(props: DropdownProps) {
     } else if (props.linkList && !props.optionsHaveLink) {
         throw new Error('Dropdown: linkList should be used with optionsHaveLink');
     } else if (props.hoverBoxList && (props.hoverBoxList.length != props.options.length)) {
-        throw new Error('Dropdown: hoverBoxList length must be equal to options length');
+        // throw new Error('Dropdown: hoverBoxList length must be equal to options length');
     } else if (props.hoverBoxList && !props.optionsHaveHoverBox) {
         throw new Error('Dropdown: hoverBoxList should be used with optionsHaveHoverBox');
     }
