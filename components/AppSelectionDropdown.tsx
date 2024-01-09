@@ -16,7 +16,7 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                 <Menu.Button>
                     <Tooltip color="invert" content="Kern AI" placement="right">
                         <div
-                            className={`cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border ${props.workflow ? 'border-gray-800 hover:bg-neutral-800' : 'border-gray-200 hover:bg-gray-50'}`}
+                            className={`cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border ${props.workflow ? 'border-gray-800 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50'}`}
                         >
                             <Image src={kernLogo} width="32" height="32" alt='Kern' />
                         </div>
