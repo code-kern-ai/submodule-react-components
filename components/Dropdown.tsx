@@ -5,9 +5,10 @@ import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
-import { IconDotsVertical, IconExternalLink } from '@tabler/icons-react';
+import { IconDotsVertical, IconExternalLink, IconLoader } from '@tabler/icons-react';
 import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
+import * as TablerIcons from '@tabler/icons-react';
 
 export default function Dropdown(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
@@ -189,7 +190,8 @@ export default function Dropdown(props: DropdownProps) {
                                                     className={combineClassNames(
                                                         disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
                                                         backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active && !backgroundColors[index] ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                                                        "px-4 py-2 text-sm flex items-center"
+                                                        props.iconsArray && props.iconsArray[index] ? "px-2" : "px-4",
+                                                        "py-2 text-sm flex items-center"
                                                     )}
                                                     onClick={() => {
                                                         if (props.hasCheckboxes) {
@@ -220,6 +222,8 @@ export default function Dropdown(props: DropdownProps) {
                                                     {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 mr-3 border rounded hover:bg-gray-200"
                                                         style={{ backgroundColor: getActiveNegateGroupColor(props.options[index]), borderColor: getActiveNegateGroupColor(props.options[index]) }}>
                                                     </div>}
+                                                    {props.iconsArray && props.iconsArray[index] && <span className='mx-2 text-gray-700'>
+                                                        <SVGIcon icon={props.iconsArray[index]} size={16} strokeWidth={2} /></span>}
                                                     <span className='truncate'>{option}</span>
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
                                                     {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
@@ -266,4 +270,18 @@ function HoverBox(props: { position: any, hoverBox: any }) {
             </div>
         </div>}
     </>)
+}
+
+function SVGIcon({ icon, size, strokeWidth }) {
+    const Icon = TablerIcons[icon];
+    if (Icon) {
+        return (
+            <Icon
+                size={size}
+                strokeWidth={strokeWidth}
+            />
+        )
+    } else {
+        return <IconLoader size={size} strokeWidth={strokeWidth} />
+    }
 }

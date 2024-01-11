@@ -34,6 +34,7 @@
  * @hoverBoxList {string[]} - The array of hover boxes that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @addLineSeparator {boolean} - If the dropdown should have a line separator
  * @lineSeparatorIndex {number} - The index of the dropdown item that will have a line separator
+ * @iconsArray {string[]} - The array of icons that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -72,6 +73,7 @@ export type DropdownProps = {
     hoverBoxList?: string[];
     addLineSeparator?: boolean;
     lineSeparatorIndex?: number;
+    iconsArray?: string[];
 }
 
 export type AppSelectionDropdownProps = {
