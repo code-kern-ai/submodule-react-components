@@ -4,12 +4,13 @@ export const SELECT_ALL = 'Select all';
 export const COLOR_WITHOUT_NUMBER = ['kernindigo', 'black', 'white'];
 
 export function getTextArray(arr: string[] | any[]): string[] {
+    // console.log("getTextArray", arr)
     if (!arr) return [];
     if (arr.length == 0) return [];
     if (typeof arr[0] == 'string') return arr as string[];
     if (typeof arr[0] == 'number') return arr.map(String);
     let valueArray = arr;
-    if (arr[0].value && typeof arr[0].value == 'object') valueArray = arr.map(x => x.getRawValue());
+    // if (arr[0].value && typeof arr[0].value == 'object') valueArray = arr.map(x => x.getRawValue());
     if (valueArray[0].name) return valueArray.map(a => a.name);
     if (valueArray[0].text) return valueArray.map(a => a.text);
 
@@ -25,10 +26,11 @@ export function getTextArray(arr: string[] | any[]): string[] {
     return valueArray.map(a => a[firstStringKey]);
 }
 
-export function prepareDropdownOptionsToArray(options: string[] | any[], doNotUseTextArray: boolean) {
+export function prepareDropdownOptionsToArray(options: string[] | any[], doNotUseTextArray: boolean, valuePropertyPath?: string): string[] {
     if (!options) return [];
     if (options.length == 0) return [];
-    if (doNotUseTextArray) return options.map(x => x.name)
+    if (valuePropertyPath) return options.map(x => x[valuePropertyPath]);
+    // if (doNotUseTextArray && !valuePropertyPath) return options.map(x => x.name);
     else return getTextArray(options);
 }
 
