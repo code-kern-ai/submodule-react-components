@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, use, useEffect, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
@@ -24,6 +24,10 @@ export default function Dropdown(props: DropdownProps) {
 
     const dropdownRef = useRef(null);
     useOnClickOutside(dropdownRef, () => setIsOpen(false));
+
+    useEffect(() => {
+        console.warn('Dropdown.tsx is deprecated. Use Dropdown2.tsx instead.');
+    }, []);
 
     useEffect(() => {
         checkDropdownProps(props);
