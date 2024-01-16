@@ -9,7 +9,6 @@ import { IconDotsVertical, IconExternalLink, IconLoader } from '@tabler/icons-re
 import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import * as TablerIcons from '@tabler/icons-react';
-import { useConsoleLog } from '../hooks/useConsoleLog';
 
 export default function Dropdown2(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
@@ -85,7 +84,6 @@ export default function Dropdown2(props: DropdownProps) {
     }
 
     function handleSelectedCheckboxes(option: string, index: number, e: any) {
-        // console.log("checkboxes", selectedCheckboxes)
         let newSelectedCheckboxes = [...selectedCheckboxes];
         if (option == SELECT_ALL) {
             newSelectedCheckboxes.forEach((checkbox) => {
@@ -130,7 +128,6 @@ export default function Dropdown2(props: DropdownProps) {
 
 
     function performActionOnClick(option: string, index: number) {
-        // console.log('option', option, props.hasCheckboxes);
         if (props.hasCheckboxes) {
             handleSelectedCheckboxes(option, index, { target: { checked: !selectedCheckboxes[index].checked } });
             return;
@@ -147,8 +144,6 @@ export default function Dropdown2(props: DropdownProps) {
             setIsOpen(false);
         }
     }
-
-    // useConsoleLog(dropdownCaptions, 'dropdownCaptions');
 
     return (
         <Menu ref={dropdownRef} as="div" className={`relative inline-block text-left ${props.dropdownWidth ?? 'w-full'} ${props.dropdownClasses ?? ''} ${props.fontClass ?? ''}`}>
@@ -218,7 +213,6 @@ export default function Dropdown2(props: DropdownProps) {
                                                         "py-2 text-sm flex items-center"
                                                     )}
                                                     onClick={() => {
-                                                        // console.log("here")
                                                         performActionOnClick(option, index);
                                                     }} onMouseEnter={(e) => {
                                                         if (!props.optionsHaveHoverBox) return;
@@ -234,7 +228,7 @@ export default function Dropdown2(props: DropdownProps) {
                                                         style={{ backgroundColor: getActiveNegateGroupColor(props.options[index]), borderColor: getActiveNegateGroupColor(props.options[index]) }}>
                                                     </div>}
                                                     {props.iconsArray && props.iconsArray[index] && <span className='mx-2 text-gray-700'>
-                                                        <SVGIcon icon={props.iconsArray[index]} size={16} strokeWidth={2} /></span>}
+                                                        <SVGIcon icon={props.iconsArray[index]} size={16} strokeWidth={2} useFillForIcons={props.useFillForIcons && props.useFillForIcons[index]} /></span>}
                                                     <span className='truncate'>{option}</span>
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
                                                     {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
@@ -283,13 +277,14 @@ function HoverBox(props: { position: any, hoverBox: any }) {
     </>)
 }
 
-function SVGIcon({ icon, size, strokeWidth }) {
+function SVGIcon({ icon, size, strokeWidth, useFillForIcons }) {
     const Icon = TablerIcons[icon];
     if (Icon) {
         return (
             <Icon
                 size={size}
                 strokeWidth={strokeWidth}
+                className={`${useFillForIcons ? 'fill-gray-800' : ''}`}
             />
         )
     } else {

@@ -36,6 +36,7 @@
  * @lineSeparatorIndex {number} - The index of the dropdown item that will have a line separator
  * @iconsArray {string[]} - The array of icons that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @valuePropertyPath {string, optional} - if undefined option text is returned, else (e.g. name.tmp.xyz) the path is split and used to access the object property
+ * @useFillForIcons {boolean[], optional} - if true, the icon will be filled with the color of the option
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -76,6 +77,7 @@ export type DropdownProps = {
     lineSeparatorIndex?: number;
     iconsArray?: string[];
     valuePropertyPath?: string;
+    useFillForIcons?: boolean[];
 }
 
 export type AppSelectionDropdownProps = {

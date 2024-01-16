@@ -78,6 +78,8 @@ export function checkDropdownProps(props: DropdownProps) {
         throw new Error('Dropdown: hoverBoxList should be used with optionsHaveHoverBox');
     } else if (props.iconsArray && (props.iconsArray.length != props.options.length)) {
         throw new Error('Dropdown: iconsArray length must be equal to options length');
+    } else if (props.useFillForIcons && (props.useFillForIcons.length != props.options.length)) {
+        throw new Error('Dropdown: useFillForIcons length must be equal to options length');
     }
 }
 
