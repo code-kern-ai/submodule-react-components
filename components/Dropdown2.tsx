@@ -138,6 +138,7 @@ export default function Dropdown2(props: DropdownProps) {
         }
         if (props.selectedOption) {
             props.selectedOption(props.options[index]);
+            if (props.hoverBoxList) setHoverBoxPosition(null);
             if (props.hasSearchBar) {
                 setSearchText(option);
             }
