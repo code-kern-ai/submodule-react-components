@@ -204,7 +204,7 @@ export default function Dropdown2(props: DropdownProps) {
                                 <Menu.Item disabled={disabledOptions[index]}>
                                     {({ active }) => (
                                         <div className='w-full'>
-                                            <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ?? 'left'} color="invert" style={{ width: '100%' }}>
+                                            <Tooltip content={props.tooltipsArray && props.tooltipsArray[index]} placement={props.tooltipArrayPlacement ?? 'left'} color="invert" style={{ width: '100%' }} className={disabledOptions[index] ? 'pointer-events-none' : ''}>
                                                 <label htmlFor="option"
                                                     className={combineClassNames(
                                                         disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
