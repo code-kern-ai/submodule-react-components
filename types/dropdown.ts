@@ -37,6 +37,7 @@
  * @iconsArray {string[]} - The array of icons that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @valuePropertyPath {string, optional} - if undefined option text is returned, else (e.g. name.tmp.xyz) the path is split and used to access the object property
  * @useFillForIcons {boolean[], optional} - if true, the icon will be filled with the color of the option
+ * @searchTextTyped {function} - returns the text typed in the search bar
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -78,6 +79,7 @@ export type DropdownProps = {
     iconsArray?: string[];
     valuePropertyPath?: string;
     useFillForIcons?: boolean[];
+    searchTextTyped?: (value: string) => void;
 }
 
 export type AppSelectionDropdownProps = {
