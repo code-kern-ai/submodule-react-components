@@ -38,6 +38,7 @@
  * @valuePropertyPath {string, optional} - if undefined option text is returned, else (e.g. name.tmp.xyz) the path is split and used to access the object property
  * @useFillForIcons {boolean[], optional} - if true, the icon will be filled with the color of the option
  * @searchTextTyped {function} - returns the text typed in the search bar
+ * @fontSizeClass {string} - The font size of the dropdown items
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -80,6 +81,7 @@ export type DropdownProps = {
     valuePropertyPath?: string;
     useFillForIcons?: boolean[];
     searchTextTyped?: (value: string) => void;
+    fontSizeClass?: string;
 }
 
 export type AppSelectionDropdownProps = {

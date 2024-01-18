@@ -9,6 +9,9 @@ import { IconDotsVertical, IconExternalLink, IconLoader } from '@tabler/icons-re
 import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import * as TablerIcons from '@tabler/icons-react';
+import { useDefaults } from '../hooks/useDefaults';
+
+const DEFAULTS = { fontSizeClass: 'text-xs' };
 
 export default function Dropdown2(props: DropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
@@ -21,6 +24,8 @@ export default function Dropdown2(props: DropdownProps) {
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
     const [position, setPosition] = useState(null);
     const [savedIndex, setSavedIndex] = useState(null);
+
+    const [defaultProps] = useDefaults<{ fontSizeClass: string }>(props, DEFAULTS);
 
     const dropdownRef = useRef(null);
     useOnClickOutside(dropdownRef, () => setIsOpen(false));
@@ -210,7 +215,8 @@ export default function Dropdown2(props: DropdownProps) {
                                                         disabledOptions[index] ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer",
                                                         backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active && !backgroundColors[index] ? "bg-gray-100 text-gray-900" : "text-gray-700",
                                                         props.iconsArray && props.iconsArray[index] ? "px-2" : "px-4",
-                                                        "py-2 text-sm flex items-center"
+                                                        defaultProps.fontSizeClass,
+                                                        "py-2 flex items-center"
                                                     )}
                                                     onClick={() => {
                                                         performActionOnClick(option, index);
