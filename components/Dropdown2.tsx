@@ -205,7 +205,7 @@ export default function Dropdown2(props: DropdownProps) {
                 <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ?? 'w-full'} ${props.dropdownItemsClasses ?? ''}`}>
                     <div className="py-1">
                         {dropdownCaptions.map((option: any, index: number) => (
-                            <div key={option} className='relative'>
+                            <div key={option + "-" + index} className='relative'>
                                 <Menu.Item disabled={disabledOptions[index]}>
                                     {({ active }) => (
                                         <div className='w-full'>
