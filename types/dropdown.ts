@@ -82,6 +82,7 @@ export type DropdownProps = {
     useFillForIcons?: boolean[];
     searchTextTyped?: (value: string) => void;
     fontSizeClass?: string;
+    filteredOptions?: (option: string) => void;
 }
 
 export type AppSelectionDropdownProps = {

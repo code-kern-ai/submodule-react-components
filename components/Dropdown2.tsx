@@ -40,7 +40,7 @@ export default function Dropdown2(props: DropdownProps) {
     }, [props.onSearchChange, searchText]);
 
     useEffect(() => {
-        const prepareOptions = prepareDropdownOptionsToArray(props.options, props.doNotUseTextArray, props.valuePropertyPath);
+        const prepareOptions = prepareDropdownOptionsToArray(props.options, props.hasSearchBar, props.valuePropertyPath);
         if (props.hasSearchBar) {
             setDropdownCaptions(setOptionsWithSearchBar(prepareOptions, searchText));
         } else if (props.hasCheckboxes) {
@@ -48,7 +48,7 @@ export default function Dropdown2(props: DropdownProps) {
         } else {
             setDropdownCaptions(prepareOptions);
         }
-    }, [props.options, searchText, selectedCheckboxes, props.doNotUseTextArray, props.hasSearchBar, props.hasCheckboxes, props.selectedCheckboxes, props.hasSelectAll, props.valuePropertyPath]);
+    }, [props.options, searchText, selectedCheckboxes, props.hasSearchBar, props.hasCheckboxes, props.selectedCheckboxes, props.hasSelectAll, props.valuePropertyPath]);
 
     useEffect(() => {
         if (!props.disabledOptions || !props.options) return;
@@ -108,7 +108,7 @@ export default function Dropdown2(props: DropdownProps) {
         props.selectedOption(newSelectedCheckboxes);
     }
 
-    function handleSelectedCheckboxesThreeStates(option: string, index: number) {
+    function handleSelectedCheckboxesThreeStates(index: number) {
         const optionSave = { ...props.options[index] };
         if (!optionSave['active'])
             optionSave['active'] = true;
@@ -138,7 +138,7 @@ export default function Dropdown2(props: DropdownProps) {
             return;
         }
         if (props.hasCheckboxesThreeStates) {
-            handleSelectedCheckboxesThreeStates(option, index)
+            handleSelectedCheckboxesThreeStates(index)
             return;
         }
         if (props.selectedOption) {
@@ -158,6 +158,7 @@ export default function Dropdown2(props: DropdownProps) {
                     <input value={searchText} onChange={(e) => {
                         setSearchText(e.target.value);
                         props.searchTextTyped(e.target.value);
+                        props.filteredOptions(e.target.value);
                         if (!isOpen) setIsOpen(true);
                     }}
                         onFocus={(event) => event.target.select()}

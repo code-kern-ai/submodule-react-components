@@ -26,20 +26,17 @@ export function getTextArray(arr: string[] | any[]): string[] {
     return valueArray.map(a => a[firstStringKey]);
 }
 
-export function prepareDropdownOptionsToArray(options: string[] | any[], doNotUseTextArray: boolean, valuePropertyPath?: string): string[] {
+export function prepareDropdownOptionsToArray(options: string[] | any[], hasSearchBar: boolean, valuePropertyPath?: string): string[] {
     if (!options) return [];
     if (options.length == 0) return [];
     if (valuePropertyPath) return options.map(x => x[valuePropertyPath]);
-    // if (doNotUseTextArray && !valuePropertyPath) return options.map(x => x.name);
+    if (hasSearchBar && !valuePropertyPath) return options as string[];
     else return getTextArray(options);
 }
 
 export function setOptionsWithSearchBar(options: string[], searchText: string) {
     if (!searchText) return options;
-    const filtered = options.filter(option =>
-        option.toLowerCase().includes(searchText.toLowerCase())
-    );
-    return filtered;
+    return options.filter(option => option.toLowerCase().includes(searchText.toLowerCase()));
 }
 
 export function checkDropdownProps(props: DropdownProps) {
@@ -65,7 +62,7 @@ export function checkDropdownProps(props: DropdownProps) {
     } else if (props.backgroundColors && (props.backgroundColors.length != props.options.length)) {
         throw new Error('Dropdown: backgroundColors length must be equal to options length');
     } else if (props.useDifferentTextColor && props.useDifferentTextColor.length > 0 && (props.useDifferentTextColor.length != props.options.length)) {
-        throw new Error('Dropdown: useDifferentTextColor length must be equal to options length');
+        // throw new Error('Dropdown: useDifferentTextColor length must be equal to options length');
     } else if (props.useDifferentTextColor && !props.differentTextColor) {
         throw new Error('Dropdown: differentTextColor must be defined if useDifferentTextColor is provided');
     } else if (props.linkList && (props.linkList.length != props.options.length)) {
