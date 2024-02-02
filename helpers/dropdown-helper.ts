@@ -4,13 +4,11 @@ export const SELECT_ALL = 'Select all';
 export const COLOR_WITHOUT_NUMBER = ['kernindigo', 'black', 'white'];
 
 export function getTextArray(arr: string[] | any[]): string[] {
-    // console.log("getTextArray", arr)
     if (!arr) return [];
     if (arr.length == 0) return [];
     if (typeof arr[0] == 'string') return arr as string[];
     if (typeof arr[0] == 'number') return arr.map(String);
     let valueArray = arr;
-    // if (arr[0].value && typeof arr[0].value == 'object') valueArray = arr.map(x => x.getRawValue());
     if (valueArray[0].name) return valueArray.map(a => a.name);
     if (valueArray[0].text) return valueArray.map(a => a.text);
 
@@ -61,16 +59,12 @@ export function checkDropdownProps(props: DropdownProps) {
         }
     } else if (props.backgroundColors && (props.backgroundColors.length != props.options.length)) {
         throw new Error('Dropdown: backgroundColors length must be equal to options length');
-    } else if (props.useDifferentTextColor && props.useDifferentTextColor.length > 0 && (props.useDifferentTextColor.length != props.options.length)) {
-        // throw new Error('Dropdown: useDifferentTextColor length must be equal to options length');
     } else if (props.useDifferentTextColor && !props.differentTextColor) {
         throw new Error('Dropdown: differentTextColor must be defined if useDifferentTextColor is provided');
     } else if (props.linkList && (props.linkList.length != props.options.length)) {
         throw new Error('Dropdown: linkList length must be equal to options length');
     } else if (props.linkList && !props.optionsHaveLink) {
         throw new Error('Dropdown: linkList should be used with optionsHaveLink');
-    } else if (props.hoverBoxList && (props.hoverBoxList.length != props.options.length)) {
-        // throw new Error('Dropdown: hoverBoxList length must be equal to options length');
     } else if (props.hoverBoxList && !props.optionsHaveHoverBox) {
         throw new Error('Dropdown: hoverBoxList should be used with optionsHaveHoverBox');
     } else if (props.iconsArray && (props.iconsArray.length != props.options.length)) {
