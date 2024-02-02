@@ -1,6 +1,7 @@
 import { DropdownProps } from "../types/dropdown";
 
 export const SELECT_ALL = 'Select all';
+export const COLOR_WITHOUT_NUMBER = ['kernindigo', 'black', 'white'];
 
 export function getTextArray(arr: string[] | any[]): string[] {
     if (!arr) return [];
@@ -8,7 +9,6 @@ export function getTextArray(arr: string[] | any[]): string[] {
     if (typeof arr[0] == 'string') return arr as string[];
     if (typeof arr[0] == 'number') return arr.map(String);
     let valueArray = arr;
-    if (arr[0].value && typeof arr[0].value == 'object') valueArray = arr.map(x => x.getRawValue());
     if (valueArray[0].name) return valueArray.map(a => a.name);
     if (valueArray[0].text) return valueArray.map(a => a.text);
 
@@ -24,19 +24,17 @@ export function getTextArray(arr: string[] | any[]): string[] {
     return valueArray.map(a => a[firstStringKey]);
 }
 
-export function prepareDropdownOptionsToArray(options: string[] | any[], doNotUseTextArray: boolean) {
+export function prepareDropdownOptionsToArray(options: string[] | any[], hasSearchBar: boolean, valuePropertyPath?: string): string[] {
     if (!options) return [];
     if (options.length == 0) return [];
-    if (doNotUseTextArray) return options.map(x => x.name)
+    if (valuePropertyPath) return options.map(x => x[valuePropertyPath]);
+    if (hasSearchBar && !valuePropertyPath) return options as string[];
     else return getTextArray(options);
 }
 
 export function setOptionsWithSearchBar(options: string[], searchText: string) {
     if (!searchText) return options;
-    const filtered = options.filter(option =>
-        option.toLowerCase().includes(searchText.toLowerCase())
-    );
-    return filtered;
+    return options.filter(option => option.toLowerCase().includes(searchText.toLowerCase()));
 }
 
 export function checkDropdownProps(props: DropdownProps) {
@@ -59,5 +57,82 @@ export function checkDropdownProps(props: DropdownProps) {
         } else if (hasSelectAll && !props.hasSelectAll) {
             throw new Error('Dropdown: "select all" should be used with hasSelectAll');
         }
+    } else if (props.backgroundColors && (props.backgroundColors.length != props.options.length)) {
+        throw new Error('Dropdown: backgroundColors length must be equal to options length');
+    } else if (props.useDifferentTextColor && !props.differentTextColor) {
+        throw new Error('Dropdown: differentTextColor must be defined if useDifferentTextColor is provided');
+    } else if (props.linkList && (props.linkList.length != props.options.length)) {
+        throw new Error('Dropdown: linkList length must be equal to options length');
+    } else if (props.linkList && !props.optionsHaveLink) {
+        throw new Error('Dropdown: linkList should be used with optionsHaveLink');
+    } else if (props.hoverBoxList && !props.optionsHaveHoverBox) {
+        throw new Error('Dropdown: hoverBoxList should be used with optionsHaveHoverBox');
+    } else if (props.iconsArray && (props.iconsArray.length != props.options.length)) {
+        throw new Error('Dropdown: iconsArray length must be equal to options length');
+    } else if (props.useFillForIcons && (props.useFillForIcons.length != props.options.length)) {
+        throw new Error('Dropdown: useFillForIcons length must be equal to options length');
     }
+}
+
+export function reduceColorProperty(property: string, defaultShade: string): string {
+    if (!property) return "";
+    let splitted = property.split(":");
+    if (splitted.length > 1) property = splitted[splitted.length - 1];
+
+    splitted = property.split("-");
+    if (['bg', 'text'].includes(splitted[0])) splitted = splitted.slice(1);
+
+    if (splitted.length == 1) {
+        if (COLOR_WITHOUT_NUMBER.includes(splitted[0])) return splitted[0] + " ";
+        return splitted[0] + "-" + defaultShade;
+    }
+    return splitted.join("-");
+}
+
+export function getDropdownDisplayText(
+    formControls: any[],
+    labelFor: string
+): string {
+    let text = '';
+    let atLeastOneNegated: boolean = false;
+    for (let c of formControls) {
+        const hasNegate = Boolean(c['negate']);
+        if (labelFor == 'EMPTY' && c['active']) return '';
+        else if (
+            labelFor == 'NOT_NEGATED' &&
+            c['active'] &&
+            (!hasNegate || (hasNegate && !c['negate']))
+        ) {
+            text += (text == '' ? '' : ', ') + c['name'];
+        } else if (
+            labelFor == 'NEGATED' &&
+            c['active'] &&
+            hasNegate &&
+            c['negate']
+        ) {
+            text += (text == '' ? '' : ', ') + c['name'];
+        }
+        if (
+            !atLeastOneNegated &&
+            c['active'] &&
+            hasNegate &&
+            c['negate']
+        )
+            atLeastOneNegated = true;
+    }
+    if (labelFor == 'EMPTY') return 'None Selected';
+
+    if (labelFor == 'NOT_NEGATED' && atLeastOneNegated && text != '')
+        return text + ', ';
+
+    return text;
+}
+
+export function getActiveNegateGroupColor(group: any) {
+    if (!group['active']) return null;
+    if (group['negate']) {
+        return group['negate'] ? '#ef4444' : '#2563eb';
+    }
+    return '#2563eb';
+
 }
