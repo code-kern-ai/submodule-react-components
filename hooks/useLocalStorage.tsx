@@ -6,9 +6,11 @@ type ItemWithExpiration<T> = {
 };
 
 export function readItemGroupFromLocalStorage(group: string): any {
-  const itemGroupString = localStorage.getItem(group);
-  if (itemGroupString) {
-    return JSON.parse(itemGroupString);
+  if (typeof localStorage !== 'undefined') {
+    const itemGroupString = localStorage.getItem(group);
+    if (itemGroupString) {
+      return JSON.parse(itemGroupString);
+    }
   }
   return {};
 }
@@ -28,7 +30,9 @@ export function useLocalStorage<T>(
         if (item.expiration && Date.now() > item.expiration) {
           // Item has expired, remove it
           delete itemGroup[key];
-          localStorage.setItem(group, JSON.stringify(itemGroup));
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem(group, JSON.stringify(itemGroup));
+          }
         } else {
           return item.value;
         }
@@ -45,7 +49,9 @@ export function useLocalStorage<T>(
       expiration: timeoutSeconds ? Date.now() + timeoutSeconds * 1000 : null,
     };
     itemGroup[key] = item;
-    localStorage.setItem(group, JSON.stringify(itemGroup));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(group, JSON.stringify(itemGroup));
+    }
   }, [state]);
 
   return [state, setState];

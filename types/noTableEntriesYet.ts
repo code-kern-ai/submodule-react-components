@@ -16,6 +16,8 @@ export type NoTableEntriesYetProps = {
     backgroundColorClass?: string;
     textColorClass?: string;
     marginBottomClass?: string; // can be used to offset common table paddings, usually negative
+    loading?: boolean
+    loadingColorClass?: string
 }
 
 
@@ -25,4 +27,6 @@ export const NO_TABLE_ENTRIES_YET_DEFAULTS = {
     backgroundColorClass: 'bg-gray-50',
     textColorClass: 'text-gray-700',
     marginBottomClass: "",
+    loading: false,
+    loadingColorClass: ''
 }

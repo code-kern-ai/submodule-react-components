@@ -1,12 +1,11 @@
 import { Fragment, use, useEffect, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { DropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
 import { IconDotsVertical, IconExternalLink, IconLoader } from '@tabler/icons-react';
-import { IconTrashXFilled } from '@tabler/icons-react';
+import { IconChevronDown, IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import * as TablerIcons from '@tabler/icons-react';
 
@@ -143,11 +142,11 @@ export default function Dropdown(props: DropdownProps) {
 
                         className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
                         placeholder="Type to search..." />
-                    <ChevronDownIcon
+                    <IconChevronDown
                         className="h-5 w-5 absolute right-0 mr-3 -mt-7"
                         aria-hidden="true"
                     />
-                </div> : <>
+                </div > : <>
                     {props.hasButtonDots ? (<Menu.Button onClick={toggleDropdown} className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full">
                         <span className="flex h-full w-full items-center justify-center rounded-full">
                             <IconDotsVertical
@@ -165,12 +164,13 @@ export default function Dropdown(props: DropdownProps) {
                             <span style={{ color: '#2563eb' }}>{getDropdownDisplayText(props.options, "NOT_NEGATED")}</span>
                             <span style={{ color: '#ef4444' }}>{getDropdownDisplayText(props.options, "NEGATED")}</span>
                         </label>}
-                        <ChevronDownIcon
+                        <IconChevronDown
                             className="-mr-1 ml-2 h-5 w-5"
                             aria-hidden="true"
                         />
                     </Menu.Button>)}
-                </>}
+                </>
+                }
             </div >
             <Transition
                 as={Fragment}
