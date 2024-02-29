@@ -156,15 +156,16 @@ export default function Dropdown2(props: DropdownProps) {
                 {props.hasSearchBar ? <div className="w-full" onClick={toggleDropdown}>
                     <input value={searchText} onChange={(e) => {
                         setSearchText(e.target.value);
-                        props.searchTextTyped(e.target.value);
-                        props.filteredOptions(e.target.value);
+                        if (props.searchTextTyped) props.searchTextTyped(e.target.value);
+                        if (props.filteredOptions) props.filteredOptions(e.target.value);
                         if (!isOpen) setIsOpen(true);
                     }}
                         onFocus={(event) => event.target.select()}
-                        className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100"
+                        className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isDisabled}
                         placeholder="Type to search..." />
                     <IconChevronDown
-                        className="h-5 w-5 absolute right-0 mr-3 -mt-7"
+                        className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         aria-hidden="true"
                     />
                 </div> : <>
