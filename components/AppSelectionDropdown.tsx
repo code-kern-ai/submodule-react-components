@@ -7,7 +7,6 @@ import { AppSelectionDropdownProps } from '../types/dropdown';
 import kernLogo from '../assets/kern-icon.png';
 import refineryLogo from '../assets/refinery-icon.png';
 import gatesLogo from '../assets/gates-icon.png';
-import workflowLogo from '../assets/workflow-icon.png';
 
 export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps) {
     return (
@@ -16,7 +15,7 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                 <Menu.Button>
                     <Tooltip color="invert" content="Kern AI" placement="right">
                         <div
-                            className={`cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border ${props.workflow ? 'border-gray-800 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50'}`}
+                            className={`cursor-pointer group flex items-center p-2 text-sm font-medium rounded-md border`}
                         >
                             <Image src={kernLogo} width="32" height="32" alt='Kern' />
                         </div>
@@ -85,29 +84,6 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                                     >
                                         <Image src={gatesLogo} width="21" height="21" alt='gates' />
                                         <span className='ml-2'>gates</span>
-                                    </a>
-                                )}
-                            </Menu.Item>
-                        ) : null}
-
-                        {props.workflow ? (
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <a
-                                        href="/workflow/workflows"
-                                        rel="noopener noreferrer"
-                                        className={combineClassNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
-                                        )}
-                                    >
-                                        <Image
-                                            src={workflowLogo}
-                                            width={21}
-                                            height={21}
-                                            alt="workflow"
-                                        />
-                                        <span className='ml-2'>workflow</span>
                                     </a>
                                 )}
                             </Menu.Item>

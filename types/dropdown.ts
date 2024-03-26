@@ -89,5 +89,4 @@ export type AppSelectionDropdownProps = {
     cockpit?: boolean;
     refinery?: boolean;
     gates?: boolean;
-    workflow?: boolean;
 };
