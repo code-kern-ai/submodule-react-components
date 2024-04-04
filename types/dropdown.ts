@@ -39,6 +39,7 @@
  * @useFillForIcons {boolean[], optional} - if true, the icon will be filled with the color of the option
  * @searchTextTyped {function} - returns the text typed in the search bar
  * @fontSizeClass {string} - The font size of the dropdown items
+ * @ignoreDisabledForSearch {boolean} - If the search bar should ignore the disabled options
 */
 export type DropdownProps = {
     buttonName?: string;
@@ -83,6 +84,7 @@ export type DropdownProps = {
     searchTextTyped?: (value: string) => void;
     fontSizeClass?: string;
     filteredOptions?: (option: string) => void;
+    ignoreDisabledForSearch?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
