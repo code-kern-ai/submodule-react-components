@@ -231,7 +231,7 @@ export default function Dropdown2(props: DropdownProps) {
                                                     }}>
                                                     {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3 cursor-pointer"
                                                         onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
-                                                    {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 mr-3 border rounded hover:bg-gray-200"
+                                                    {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 mr-3 border rounded hover:bg-gray-200 min-w-4"
                                                         style={{ backgroundColor: getActiveNegateGroupColor(props.options[index]), borderColor: getActiveNegateGroupColor(props.options[index]) }}>
                                                     </div>}
                                                     {props.iconsArray && props.iconsArray[index] && <span className='mx-2 text-gray-700'>
