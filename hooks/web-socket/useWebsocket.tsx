@@ -1,6 +1,6 @@
 import { useEffect, useMemo, } from 'react';
 import { WebSocketsService } from './WebSocketsService';
-import { NotificationSubscription } from './web-sockets-helper';
+import { NotificationSubscription, getConstWhitelist } from './web-sockets-helper';
 import { Application, CurrentPage, CurrentPageSubKey } from './constants';
 
 export function useWebsocket(application: Application, currentPage: CurrentPage, handleFunction: (msgParts: string[]) => void, projectId?: string, subKey?: CurrentPageSubKey) {
@@ -8,12 +8,11 @@ export function useWebsocket(application: Application, currentPage: CurrentPage,
     const _projectId = useMemo(() => projectId || "GLOBAL", [projectId]);
     const _subKey = useMemo(() => subKey || CurrentPageSubKey.NONE, [subKey]);
     const _application = useMemo(() => application, [application]);
+    const __whitelist = useMemo(() => getConstWhitelist(_application), [_application]);
 
     useEffect(() => {
-        const whiteListString = "WHITELIST_LOOKUP_" + _application;
-
         const nos: NotificationSubscription = {
-            whitelist: whiteListString[currentPage][_subKey],
+            whitelist: __whitelist[currentPage][_subKey],
             func: handleFunction,
             projectId: _projectId
         }
