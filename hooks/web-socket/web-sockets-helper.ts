@@ -1,4 +1,4 @@
-import { Application, CurrentPage, CurrentPageSubKey, WHITELIST_LOOKUP_REFINERY } from "./constants";
+import { Application, CurrentPage, CurrentPageSubKey, WHITELIST_LOOKUP_COGNITION, WHITELIST_LOOKUP_REFINERY } from "./constants";
 
 export type NotificationSubscription = {
     projectId?: string;
@@ -28,6 +28,7 @@ export function getConstWhitelist(application: Application) {
     let whiteListString;
     switch (application) {
         case Application.REFINERY: whiteListString = WHITELIST_LOOKUP_REFINERY; break;
+        case Application.COGNITION: whiteListString = WHITELIST_LOOKUP_COGNITION; break;
     }
     return whiteListString;
 }
