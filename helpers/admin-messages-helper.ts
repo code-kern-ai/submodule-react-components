@@ -9,7 +9,7 @@ export const adminMessageLevels = {
 export function postProcessAdminMessages(adminMessages: AdminMessage[]): AdminMessage[] {
     return adminMessages.map((message) => {
         message = { ...message };
-        message.displayDate = parseUTC(message.archiveDate);
+        message.displayDate = parseUTC(message.scheduledDate);
         const color = adminMessageLevels[message.level].color;
         message.textColor = 'text-' + color + '-700';
         message.backgroundColor = 'bg-' + color + '-100';

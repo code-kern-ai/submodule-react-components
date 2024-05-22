@@ -11,6 +11,7 @@ export type AdminMessage = {
     borderColor: string;
     createdAt: string;
     visible: boolean;
+    scheduledDate: string;
 };
 
 export enum AdminMessageLevel {
