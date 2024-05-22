@@ -17,7 +17,7 @@ export default function AdminMessages(props: AdminMessagesProps) {
         {props.adminMessages && props.adminMessages.map((activeMessage, index) => (
             <div key={activeMessage.id} className={`pointer-events-auto items-center justify-between gap-x-6 py-2.5 mt-2 border px-6 sm:rounded-xl sm:py-3 sm:pr-3.5 sm:pl-4 ${activeMessage.borderColor} ${activeMessage.backgroundColor} ${activeMessage.visible ? 'flex' : 'hidden'}`}
                 style={{ maxWidth: 'calc(100vw - 200px)' }}>
-                <p className={`text-sm leading-6 flex flex-row items-center w-full ${activeMessage.textColor}`}>
+                <div className={`text-sm leading-6 flex flex-row items-center w-full ${activeMessage.textColor}`}>
                     {activeMessage.level == AdminMessageLevel.INFO && <IconInfoSquare className="text-blue-700" size={24} />}
                     {activeMessage.level == AdminMessageLevel.WARNING && <IconAlertCircle className="text-yellow-700" size={24} />}
                     <strong className="font-semibold uppercase">{activeMessage.level}</strong><IconPoint className="mx-2" size={16} />
@@ -26,7 +26,7 @@ export default function AdminMessages(props: AdminMessagesProps) {
                     <button type="button" className="-my-1.5 ml-auto mr-0 flex-none p-1.5" onClick={() => closeMessage(activeMessage.id)}>
                         <IconX className={`${activeMessage.textColor} cursor-pointer`} size={20} strokeWidth={1.5} />
                     </button>
-                </p>
+                </div>
             </div >))
         }
     </div >)
