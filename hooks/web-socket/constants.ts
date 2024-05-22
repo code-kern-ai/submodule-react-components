@@ -30,6 +30,7 @@ export enum CurrentPage {
     COMMENTS = "COMMENTS",
     BRICKS_INTEGRATOR = "BRICKS_INTEGRATOR",
     CONFIG = "CONFIG",
+    CHAT_UI = "CHAT_UI",
 }
 
 export enum CurrentPageSubKey {
@@ -124,6 +125,9 @@ export const WHITELIST_LOOKUP_REFINERY = {
 
 export const WHITELIST_LOOKUP_COGNITION = {
     [CurrentPage.PROJECTS]: {
+        [CurrentPageSubKey.NONE]: ['admin_message']
+    },
+    [CurrentPage.CHAT_UI]: {
         [CurrentPageSubKey.NONE]: ['admin_message']
     }
 }
