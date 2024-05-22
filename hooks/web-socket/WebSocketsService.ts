@@ -1,7 +1,7 @@
 import { timer } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
 import { NotificationScope, NotificationSubscription, getStableWebsocketPageKey } from "./web-sockets-helper";
-import { CurrentPage, CurrentPageSubKey } from "@/src/types/shared/general";
+import { CurrentPage, CurrentPageSubKey } from "./constants";
 
 export class WebSocketsService {
 
