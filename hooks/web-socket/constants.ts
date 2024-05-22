@@ -121,3 +121,9 @@ export const WHITELIST_LOOKUP_REFINERY = {
 
     }
 }
+
+export const WHITELIST_LOOKUP_COGNITION = {
+    [CurrentPage.PROJECTS]: {
+        [CurrentPageSubKey.NONE]: ['admin_message']
+    }
+}
