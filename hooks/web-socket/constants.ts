@@ -2,6 +2,7 @@ export enum Application {
     REFINERY = 'REFINERY',
     COGNITION = 'COGNITION',
     GATES = 'GATES',
+    WELCOME_SCREEN = 'WELCOME_SCREEN',
 }
 
 export enum CurrentPage {
@@ -132,6 +133,12 @@ export const WHITELIST_LOOKUP_COGNITION = {
 }
 
 export const WHITELIST_LOOKUP_GATES = {
+    [CurrentPage.PROJECTS]: {
+        [CurrentPageSubKey.NONE]: ['admin_message']
+    }
+}
+
+export const WHITE_LIST_LOOKUP_WELCOME_SCREEN = {
     [CurrentPage.PROJECTS]: {
         [CurrentPageSubKey.NONE]: ['admin_message']
     }
