@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { CurrentPage } from "../hooks/web-socket/constants";
 
 export type AdminMessage = {
@@ -22,5 +23,5 @@ export enum AdminMessageLevel {
 export type AdminMessagesProps = {
     adminMessages: AdminMessage[];
     currentPage?: CurrentPage;
-    setActiveAdminMessages: (adminMessages: AdminMessage[]) => void;
+    setActiveAdminMessages: Dispatch<SetStateAction<AdminMessage[]>>
 }
