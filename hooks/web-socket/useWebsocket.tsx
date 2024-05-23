@@ -11,6 +11,10 @@ export function useWebsocket(application: Application, currentPage: CurrentPage,
     const __whitelist = useMemo(() => getConstWhitelist(_application), [_application]);
 
     useEffect(() => {
+        if (!__whitelist[currentPage]) {
+            console.error(`The combination of ${currentPage} and ${_application} does not exist in the whitelist`);
+            return;
+        }
         const nos: NotificationSubscription = {
             whitelist: __whitelist[currentPage][_subKey],
             func: handleFunction,
