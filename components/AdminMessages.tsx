@@ -21,8 +21,8 @@ export default function AdminMessages(props: AdminMessagesProps) {
                     {activeMessage.level == AdminMessageLevel.INFO && <IconInfoSquare className="text-blue-700" size={24} />}
                     {activeMessage.level == AdminMessageLevel.WARNING && <IconAlertCircle className="text-yellow-700" size={24} />}
                     <strong className="font-semibold uppercase">{activeMessage.level}</strong><IconPoint className="mx-2" size={16} />
-                    <strong className="font-semibold">{activeMessage.text}</strong><IconPoint className="mx-2" size={16} />
-                    {activeMessage.displayDate && <div>Scheduled for {activeMessage.displayDate}</div>}
+                    <strong className="font-semibold">{activeMessage.text}</strong>
+                    {activeMessage.displayDate && <><IconPoint className="mx-2" size={16} /><div>Scheduled for {activeMessage.displayDate}</div></>}
                     <button type="button" className="-my-1.5 ml-auto mr-0 flex-none p-1.5" onClick={() => closeMessage(activeMessage.id)}>
                         <IconX className={`${activeMessage.textColor} cursor-pointer`} size={20} strokeWidth={1.5} />
                     </button>
