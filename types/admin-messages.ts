@@ -24,4 +24,5 @@ export type AdminMessagesProps = {
     adminMessages: AdminMessage[];
     currentPage?: CurrentPage;
     setActiveAdminMessages: Dispatch<SetStateAction<AdminMessage[]>>
+    maxWidth?: string;
 }
