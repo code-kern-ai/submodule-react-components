@@ -7,12 +7,11 @@ export function useWebsocket(application: Application, currentPage: CurrentPage,
 
     const _projectId = useMemo(() => projectId || "GLOBAL", [projectId]);
     const _subKey = useMemo(() => subKey || CurrentPageSubKey.NONE, [subKey]);
-    const _application = useMemo(() => application, [application]);
-    const __whitelist = useMemo(() => getConstWhitelist(_application), [_application]);
+    const __whitelist = useMemo(() => getConstWhitelist(application), [application]);
 
     useEffect(() => {
         if (!__whitelist[currentPage]) {
-            console.error(`The combination of ${currentPage} and ${_application} does not exist in the whitelist`);
+            console.error(`The combination of ${currentPage} and ${application} does not exist in the whitelist`);
             return;
         }
         const nos: NotificationSubscription = {
@@ -24,7 +23,7 @@ export function useWebsocket(application: Application, currentPage: CurrentPage,
         WebSocketsService.subscribeToNotification(currentPage, nos, _subKey);
 
         return () => WebSocketsService.unsubscribeFromNotification(currentPage, projectId, _subKey);
-    }, [_projectId, _subKey, _application]);
+    }, [_projectId, _subKey, application]);
 
     useEffect(() => {
         WebSocketsService.updateFunctionPointer(projectId, currentPage, handleFunction, subKey)

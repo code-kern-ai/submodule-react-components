@@ -17,7 +17,7 @@ export type AdminMessage = {
 
 export enum AdminMessageLevel {
     INFO = 'info',
-    WARNING = 'Warning'
+    WARNING = 'warning'
 };
 
 export type AdminMessagesProps = {

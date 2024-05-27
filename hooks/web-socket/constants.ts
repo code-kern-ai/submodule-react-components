@@ -32,8 +32,9 @@ export enum CurrentPage {
     COMMENTS = "COMMENTS",
     BRICKS_INTEGRATOR = "BRICKS_INTEGRATOR",
     CONFIG = "CONFIG",
-    // COGNITION PAGES
-    COGNITION_CHAT_UI = "COGNITION_CHAT_UI",
+    COGNITION_LAYOUT = "COGNITION_LAYOUT",
+    GATES_LAYOUT = "GATES_LAYOUT",
+    WELCOME_SCREEN_LAYOUT = "WELCOME_SCREEN_LAYOUT",
 }
 
 export enum CurrentPageSubKey {
@@ -127,22 +128,19 @@ export const WHITELIST_LOOKUP_REFINERY = {
 }
 
 export const WHITELIST_LOOKUP_COGNITION = {
-    [CurrentPage.PROJECTS]: {
-        [CurrentPageSubKey.NONE]: ['admin_message']
-    },
-    [CurrentPage.COGNITION_CHAT_UI]: {
+    [CurrentPage.COGNITION_LAYOUT]: {
         [CurrentPageSubKey.NONE]: ['admin_message']
     }
 }
 
 export const WHITELIST_LOOKUP_GATES = {
-    [CurrentPage.PROJECTS]: {
+    [CurrentPage.GATES_LAYOUT]: {
         [CurrentPageSubKey.NONE]: ['admin_message']
     }
 }
 
 export const WHITE_LIST_LOOKUP_WELCOME_SCREEN = {
-    [CurrentPage.PROJECTS]: {
+    [CurrentPage.WELCOME_SCREEN_LAYOUT]: {
         [CurrentPageSubKey.NONE]: ['admin_message']
     }
 }
