@@ -104,7 +104,7 @@ export const WHITELIST_LOOKUP_REFINERY = {
         [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'label_created', 'label_deleted', 'labeling_task_deleted', 'information_source_deleted', 'information_source_updated', 'model_callback_update_statistics', 'embedding_deleted', 'embedding', 'payload_finished', 'payload_failed', 'payload_created', 'payload_update_statistics']
     },
     [CurrentPage.HEURISTICS]: {
-        [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'labeling_task_deleted', 'information_source_created', 'information_source_updated', 'information_source_deleted', 'payload_finished', 'payload_failed', 'payload_created', 'payload_update_statistics', 'embedding_deleted'],
+        [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'labeling_task_deleted', 'information_source_created', 'information_source_updated', 'information_source_deleted', 'payload_finished', 'payload_failed', 'payload_created', 'payload_update_statistics', 'embedding_deleted', 'weak_supervision_started', 'weak_supervision_finished'],
 
     },
     [CurrentPage.EDIT_RECORDS]: {
