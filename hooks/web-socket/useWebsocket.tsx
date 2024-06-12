@@ -3,13 +3,13 @@ import { WebSocketsService } from './WebSocketsService';
 import { NotificationSubscription, getConstWhitelist } from './web-sockets-helper';
 import { Application, CurrentPage, CurrentPageSubKey } from './constants';
 
-export function useWebsocket(application: Application, currentPage: CurrentPage, handleFunction: (msgParts: string[]) => void, projectId?: string, subKey?: CurrentPageSubKey) {
+export function useWebsocket(userOrgId: string, application: Application, currentPage: CurrentPage, handleFunction: (msgParts: string[]) => void, projectId?: string, subKey?: CurrentPageSubKey) {
 
     const _projectId = useMemo(() => projectId || "GLOBAL", [projectId]);
     const _subKey = useMemo(() => subKey || CurrentPageSubKey.NONE, [subKey]);
     const __whitelist = useMemo(() => getConstWhitelist(application), [application]);
-
     useEffect(() => {
+        if (!userOrgId) return;
         if (!__whitelist[currentPage]) {
             console.error(`The combination of ${currentPage} and ${application} does not exist in the whitelist`);
             return;
@@ -22,12 +22,13 @@ export function useWebsocket(application: Application, currentPage: CurrentPage,
 
         WebSocketsService.subscribeToNotification(currentPage, nos, _subKey);
 
-        return () => WebSocketsService.unsubscribeFromNotification(currentPage, projectId, _subKey);
-    }, [_projectId, _subKey, application]);
+        return () => { if (userOrgId) WebSocketsService.unsubscribeFromNotification(currentPage, projectId, _subKey) };
+    }, [userOrgId, _projectId, _subKey, application]);
 
     useEffect(() => {
+        if (!userOrgId) return;
         WebSocketsService.updateFunctionPointer(projectId, currentPage, handleFunction, subKey)
-    }, [handleFunction]);
+    }, [userOrgId, handleFunction]);
 
 
 }
