@@ -3,6 +3,8 @@ export enum Application {
     COGNITION = 'COGNITION',
     GATES = 'GATES',
     WELCOME_SCREEN = 'WELCOME_SCREEN',
+    ENTRY = 'ENTRY',
+    ADMIN_DASHBOARD = 'ADMIN_DASHBOARD',
 }
 
 export enum CurrentPage {
@@ -35,6 +37,8 @@ export enum CurrentPage {
     COGNITION_LAYOUT = "COGNITION_LAYOUT",
     GATES_LAYOUT = "GATES_LAYOUT",
     WELCOME_SCREEN_LAYOUT = "WELCOME_SCREEN_LAYOUT",
+    ENTRY_LAYOUT = "ENTRY_LAYOUT",
+    ADMIN_DASHBOARD_LAYOUT = "ADMIN_DASHBOARD_LAYOUT",
 }
 
 export enum CurrentPageSubKey {
@@ -141,6 +145,18 @@ export const WHITELIST_LOOKUP_GATES = {
 
 export const WHITE_LIST_LOOKUP_WELCOME_SCREEN = {
     [CurrentPage.WELCOME_SCREEN_LAYOUT]: {
+        [CurrentPageSubKey.NONE]: ['admin_message']
+    }
+}
+
+export const WHITE_LIST_LOOKUP_ENTRY = {
+    [CurrentPage.ENTRY_LAYOUT]: {
+        [CurrentPageSubKey.NONE]: ['admin_message']
+    }
+}
+
+export const WHITE_LIST_LOOKUP_ADMIN_DASHBOARD = {
+    [CurrentPage.ADMIN_DASHBOARD_LAYOUT]: {
         [CurrentPageSubKey.NONE]: ['admin_message']
     }
 }
