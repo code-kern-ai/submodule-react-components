@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 import useEnumOptionsTranslated from "./useEnumOptionsTranslated";
-import useRefState from "./useRefState";
-
+import useRefState from "../useRefState";
+//TODO: build one for without translation so we can use it outside of cognition as well
 
 // only works if the corresponding enum is translated in the i18n file with the lookupKey
 // example: cognition-ui> PATExpiresAt
-export default function useEnumState<T>(enumObj: T, lookupKey: string, translationScope?: string): [
+export default function useEnumStateTranslated<T>(enumObj: T, lookupKey: string, translationScope?: string): [
     { name: string, value: T },
     Dispatch<SetStateAction<{ name: string; value: T; }>>,
     { name: string, value: T }[]
