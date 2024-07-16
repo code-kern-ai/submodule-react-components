@@ -4,12 +4,12 @@ import useRefState from "../useRefState";
 import useEnumOptions from "./useEnumOptions";
 import { enumToArrayOptions } from "@/submodules/javascript-functions/general";
 
-export default function useEnumState<T>(enumObj: T, conversionOptions?: enumToArrayOptions): [
+export default function useEnumState<T>(enumObj: Object, conversionOptions?: enumToArrayOptions): [
     { name: string, value: T },
     Dispatch<SetStateAction<{ name: string; value: T; }>>,
     { name: string, value: T }[]
 ] {
-    const options = useEnumOptions(enumObj, conversionOptions);
+    const options = useEnumOptions<T>(enumObj, conversionOptions);
     const { state, setState, ref } = useRefState(options[0]);
     useEffect(() => {
         if (!ref.current) return;
