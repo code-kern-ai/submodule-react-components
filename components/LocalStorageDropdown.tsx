@@ -5,6 +5,8 @@ import { useDefaults, useDefaultsByRef } from "../hooks/useDefaults";
 import Dropdown from "./Dropdown";
 import { CompareOptions, inStringList } from "@/submodules/javascript-functions/validations";
 import { LOCAL_STORAGE_DROPDOWN_DEFAULTS, LocalStorageDropdownProps } from "../types/localStorageDropdown";
+import Dropdown2 from "./Dropdown2";
+import { useConsoleLog } from "../hooks/useConsoleLog";
 
 
 function readFromLocalStorage(group: string, key: string): string[] {
@@ -81,6 +83,12 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
     }), []);
 
     useEffect(() => { inputTextRef.current = inputText }, [inputText]);
+
+    useEffect(() => {
+        if (options && !options.includes(inputText)) {
+            onOptionSelected(inputText);
+        }
+    }, [inputText, options])
 
     useEffect(() => {
         setOptions(readFromLocalStorage(props.storageGroupKey, props.storageKey));
