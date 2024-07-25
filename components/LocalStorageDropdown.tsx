@@ -2,9 +2,9 @@
 
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDefaults, useDefaultsByRef } from "../hooks/useDefaults";
-import Dropdown from "./Dropdown";
 import { CompareOptions, inStringList } from "@/submodules/javascript-functions/validations";
 import { LOCAL_STORAGE_DROPDOWN_DEFAULTS, LocalStorageDropdownProps } from "../types/localStorageDropdown";
+import Dropdown2 from "./Dropdown2";
 
 
 function readFromLocalStorage(group: string, key: string): string[] {
@@ -102,14 +102,18 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
 
     return <>
         {options.length > 0 ?
-            <Dropdown
+            <Dropdown2
                 buttonName={props.buttonName ?? 'Select'}
                 searchDefaultValue={props.searchDefaultValue}
                 options={options}
                 hasSearchBar={true}
                 selectedOption={onOptionSelected}
-                onSearchChange={setInputText}
                 onClickDelete={onClickDelete}
+                searchTextTyped={(inputText) => {
+                    setInputText(inputText)
+                    onOptionSelected(inputText)
+                }}
+
             /> :
 
             <input value={inputText} onChange={(e) => {
