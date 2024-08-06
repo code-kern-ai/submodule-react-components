@@ -2,6 +2,6 @@ import { enumToArray, enumToArrayOptions } from '@/submodules/javascript-functio
 import { useMemo } from 'react';
 
 
-export default function useEnumOptions<T>(enumObj: T, options?: enumToArrayOptions): { name: string, value: T }[] {
+export default function useEnumOptions<T>(enumObj: Object, options?: enumToArrayOptions): { name: string, value: T }[] {
     return useMemo(() => enumToArray(enumObj, options), []);
 }
