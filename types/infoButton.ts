@@ -17,6 +17,7 @@ export type InfoButtonProps = {
     display?: "absoluteDiv" | "modal"
     divPosition?: "top" | "bottom" | "left" | "right";
     divZIndexClass?: string;
+    addClasses?: string;
 }
 
 /**
@@ -38,7 +39,7 @@ export type InfoButtonConfig = {
 
 
 export const INFO_BUTTON_DEFAULT_VALUES = {
-    size: "sm",
+    infoButtonSize: "sm",
     access: "hover",
     display: "absoluteDiv",
     divPosition: "top",

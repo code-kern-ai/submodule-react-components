@@ -43,12 +43,11 @@ export function InfoButton(_props: InfoButtonProps) {
     useEffect(() => setConfig(generateAndCheckConfig(props, setOpen)), [props.infoButtonSize, props.access, props.display, props.divPosition]);
 
     if (!config) return null;
-
     return (
         <div className={combineClassNames("relative w-fit p-1", config.cursorClass)} onClick={props.access == 'click' ? config.showInfo : undefined} onMouseEnter={props.access == 'hover' ? config.showInfo : undefined} onMouseLeave={props.access == 'hover' ? config.hideInfo : undefined}>
             <IconInfoCircle size={config.size} className={props.infoButtonColorClass} />
             {props.display == "absoluteDiv" ? <RenderDiv
-                positionClass={config.positionClass}
+                positionClass={config.positionClass + " " + props.addClasses}
                 content={props.content}
                 open={open}
                 access={props.access}
