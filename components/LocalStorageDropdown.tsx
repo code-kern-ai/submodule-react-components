@@ -1,10 +1,10 @@
-//wrapper around Dropdown to + input filed to read local storage data and provide it as dropdown options
+//wrapper around KernDropdown to + input filed to read local storage data and provide it as dropdown options
 
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useDefaults, useDefaultsByRef } from "../hooks/useDefaults";
 import { CompareOptions, inStringList } from "@/submodules/javascript-functions/validations";
 import { LOCAL_STORAGE_DROPDOWN_DEFAULTS, LocalStorageDropdownProps } from "../types/localStorageDropdown";
-import Dropdown2 from "./Dropdown2";
+import KernDropdown from "./KernDropdown";
 
 
 function readFromLocalStorage(group: string, key: string): string[] {
@@ -102,7 +102,7 @@ export const LocalStorageDropdown = forwardRef((_props: LocalStorageDropdownProp
 
     return <>
         {options.length > 0 ?
-            <Dropdown2
+            <KernDropdown
                 buttonName={props.buttonName ?? 'Select'}
                 searchDefaultValue={props.searchDefaultValue}
                 options={options}

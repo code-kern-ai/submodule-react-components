@@ -41,7 +41,7 @@
  * @fontSizeClass {string} - The font size of the dropdown items
  * @ignoreDisabledForSearch {boolean} - If the search bar should ignore the disabled options
 */
-export type DropdownProps = {
+export type KernDropdownProps = {
     buttonName?: string;
     options?: any;
     selectedOption?: (value: any) => void;
