@@ -183,7 +183,7 @@ export default function Dropdown2(props: DropdownProps) {
                         {!props.hasCheckboxesThreeStates && props.buttonName}
                         {props.hasCheckboxesThreeStates && <label
                             className="truncate cursor-pointer text-sm">{getDropdownDisplayText(props.options, "EMPTY")}
-                            <span style={{ color: '#2563eb' }}>{getDropdownDisplayText(props.options, "NOT_NEGATED")}</span>
+                            <span style={{ color: '#4e46e5' }}>{getDropdownDisplayText(props.options, "NOT_NEGATED")}</span>
                             <span style={{ color: '#ef4444' }}>{getDropdownDisplayText(props.options, "NEGATED")}</span>
                         </label>}
                         <IconChevronDown

@@ -131,8 +131,8 @@ export function getDropdownDisplayText(
 export function getActiveNegateGroupColor(group: any) {
     if (!group['active']) return null;
     if (group['negate']) {
-        return group['negate'] ? '#ef4444' : '#2563eb';
+        return group['negate'] ? '#ef4444' : '#4e46e5';
     }
-    return '#2563eb';
+    return '#4e46e5';
 
 }
