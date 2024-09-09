@@ -14,7 +14,6 @@ export enum CurrentPage {
     DATA_BROWSER = 'DATA_BROWSER',
     LABELING = 'LABELING',
     HEURISTICS = 'HEURISTICS',
-    ADMIN_PAGE = 'ADMIN_PAGE',
     USERS = 'USERS',
     UPLOAD_RECORDS = 'UPLOAD_RECORDS',
     PROJECT_SETTINGS = "PROJECT_SETTINGS",
@@ -119,9 +118,6 @@ export const WHITELIST_LOOKUP_REFINERY = {
     [CurrentPage.ATTRIBUTE_CALCULATION]: {
         [CurrentPageSubKey.NONE]: ['attributes_updated', 'calculate_attribute', 'tokenization', 'knowledge_base_updated', 'knowledge_base_deleted', 'knowledge_base_created'],
 
-    },
-    [CurrentPage.ADMIN_PAGE]: {
-        [CurrentPageSubKey.NONE]: ['pat']
     },
     [CurrentPage.NOTIFICATION_CENTER]: {
         [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'config_updated', 'admin_message'],
