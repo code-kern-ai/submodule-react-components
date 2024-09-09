@@ -33,24 +33,6 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
             >
                 <Menu.Items className="fixed bottom-[74px] left-20 z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                        {props.cockpit ? (
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <a
-                                        href="/welcome"
-                                        rel="noopener noreferrer"
-                                        className={combineClassNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
-                                        )}
-                                    >
-                                        <Image src={kernLogo} width="21" height="21" alt='cockpit' />
-                                        <span className='ml-2'>cockpit</span>
-                                    </a>
-                                )}
-                            </Menu.Item>
-                        ) : null}
-
                         {props.refinery ? (
                             <Menu.Item>
                                 {({ active }) => (
