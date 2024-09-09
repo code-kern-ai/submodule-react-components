@@ -1,7 +1,6 @@
 export enum Application {
     REFINERY = 'REFINERY',
     COGNITION = 'COGNITION',
-    WELCOME_SCREEN = 'WELCOME_SCREEN',
     ENTRY = 'ENTRY',
     ADMIN_DASHBOARD = 'ADMIN_DASHBOARD',
 }
@@ -33,7 +32,6 @@ export enum CurrentPage {
     BRICKS_INTEGRATOR = "BRICKS_INTEGRATOR",
     CONFIG = "CONFIG",
     COGNITION_LAYOUT = "COGNITION_LAYOUT",
-    WELCOME_SCREEN_LAYOUT = "WELCOME_SCREEN_LAYOUT",
     ENTRY_LAYOUT = "ENTRY_LAYOUT",
     ADMIN_DASHBOARD_LAYOUT = "ADMIN_DASHBOARD_LAYOUT",
 }
@@ -131,11 +129,6 @@ export const WHITELIST_LOOKUP_COGNITION = {
     }
 }
 
-export const WHITE_LIST_LOOKUP_WELCOME_SCREEN = {
-    [CurrentPage.WELCOME_SCREEN_LAYOUT]: {
-        [CurrentPageSubKey.NONE]: ['admin_message']
-    }
-}
 
 export const WHITE_LIST_LOOKUP_ENTRY = {
     [CurrentPage.ENTRY_LAYOUT]: {

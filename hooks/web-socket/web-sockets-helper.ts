@@ -29,7 +29,6 @@ export function getConstWhitelist(application: Application) {
     switch (application) {
         case Application.REFINERY: whiteListString = WHITELIST_LOOKUP_REFINERY; break;
         case Application.COGNITION: whiteListString = WHITELIST_LOOKUP_COGNITION; break;
-        case Application.WELCOME_SCREEN: whiteListString = WHITE_LIST_LOOKUP_WELCOME_SCREEN; break;
         case Application.ENTRY: whiteListString = WHITE_LIST_LOOKUP_ENTRY; break;
         case Application.ADMIN_DASHBOARD: whiteListString = WHITE_LIST_LOOKUP_ADMIN_DASHBOARD; break;
     }
