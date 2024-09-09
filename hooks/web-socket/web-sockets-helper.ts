@@ -1,4 +1,4 @@
-import { Application, CurrentPage, CurrentPageSubKey, WHITELIST_LOOKUP_COGNITION, WHITELIST_LOOKUP_REFINERY, WHITE_LIST_LOOKUP_ADMIN_DASHBOARD, WHITE_LIST_LOOKUP_ENTRY, WHITE_LIST_LOOKUP_WELCOME_SCREEN } from "./constants";
+import { Application, CurrentPage, CurrentPageSubKey, WHITELIST_LOOKUP_COGNITION, WHITELIST_LOOKUP_REFINERY, WHITE_LIST_LOOKUP_ADMIN_DASHBOARD, WHITE_LIST_LOOKUP_ENTRY } from "./constants";
 
 export type NotificationSubscription = {
     projectId?: string;
