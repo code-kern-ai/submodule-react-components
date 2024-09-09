@@ -1,4 +1,4 @@
-import { DropdownProps } from "../types/dropdown";
+import { KernDropdownProps } from "../types/dropdown";
 
 export const SELECT_ALL = 'Select all';
 export const COLOR_WITHOUT_NUMBER = ['kernindigo', 'black', 'white'];
@@ -37,14 +37,14 @@ export function setOptionsWithSearchBar(options: string[], searchText: string) {
     return options.filter(option => option.toLowerCase().includes(searchText.toLowerCase()));
 }
 
-export function checkDropdownProps(props: DropdownProps) {
+export function checkDropdownProps(props: KernDropdownProps) {
     if (!props.options || props.options.length == 0) return;
     if (props.disabledOptions && (props.options.length != props.disabledOptions.length)) {
         throw new Error('Dropdown: options length must be equal to disabledOptions length');
     } else if (props.tooltipsArray && (props.options.length != props.tooltipsArray.length)) {
         throw new Error('Dropdown: options length must be equal to tooltipsArray length');
     } else if (props.selectedCheckboxes && (props.selectedCheckboxes.length != props.options.length)) {
-        throw new Error('Dropdown: selectedCheckboxes length must be equal to options length');
+        throw new Error(': selectedCheckboxes length must be equal to options length');
     } else if (props.selectedCheckboxes && props.selectedCheckboxes.length > 0 && !props.hasCheckboxes) {
         throw new Error('Dropdown: selectedCheckboxes can only be used with hasCheckboxes');
     } else if (!props.hasCheckboxes && props.hasSelectAll) {

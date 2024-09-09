@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { DropdownProps } from '../types/dropdown';
+import { KernDropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
@@ -12,7 +12,7 @@ import { useDefaults } from '../hooks/useDefaults';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
-export default function Dropdown2(props: DropdownProps) {
+export default function KernDropdown(props: KernDropdownProps) {
     const isDisabled = props.disabled || props.options.length == 0;
 
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
