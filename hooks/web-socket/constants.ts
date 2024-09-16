@@ -25,8 +25,6 @@ export enum CurrentPage {
     MODEL_CALLBACKS = "MODEL_CALLBACKS",
     LABELING_FUNCTION = "LABELING_FUNCTION",
     ACTIVE_LEARNING = "ACTIVE_LEARNING",
-    ZERO_SHOT = "ZERO_SHOT",
-    CROWD_LABELER = "CROWD_LABELER",
     RECORD_IDE = "RECORD_IDE",
     EDIT_RECORDS = "EDIT_RECORDS",
     NOTIFICATION_CENTER = "NOTIFICATION_CENTER",
@@ -95,14 +93,8 @@ export const WHITELIST_LOOKUP_REFINERY = {
         [CurrentPageSubKey.NONE]: ['attributes_updated', 'calculate_attribute', 'payload_finished', 'weak_supervision_finished', 'record_deleted', 'rla_created', 'rla_deleted', 'access_link_changed', 'access_link_removed', 'label_created', 'label_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created'],
 
     },
-    [CurrentPage.ZERO_SHOT]: {
-        [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'label_created', 'label_deleted', 'labeling_task_deleted', 'information_source_deleted', 'information_source_updated', 'payload_update_statistics', 'payload_finished', 'payload_failed', 'payload_created', 'zero-shot', 'zero_shot_download']
-    },
     [CurrentPage.LABELING_FUNCTION]: {
         [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'label_created', 'label_deleted', 'labeling_task_deleted', 'information_source_deleted', 'information_source_updated', 'model_callback_update_statistics', 'payload_progress', 'payload_finished', 'payload_failed', 'payload_created', 'payload_update_statistics'],
-    },
-    [CurrentPage.CROWD_LABELER]: {
-        [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'label_created', 'label_deleted', 'labeling_task_deleted', 'information_source_deleted', 'information_source_updated', 'model_callback_update_statistics']
     },
     [CurrentPage.ACTIVE_LEARNING]: {
         [CurrentPageSubKey.NONE]: ['labeling_task_updated', 'labeling_task_created', 'label_created', 'label_deleted', 'labeling_task_deleted', 'information_source_deleted', 'information_source_updated', 'model_callback_update_statistics', 'embedding_deleted', 'embedding', 'payload_finished', 'payload_failed', 'payload_created', 'payload_update_statistics']
