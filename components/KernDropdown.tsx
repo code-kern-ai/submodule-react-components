@@ -262,19 +262,6 @@ function HoverBox(props: { position: any, hoverBox: any }) {
                 <div className="flex justify-center">
                     <span className="card-title mb-2 label-text">Info</span>
                 </div>
-                <div className="grid grid-cols-2  gap-2 items-center" style={{ gridTemplateColumns: 'max-content auto' }}>
-                    {props.hoverBox.avgTime && <Fragment>
-                        <span className="label-text text-sm font-bold">Avg Time</span>
-                        <span className="label-text text-sm">{props.hoverBox.avgTime}</span></Fragment>}
-                    {props.hoverBox.base && <Fragment>
-                        <span className="label-text text-sm font-bold">Based on</span>
-                        <span className="label-text text-sm">{props.hoverBox.base}</span>
-                    </Fragment>}
-                    {props.hoverBox.size && <Fragment>
-                        <span className="label-text text-sm font-bold">Size</span>
-                        <span className="label-text text-sm">{props.hoverBox.size}</span>
-                    </Fragment>}
-                </div>
                 {!props.hoverBox.avgTime && !props.hoverBox.base && !props.hoverBox.size && <Fragment>
                     <span className="label-text text-sm">{props.hoverBox}</span>
                 </Fragment>}
