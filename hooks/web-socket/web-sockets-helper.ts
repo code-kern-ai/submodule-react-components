@@ -1,4 +1,4 @@
-import { Application, CurrentPage, CurrentPageSubKey, WHITELIST_LOOKUP_COGNITION, WHITELIST_LOOKUP_GATES, WHITELIST_LOOKUP_REFINERY, WHITE_LIST_LOOKUP_ADMIN_DASHBOARD, WHITE_LIST_LOOKUP_ENTRY, WHITE_LIST_LOOKUP_WELCOME_SCREEN } from "./constants";
+import { Application, CurrentPage, CurrentPageSubKey, WHITELIST_LOOKUP_COGNITION, WHITELIST_LOOKUP_REFINERY, WHITE_LIST_LOOKUP_ADMIN_DASHBOARD, WHITE_LIST_LOOKUP_ENTRY } from "./constants";
 
 export type NotificationSubscription = {
     projectId?: string;
@@ -29,8 +29,6 @@ export function getConstWhitelist(application: Application) {
     switch (application) {
         case Application.REFINERY: whiteListString = WHITELIST_LOOKUP_REFINERY; break;
         case Application.COGNITION: whiteListString = WHITELIST_LOOKUP_COGNITION; break;
-        case Application.GATES: whiteListString = WHITELIST_LOOKUP_GATES; break;
-        case Application.WELCOME_SCREEN: whiteListString = WHITE_LIST_LOOKUP_WELCOME_SCREEN; break;
         case Application.ENTRY: whiteListString = WHITE_LIST_LOOKUP_ENTRY; break;
         case Application.ADMIN_DASHBOARD: whiteListString = WHITE_LIST_LOOKUP_ADMIN_DASHBOARD; break;
     }

@@ -1,8 +1,6 @@
 export enum Application {
     REFINERY = 'REFINERY',
     COGNITION = 'COGNITION',
-    GATES = 'GATES',
-    WELCOME_SCREEN = 'WELCOME_SCREEN',
     ENTRY = 'ENTRY',
     ADMIN_DASHBOARD = 'ADMIN_DASHBOARD',
 }
@@ -15,7 +13,6 @@ export enum CurrentPage {
     DATA_BROWSER = 'DATA_BROWSER',
     LABELING = 'LABELING',
     HEURISTICS = 'HEURISTICS',
-    ADMIN_PAGE = 'ADMIN_PAGE',
     USERS = 'USERS',
     UPLOAD_RECORDS = 'UPLOAD_RECORDS',
     PROJECT_SETTINGS = "PROJECT_SETTINGS",
@@ -32,8 +29,6 @@ export enum CurrentPage {
     BRICKS_INTEGRATOR = "BRICKS_INTEGRATOR",
     CONFIG = "CONFIG",
     COGNITION_LAYOUT = "COGNITION_LAYOUT",
-    GATES_LAYOUT = "GATES_LAYOUT",
-    WELCOME_SCREEN_LAYOUT = "WELCOME_SCREEN_LAYOUT",
     ENTRY_LAYOUT = "ENTRY_LAYOUT",
     ADMIN_DASHBOARD_LAYOUT = "ADMIN_DASHBOARD_LAYOUT",
 }
@@ -71,7 +66,7 @@ export const WHITELIST_LOOKUP_REFINERY = {
         [CurrentPageSubKey.NONE]: ['label_created', 'label_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created', 'weak_supervision_finished', 'data_slice_created', 'data_slice_updated', 'data_slice_deleted']
     },
     [CurrentPage.PROJECT_SETTINGS]: {
-        [CurrentPageSubKey.NONE]: ['project_update', 'tokenization', 'calculate_attribute', 'embedding', 'attributes_updated', 'gates_integration', 'information_source_deleted', 'information_source_updated', 'embedding_deleted', 'embedding_updated', 'upload_embedding_payload', 'label_created', 'label_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created'],
+        [CurrentPageSubKey.NONE]: ['project_update', 'tokenization', 'calculate_attribute', 'embedding', 'attributes_updated', 'information_source_deleted', 'information_source_updated', 'embedding_deleted', 'embedding_updated', 'upload_embedding_payload', 'label_created', 'label_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created'],
         [CurrentPageSubKey.SNAPSHOT_EXPORT]: ['project_updated', 'project_export'],
         [CurrentPageSubKey.EMBEDDINGS]: ['embedding_updated', 'upload_embedding_payload']
 
@@ -110,9 +105,6 @@ export const WHITELIST_LOOKUP_REFINERY = {
         [CurrentPageSubKey.NONE]: ['attributes_updated', 'calculate_attribute', 'tokenization', 'knowledge_base_updated', 'knowledge_base_deleted', 'knowledge_base_created'],
 
     },
-    [CurrentPage.ADMIN_PAGE]: {
-        [CurrentPageSubKey.NONE]: ['pat']
-    },
     [CurrentPage.NOTIFICATION_CENTER]: {
         [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'config_updated', 'admin_message'],
 
@@ -125,17 +117,6 @@ export const WHITELIST_LOOKUP_COGNITION = {
     }
 }
 
-export const WHITELIST_LOOKUP_GATES = {
-    [CurrentPage.GATES_LAYOUT]: {
-        [CurrentPageSubKey.NONE]: ['admin_message']
-    }
-}
-
-export const WHITE_LIST_LOOKUP_WELCOME_SCREEN = {
-    [CurrentPage.WELCOME_SCREEN_LAYOUT]: {
-        [CurrentPageSubKey.NONE]: ['admin_message']
-    }
-}
 
 export const WHITE_LIST_LOOKUP_ENTRY = {
     [CurrentPage.ENTRY_LAYOUT]: {
