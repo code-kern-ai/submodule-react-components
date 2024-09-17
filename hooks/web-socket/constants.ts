@@ -22,7 +22,6 @@ export enum CurrentPage {
     MODELS_DOWNLOAD = "MODELS_DOWNLOAD",
     ATTRIBUTE_CALCULATION = "ATTRIBUTE_CALCULATION",
     LOOKUP_LISTS_DETAILS = "LOOKUP_LISTS_DETAILS",
-    MODEL_CALLBACKS = "MODEL_CALLBACKS",
     LABELING_FUNCTION = "LABELING_FUNCTION",
     ACTIVE_LEARNING = "ACTIVE_LEARNING",
     RECORD_IDE = "RECORD_IDE",
@@ -79,9 +78,6 @@ export const WHITELIST_LOOKUP_REFINERY = {
     },
     [CurrentPage.EXPORT]: {
         [CurrentPageSubKey.NONE]: ['record_export', 'calculate_attribute', 'labeling_task_deleted', 'labeling_task_created', 'data_slice_created', 'data_slice_deleted', 'information_source_created', 'information_source_deleted']
-    },
-    [CurrentPage.MODEL_CALLBACKS]: {
-        [CurrentPageSubKey.NONE]: ['information_source_created', 'information_source_updated', 'information_source_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created', 'model_callback_update_statistics']
     },
     [CurrentPage.LOOKUP_LISTS_DETAILS]: {
         [CurrentPageSubKey.NONE]: ['knowledge_base_updated', 'knowledge_base_deleted', 'knowledge_base_term_updated']
