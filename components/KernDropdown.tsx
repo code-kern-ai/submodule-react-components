@@ -240,7 +240,6 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
                                                     {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
                                                 </label>
-                                                {index == props.lineSeparatorIndex && <hr className="my-2 border-t border-dashed h-px border-gray-700" onMouseEnter={() => setHoverBoxPosition(null)}></hr>}
                                             </Tooltip>
                                         </div>
                                     )}
@@ -262,19 +261,6 @@ function HoverBox(props: { position: any, hoverBox: any }) {
             <div className="card-body p-6 flex flex-col w-64">
                 <div className="flex justify-center">
                     <span className="card-title mb-2 label-text">Info</span>
-                </div>
-                <div className="grid grid-cols-2  gap-2 items-center" style={{ gridTemplateColumns: 'max-content auto' }}>
-                    {props.hoverBox.avgTime && <Fragment>
-                        <span className="label-text text-sm font-bold">Avg Time</span>
-                        <span className="label-text text-sm">{props.hoverBox.avgTime}</span></Fragment>}
-                    {props.hoverBox.base && <Fragment>
-                        <span className="label-text text-sm font-bold">Based on</span>
-                        <span className="label-text text-sm">{props.hoverBox.base}</span>
-                    </Fragment>}
-                    {props.hoverBox.size && <Fragment>
-                        <span className="label-text text-sm font-bold">Size</span>
-                        <span className="label-text text-sm">{props.hoverBox.size}</span>
-                    </Fragment>}
                 </div>
                 {!props.hoverBox.avgTime && !props.hoverBox.base && !props.hoverBox.size && <Fragment>
                     <span className="label-text text-sm">{props.hoverBox}</span>
