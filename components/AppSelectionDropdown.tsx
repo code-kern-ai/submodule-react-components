@@ -6,7 +6,6 @@ import { combineClassNames } from '../../javascript-functions/general';
 import { AppSelectionDropdownProps } from '../types/dropdown';
 import kernLogo from '../assets/kern-icon.png';
 import refineryLogo from '../assets/refinery-icon.png';
-import gatesLogo from '../assets/gates-icon.png';
 
 export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps) {
     return (
@@ -32,26 +31,8 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="fixed bottom-[74px] left-20 z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="fixed bottom-[70px] left-14 z-50 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                        {props.cockpit ? (
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <a
-                                        href="/welcome"
-                                        rel="noopener noreferrer"
-                                        className={combineClassNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
-                                        )}
-                                    >
-                                        <Image src={kernLogo} width="21" height="21" alt='cockpit' />
-                                        <span className='ml-2'>cockpit</span>
-                                    </a>
-                                )}
-                            </Menu.Item>
-                        ) : null}
-
                         {props.refinery ? (
                             <Menu.Item>
                                 {({ active }) => (
@@ -71,19 +52,19 @@ export default function PlatformWelcomeDropdown(props: AppSelectionDropdownProps
                         ) : null}
 
 
-                        {props.gates ? (
+                        {props.cognition ? (
                             <Menu.Item>
                                 {({ active }) => (
                                     <a
-                                        href="/gates"
+                                        href="/cognition"
                                         rel="noopener noreferrer"
                                         className={combineClassNames(
                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                             'group flex items-center px-4 py-2 text-sm cursor-pointer font-mono'
                                         )}
                                     >
-                                        <Image src={gatesLogo} width="21" height="21" alt='gates' />
-                                        <span className='ml-2'>gates</span>
+                                        <Image src={kernLogo} width="21" height="21" alt='cognition' />
+                                        <span className='ml-2'>cognition</span>
                                     </a>
                                 )}
                             </Menu.Item>

@@ -32,8 +32,6 @@
  * @linkList {string[]} - The array of links that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @optionsHaveHoverBox {boolean} - If the dropdown options have a hover box
  * @hoverBoxList {string[]} - The array of hover boxes that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
- * @addLineSeparator {boolean} - If the dropdown should have a line separator
- * @lineSeparatorIndex {number} - The index of the dropdown item that will have a line separator
  * @iconsArray {string[]} - The array of icons that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @valuePropertyPath {string, optional} - if undefined option text is returned, else (e.g. name.tmp.xyz) the path is split and used to access the object property
  * @useFillForIcons {boolean[], optional} - if true, the icon will be filled with the color of the option
@@ -76,8 +74,6 @@ export type KernDropdownProps = {
     linkList?: string[];
     optionsHaveHoverBox?: boolean;
     hoverBoxList?: string[];
-    addLineSeparator?: boolean;
-    lineSeparatorIndex?: number;
     iconsArray?: string[];
     valuePropertyPath?: string;
     useFillForIcons?: boolean[];
@@ -88,7 +84,6 @@ export type KernDropdownProps = {
 }
 
 export type AppSelectionDropdownProps = {
-    cockpit?: boolean;
     refinery?: boolean;
-    gates?: boolean;
+    cognition?: boolean;
 };
