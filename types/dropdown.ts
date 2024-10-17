@@ -38,6 +38,7 @@
  * @searchTextTyped {function} - returns the text typed in the search bar
  * @fontSizeClass {string} - The font size of the dropdown items
  * @ignoreDisabledForSearch {boolean} - If the search bar should ignore the disabled options
+ * @positionDropdown {string} - The position of the dropdown
 */
 export type KernDropdownProps = {
     buttonName?: string;
@@ -81,6 +82,7 @@ export type KernDropdownProps = {
     fontSizeClass?: string;
     filteredOptions?: (option: string) => void;
     ignoreDisabledForSearch?: boolean;
+    positionDropdown?: "top" | "bottom" | "left" | "right";
 }
 
 export type AppSelectionDropdownProps = {

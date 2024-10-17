@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { KernDropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
@@ -62,6 +62,16 @@ export default function KernDropdown(props: KernDropdownProps) {
         if (!props.backgroundColors) return;
         setBackgroundColors(props.backgroundColors.map((x) => "bg-" + reduceColorProperty(x, '100')));
     }, [props.backgroundColors]);
+
+    const positionDropdown = useMemo(() => {
+        if (!props.positionDropdown) return "";
+        switch (props.positionDropdown) {
+            case "top": return "-translate-x-1/2 left-1/2 bottom-full";
+            case "bottom": return "-translate-x-1/2 left-1/2 top-full";
+            case "left": return "-translate-y-1/2 top-1/2 right-full";
+            case "right": return "-translate-y-1/2 top-1/2 left-full";
+        }
+    }, [props.positionDropdown]);
 
     function setOptionsWithCheckboxes(options: any[]) {
         if (selectedCheckboxes.length > 0) return;
@@ -203,7 +213,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                 leaveTo="transform opacity-0 scale-95"
                 show={isOpen}
             >
-                <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ?? 'w-full'} ${props.dropdownItemsClasses ?? ''}`}>
+                <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ?? 'w-full'} ${props.dropdownItemsClasses ?? ''} ${positionDropdown}`}>
                     <div className="py-1">
                         {dropdownCaptions.map((option: any, index: number) => (
                             <div key={option + "-" + index} className='relative'>
