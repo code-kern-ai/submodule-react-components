@@ -1,5 +1,4 @@
 import { IconBolt, IconChevronDown, IconCode, IconDotsVertical, IconExternalLink, IconFileInfo, IconFilePencil, IconLoader, IconPlayerPlayFilled, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
-import { useMemo } from 'react';
 
 export const SUPPORTED_ICONS = ['IconCode', 'IconBolt', 'IconSquareCheck', 'IconSquare', 'IconPlayerPlayFilled', 'IconTrash', 'IconExternalLink',
     'IconLoader', 'IconFilePencil', 'IconFileInfo'
@@ -13,14 +12,6 @@ type SVGIconProps = {
 }
 
 export default function SVGIcon(props: SVGIconProps) {
-    const unsupported = useMemo(() => {
-        const r = props.icon && !SUPPORTED_ICONS.includes(props.icon)
-        if (r) console.warn(`Icon ${props.icon} is not supported`)
-        return r
-    }, [props.icon]);
-
-    if (unsupported) return null;
-
     switch (props.icon) {
         case 'IconCode':
             return <IconCode size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
