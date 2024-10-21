@@ -1,3 +1,4 @@
+import { SUPPORTED_ICONS } from "../components/SVGIcon";
 import { KernDropdownProps } from "../types/dropdown";
 
 export const SELECT_ALL = 'Select all';
@@ -67,8 +68,12 @@ export function checkDropdownProps(props: KernDropdownProps) {
         throw new Error('Dropdown: linkList should be used with optionsHaveLink');
     } else if (props.hoverBoxList && !props.optionsHaveHoverBox) {
         throw new Error('Dropdown: hoverBoxList should be used with optionsHaveHoverBox');
-    } else if (props.iconsArray && (props.iconsArray.length != props.options.length)) {
-        throw new Error('Dropdown: iconsArray length must be equal to options length');
+    } else if (props.iconsArray) {
+        if (props.iconsArray.length != props.options.length) {
+            throw new Error('Dropdown: iconsArray length must be equal to options length');
+        } else if (props.iconsArray.some((icon: string) => !SUPPORTED_ICONS.includes(icon))) {
+            throw new Error('Dropdown: icon not yet supported');
+        }
     } else if (props.useFillForIcons && (props.useFillForIcons.length != props.options.length)) {
         throw new Error('Dropdown: useFillForIcons length must be equal to options length');
     }
