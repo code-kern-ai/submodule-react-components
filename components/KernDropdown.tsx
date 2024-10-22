@@ -18,7 +18,7 @@ export default function KernDropdown(props: KernDropdownProps) {
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
-    const [searchText, setSearchText] = useState(props.searchDefaultValue ?? '');
+    const [searchText, setSearchText] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
     const [position, setPosition] = useState(null);
@@ -37,6 +37,10 @@ export default function KernDropdown(props: KernDropdownProps) {
         if (!props.onSearchChange) return;
         props.onSearchChange(searchText)
     }, [props.onSearchChange, searchText]);
+
+    useEffect(() => {
+        setSearchText(props.searchDefaultValue ?? '');
+    }, [props.searchDefaultValue]);
 
     useEffect(() => {
         const prepareOptions = prepareDropdownOptionsToArray(props.options, props.hasSearchBar, props.valuePropertyPath);
