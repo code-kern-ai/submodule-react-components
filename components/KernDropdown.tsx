@@ -4,11 +4,11 @@ import { KernDropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
-import { IconChevronDown, IconDotsVertical, IconExternalLink, IconLoader } from '@tabler/icons-react';
+import { IconChevronDown, IconDotsVertical, IconExternalLink } from '@tabler/icons-react';
 import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
-import * as TablerIcons from '@tabler/icons-react';
 import { useDefaults } from '../hooks/useDefaults';
+import SVGIcon from './SVGIcon';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
@@ -18,7 +18,7 @@ export default function KernDropdown(props: KernDropdownProps) {
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
-    const [searchText, setSearchText] = useState(props.searchDefaultValue ?? '');
+    const [searchText, setSearchText] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
     const [position, setPosition] = useState(null);
@@ -37,6 +37,10 @@ export default function KernDropdown(props: KernDropdownProps) {
         if (!props.onSearchChange) return;
         props.onSearchChange(searchText)
     }, [props.onSearchChange, searchText]);
+
+    useEffect(() => {
+        setSearchText(props.searchDefaultValue ?? '');
+    }, [props.searchDefaultValue]);
 
     useEffect(() => {
         const prepareOptions = prepareDropdownOptionsToArray(props.options, props.hasSearchBar, props.valuePropertyPath);
@@ -278,19 +282,4 @@ function HoverBox(props: { position: any, hoverBox: any }) {
             </div>
         </div>}
     </>)
-}
-
-function SVGIcon({ icon, size, strokeWidth, useFillForIcons }) {
-    const Icon = TablerIcons[icon];
-    if (Icon) {
-        return (
-            <Icon
-                size={size}
-                strokeWidth={strokeWidth}
-                className={`${useFillForIcons ? 'fill-gray-800' : ''}`}
-            />
-        )
-    } else {
-        return <IconLoader size={size} strokeWidth={strokeWidth} />
-    }
 }
