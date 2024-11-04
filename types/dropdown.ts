@@ -83,6 +83,7 @@ export type KernDropdownProps = {
     filteredOptions?: (option: string) => void;
     ignoreDisabledForSearch?: boolean;
     positionDropdown?: "top" | "bottom" | "left" | "right";
+    scrollAfterNOptions?: number;
 }
 
 export type AppSelectionDropdownProps = {

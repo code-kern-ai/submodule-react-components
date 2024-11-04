@@ -9,6 +9,7 @@ import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import { useDefaults } from '../hooks/useDefaults';
 import SVGIcon from './SVGIcon';
+import { CSSProperties } from 'react';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
@@ -76,6 +77,12 @@ export default function KernDropdown(props: KernDropdownProps) {
             case "right": return "-translate-y-1/2 top-1/2 left-full";
         }
     }, [props.positionDropdown]);
+
+    const scrollMaxStyles = useMemo((): CSSProperties => {
+        if (!props.scrollAfterNOptions) return {};
+        const maxHeight = 2 * props.scrollAfterNOptions + 0.5;
+        return { "maxHeight": `${maxHeight}rem`, "overflowY": "auto" };
+    }, [props.scrollAfterNOptions]);
 
     function setOptionsWithCheckboxes(options: any[]) {
         if (selectedCheckboxes.length > 0) return;
@@ -218,7 +225,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                 show={isOpen}
             >
                 <Menu.Items className={`absolute z-10 mt-2 origin-top-right rounded-md bg-white shadow-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${props.dropdownItemsWidth ?? 'w-full'} ${props.dropdownItemsClasses ?? ''} ${positionDropdown}`}>
-                    <div className="py-1">
+                    <div style={scrollMaxStyles} className='py-1'>
                         {dropdownCaptions.map((option: any, index: number) => (
                             <div key={option + "-" + index} className='relative'>
                                 <Menu.Item disabled={disabledOptions[index]}>
