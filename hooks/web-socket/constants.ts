@@ -21,12 +21,10 @@ export enum CurrentPage {
     LOOKUP_LISTS_DETAILS = "LOOKUP_LISTS_DETAILS",
     LABELING_FUNCTION = "LABELING_FUNCTION",
     ACTIVE_LEARNING = "ACTIVE_LEARNING",
-    RECORD_IDE = "RECORD_IDE",
     EDIT_RECORDS = "EDIT_RECORDS",
     NOTIFICATION_CENTER = "NOTIFICATION_CENTER",
     EXPORT = "EXPORT",
     COMMENTS = "COMMENTS",
-    BRICKS_INTEGRATOR = "BRICKS_INTEGRATOR",
     CONFIG = "CONFIG",
     COGNITION_LAYOUT = "COGNITION_LAYOUT",
     ENTRY_LAYOUT = "ENTRY_LAYOUT",
@@ -58,9 +56,6 @@ export const WHITELIST_LOOKUP_REFINERY = {
     [CurrentPage.COMMENTS]: {
         [CurrentPageSubKey.NONE]: ['label_created', 'label_deleted', 'attributes_updated', 'calculate_attribute', 'embedding_deleted', 'embedding', 'labeling_task_updated', 'labeling_task_deleted', 'labeling_task_created', 'data_slice_created', 'data_slice_updated', 'data_slice_deleted', 'information_source_created', 'information_source_updated', 'information_source_deleted', 'knowledge_base_created', 'knowledge_base_updated', 'knowledge_base_deleted'],
         [CurrentPageSubKey.GLOBAL]: ['comment_created', 'comment_updated', 'comment_deleted', 'project_created', 'project_deleted']
-    },
-    [CurrentPage.BRICKS_INTEGRATOR]: {
-        [CurrentPageSubKey.VARIABLE_SELECTION]: ['attributes_updated', 'calculate_attribute', 'label_created', 'label_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created', 'embedding', 'embedding_deleted', 'knowledge_base_deleted', 'knowledge_base_created']
     },
     [CurrentPage.PROJECT_OVERVIEW]: {
         [CurrentPageSubKey.NONE]: ['label_created', 'label_deleted', 'labeling_task_deleted', 'labeling_task_updated', 'labeling_task_created', 'weak_supervision_finished', 'data_slice_created', 'data_slice_updated', 'data_slice_deleted']
