@@ -100,7 +100,7 @@ export const WHITELIST_LOOKUP_REFINERY = {
 
     },
     [CurrentPage.NOTIFICATION_CENTER]: {
-        [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'config_updated', 'admin_message'],
+        [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'admin_message'],
 
     }
 }
