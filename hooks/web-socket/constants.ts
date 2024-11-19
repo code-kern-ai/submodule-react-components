@@ -25,7 +25,6 @@ export enum CurrentPage {
     NOTIFICATION_CENTER = "NOTIFICATION_CENTER",
     EXPORT = "EXPORT",
     COMMENTS = "COMMENTS",
-    CONFIG = "CONFIG",
     COGNITION_LAYOUT = "COGNITION_LAYOUT",
     ENTRY_LAYOUT = "ENTRY_LAYOUT",
     ADMIN_DASHBOARD_LAYOUT = "ADMIN_DASHBOARD_LAYOUT",
@@ -101,7 +100,7 @@ export const WHITELIST_LOOKUP_REFINERY = {
 
     },
     [CurrentPage.NOTIFICATION_CENTER]: {
-        [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'config_updated', 'admin_message'],
+        [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'admin_message'],
 
     }
 }
