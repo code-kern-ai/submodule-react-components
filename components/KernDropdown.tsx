@@ -238,6 +238,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                         backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active && !backgroundColors[index] ? "bg-gray-100 text-gray-900" : "text-gray-700",
                                                         props.iconsArray && props.iconsArray[index] ? "px-2" : "px-4",
                                                         defaultProps.fontSizeClass,
+                                                        props.dropdownAdd ? "inline-flex w-full justify-between" : "",
                                                         "py-2 flex items-center"
                                                     )}
                                                     onClick={() => {
@@ -260,6 +261,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                     <span className='truncate'>{option}</span>
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
                                                     {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
+                                                    {props.dropdownAdd && props.dropdownAdd[index]}
                                                 </label>
                                             </Tooltip>
                                         </div>
