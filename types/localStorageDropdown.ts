@@ -19,6 +19,7 @@ export type LocalStorageDropdownProps = {
     onOptionSelected?: (option: string) => void;
     searchDefaultValue?: string;
     excludedFromStorage?: { values: string[]; compareOptions?: CompareOptions[] }; // if the value is in this list it will not be added to the storage //setting this to null will assume all values are valid
+    disabled?: boolean;
 }
 
 
