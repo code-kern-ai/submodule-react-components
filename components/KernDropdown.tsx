@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { KernDropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
@@ -10,6 +10,7 @@ import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import { useDefaults } from '../hooks/useDefaults';
 import SVGIcon from './SVGIcon';
 import { CSSProperties } from 'react';
+import useRefFor from '../hooks/useRefFor';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
@@ -20,12 +21,16 @@ export default function KernDropdown(props: KernDropdownProps) {
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
     const [searchText, setSearchText] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen_] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
     const [position, setPosition] = useState(null);
     const [savedIndex, setSavedIndex] = useState(null);
 
     const [defaultProps] = useDefaults<{ fontSizeClass: string }>(props, DEFAULTS);
+    const forceOpenRef = useRefFor(props.forceOverwriteOpen);
+
+    // catches all isOpen changes & sets the value if it is not forced to be open
+    const setIsOpen = useCallback((value: boolean) => { if ((!value && !forceOpenRef.current) || value) setIsOpen_(value) }, [])
 
     const dropdownRef = useRef(null);
     useOnClickOutside(dropdownRef, () => setIsOpen(false));

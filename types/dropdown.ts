@@ -40,6 +40,7 @@
  * @ignoreDisabledForSearch {boolean} - If the search bar should ignore the disabled options
  * @positionDropdown {string} - The position of the dropdown
  * @dropdownAdd {JSX.Element} - array of JSX elements that will be added to the dropdown items
+ * @forceOverwriteOpen {boolean} - forces the dropdown to stay open until set to false/undefined
 */
 export type KernDropdownProps = {
     buttonName?: string;
@@ -86,6 +87,7 @@ export type KernDropdownProps = {
     positionDropdown?: "top" | "bottom" | "left" | "right";
     scrollAfterNOptions?: number;
     dropdownAdd?: JSX.Element[];
+    forceOverwriteOpen?: boolean;
 }
 
 export type AppSelectionDropdownProps = {
