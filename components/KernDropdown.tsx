@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { KernDropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
@@ -10,6 +10,7 @@ import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import { useDefaults } from '../hooks/useDefaults';
 import SVGIcon from './SVGIcon';
 import { CSSProperties } from 'react';
+import useRefFor from '../hooks/useRefFor';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
@@ -20,12 +21,16 @@ export default function KernDropdown(props: KernDropdownProps) {
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
     const [searchText, setSearchText] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen_] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
     const [position, setPosition] = useState(null);
     const [savedIndex, setSavedIndex] = useState(null);
 
     const [defaultProps] = useDefaults<{ fontSizeClass: string }>(props, DEFAULTS);
+    const forceOpenRef = useRefFor(props.forceOverwriteOpen);
+
+    // catches all isOpen changes & sets the value if it is not forced to be open
+    const setIsOpen = useCallback((value: boolean) => { if ((!value && !forceOpenRef.current) || value) setIsOpen_(value) }, [])
 
     const dropdownRef = useRef(null);
     useOnClickOutside(dropdownRef, () => setIsOpen(false));
@@ -238,6 +243,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                         backgroundColors[index], props.useDifferentTextColor && props.useDifferentTextColor[index] ? 'text-' + props.differentTextColor + '-700' : active && !backgroundColors[index] ? "bg-gray-100 text-gray-900" : "text-gray-700",
                                                         props.iconsArray && props.iconsArray[index] ? "px-2" : "px-4",
                                                         defaultProps.fontSizeClass,
+                                                        props.dropdownAdd ? "inline-flex w-full justify-between" : "",
                                                         "py-2 flex items-center"
                                                     )}
                                                     onClick={() => {
@@ -260,6 +266,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                     <span className='truncate'>{option}</span>
                                                     {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
                                                     {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
+                                                    {props.dropdownAdd && props.dropdownAdd[index]}
                                                 </label>
                                             </Tooltip>
                                         </div>
