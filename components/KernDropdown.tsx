@@ -21,6 +21,7 @@ export default function KernDropdown(props: KernDropdownProps) {
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
     const [backgroundColors, setBackgroundColors] = useState<string[]>([]);
     const [searchText, setSearchText] = useState('');
+    const [searchIndexes, setSearchIndexes] = useState<number[]>();
     const [isOpen, setIsOpen_] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<any[]>([]);
     const [position, setPosition] = useState(null);
@@ -51,11 +52,15 @@ export default function KernDropdown(props: KernDropdownProps) {
     useEffect(() => {
         const prepareOptions = prepareDropdownOptionsToArray(props.options, props.hasSearchBar, props.valuePropertyPath);
         if (props.hasSearchBar) {
-            setDropdownCaptions(setOptionsWithSearchBar(prepareOptions, searchText));
+            const [remaining, indexes] = setOptionsWithSearchBar(prepareOptions, searchText)
+            setDropdownCaptions(remaining);
+            setSearchIndexes(indexes);
         } else if (props.hasCheckboxes) {
             setOptionsWithCheckboxes(prepareOptions);
+            setSearchIndexes(null);
         } else {
             setDropdownCaptions(prepareOptions);
+            setSearchIndexes(null);
         }
     }, [props.options, searchText, selectedCheckboxes, props.hasSearchBar, props.hasCheckboxes, props.selectedCheckboxes, props.hasSelectAll, props.valuePropertyPath]);
 
@@ -167,10 +172,12 @@ export default function KernDropdown(props: KernDropdownProps) {
             return;
         }
         if (props.selectedOption) {
-            props.selectedOption(props.options[index]);
             if (props.hoverBoxList) setHoverBoxPosition(null);
             if (props.hasSearchBar) {
                 setSearchText(option);
+                props.selectedOption(props.options[searchIndexes[index]]);
+            } else {
+                props.selectedOption(props.options[index]);
             }
             setIsOpen(false);
         }
