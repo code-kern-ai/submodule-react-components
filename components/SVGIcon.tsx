@@ -1,7 +1,7 @@
-import { IconBolt, IconChevronDown, IconCode, IconDotsVertical, IconExternalLink, IconFileInfo, IconFilePencil, IconLoader, IconPlayerPlayFilled, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
+import { IconBolt, IconChevronDown, IconCode, IconDotsVertical, IconEdit, IconExternalLink, IconFileInfo, IconFilePencil, IconLoader, IconPlayerPlayFilled, IconShieldCheckFilled, IconShieldFilled, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
 
 export const SUPPORTED_ICONS = ['IconCode', 'IconBolt', 'IconSquareCheck', 'IconSquare', 'IconPlayerPlayFilled', 'IconTrash', 'IconExternalLink',
-    'IconLoader', 'IconFilePencil', 'IconFileInfo'
+    'IconLoader', 'IconFilePencil', 'IconFileInfo', 'IconEdit', 'IconShieldFilled', 'IconShieldCheckFilled'
 ]
 
 type SVGIconProps = {
@@ -37,6 +37,12 @@ export default function SVGIcon(props: SVGIconProps) {
             return <IconFilePencil size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
         case 'IconFileInfo':
             return <IconFileInfo size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+        case 'IconEdit':
+            return <IconEdit size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+        case 'IconShieldFilled':
+            return <IconShieldFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+        case 'IconShieldCheckFilled':
+            return <IconShieldCheckFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
         default: return <IconLoader size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
     }
 

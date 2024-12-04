@@ -33,9 +33,11 @@ export function prepareDropdownOptionsToArray(options: string[] | any[], hasSear
     else return getTextArray(options);
 }
 
-export function setOptionsWithSearchBar(options: string[], searchText: string) {
-    if (!searchText) return options;
-    return options.filter(option => option.toLowerCase().includes(searchText.toLowerCase()));
+export function setOptionsWithSearchBar(options: string[], searchText: string): [string[], number[]] {
+    if (!searchText) return [options, options.map((_, i) => i)];
+    const withIdx = options.map((o, i) => ({ origIdx: i, text: o }));
+    const filtered = withIdx.filter(option => option.text.toLowerCase().includes(searchText.toLowerCase()));
+    return [filtered.map(f => f.text), filtered.map(f => f.origIdx)];
 }
 
 export function checkDropdownProps(props: KernDropdownProps) {
