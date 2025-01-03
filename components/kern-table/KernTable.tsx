@@ -14,13 +14,13 @@ export default function KernTable(props: KernTableProps) {
                 <tr>
                     {props.headers.map((header) => (
                         <th scope="col"
-                            className={`px-3 py-2 text-center text-xs font-medium uppercase tracking-wide text-gray-500 ${props.config?.sortingColumns?.includes(header.id) ? 'hover:text-gray-700 cursor-pointer' : ''}`}
+                            className={`px-3 py-2 text-center text-xs font-medium uppercase tracking-wide text-gray-500 ${header.hasSort ? 'hover:text-gray-700 cursor-pointer' : ''}`}
                             id={header.id} key={header.id}
                             onClick={props.config.onClickSort ? () => props.config.onClickSort(header.id) : undefined}
                         >
                             <div className="inline-flex flex-row items-center">
                                 {header.column}
-                                {props.config?.sortingColumns?.includes(header.id) && <SortArrows sortKey={props.config.sortKey} property={header.id} />}
+                                {header.hasSort && <SortArrows sortKey={props.config.sortKey} property={header.id} />}
                             </div>
                         </th>))}
                 </tr>

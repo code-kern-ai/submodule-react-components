@@ -1,11 +1,10 @@
 import { SortKey } from "@/src/util/sort-functions";
 
 export type KernTableProps = {
-    headers: { column: string, id: string }[];
+    headers: { column: string, id: string, hasSort?: boolean }[];
     values?: any[];
     config?: {
         sortKey?: SortKey;
-        sortingColumns?: string[];
         onClickSort?: (property: string) => void;
     }
 }
