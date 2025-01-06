@@ -26,8 +26,8 @@ export default function KernTable(props: KernTableProps) {
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-                {props.values?.map((row, index) => (<>
-                    <tr key={row} className={index % 2 != 0 ? "bg-gray-50" : "bg-white"}>
+                {props.values?.map((row, index) => (
+                    <tr key={index} className={index % 2 != 0 ? "bg-gray-50" : "bg-white"}>
                         {row.map((cell, index) => {
                             return <Fragment key={index}>
                                 <td className="whitespace-nowrap text-center px-3 py-2 text-sm text-gray-500 ">
@@ -38,8 +38,7 @@ export default function KernTable(props: KernTableProps) {
                                 </td>
                             </Fragment>
                         })}
-                    </tr>
-                </>))}
+                    </tr>))}
             </tbody>
         </table>
     )
