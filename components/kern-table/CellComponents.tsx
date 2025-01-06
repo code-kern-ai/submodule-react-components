@@ -1,7 +1,8 @@
-import { NotApplicableBadge } from "@/src/components/Badges"
-import { DeleteOrganizationButton } from "@/src/components/Buttons";
+import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/src/components/Badges"
+import { DeleteOrganizationButton, DeleteUserButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
-import { IconFileDownload, IconNotes } from "@tabler/icons-react";
+import { IconFileDownload, IconNotes, IconUserX } from "@tabler/icons-react";
+import KernDropdown from "../KernDropdown";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -56,4 +57,26 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
     )
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell }
+function BadgeCell({ value }) {
+    return <span> {value ? (<ActiveBadge />) : (<InactiveBadge />)}</span>
+}
+
+function OrganizationUserCell({ userToOrganization, organizations, user, onClickRemove, onClickAdd }) {
+    return <>{(userToOrganization && user.id in userToOrganization) ? (<div className="flex items-center flex-row">
+        <span className="mr-2">{userToOrganization[user.id]['name']}</span>
+        <div onClick={() => onClickRemove(user.id)} className="cursor-pointer">
+            <IconUserX
+                size={20}
+                strokeWidth={2}
+                className='text-gray-900 font-bold cursor-pointer' />
+        </div>
+    </div>) : (
+        <KernDropdown options={organizations} buttonName="Choose" selectedOption={(option) => onClickAdd(option)} doNotUseTextArray={true} scrollAfterNOptions={10} />
+    )}</>
+}
+
+function DeleteUserCell({ user, deleteUser }) {
+    return <DeleteUserButton user={user} onClick={deleteUser} />
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell }

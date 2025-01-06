@@ -1,6 +1,6 @@
 import SortArrows from "@/src/components/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { CommentsCell, ExportConsumptionAndDeleteCell, MaxRowsColsCharsCell, OrganizationAndUsersCell } from "./CellComponents";
+import { BadgeCell, CommentsCell, DeleteUserCell, ExportConsumptionAndDeleteCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -57,6 +57,12 @@ function ComponentMapper(cell: any) {
                     return <CommentsCell {...cell} />;
                 case 'ExportConsumptionAndDeleteCell':
                     return <ExportConsumptionAndDeleteCell {...cell} />;
+                case 'BadgeCell':
+                    return <BadgeCell {...cell} />;
+                case 'OrganizationUserCell':
+                    return <OrganizationUserCell {...cell} />;
+                case 'DeleteUserCell':
+                    return <DeleteUserCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
@@ -64,10 +70,12 @@ function ComponentMapper(cell: any) {
             return <span>{cell.value[1]}</span>
         case 'boolean':
             return <input type="checkbox" checked={cell.value} onClick={cell.valueChange} readOnly />
-        case 'date':
+        case 'dateInput':
             return <input type="date" id="start" className="border-0" value={cell.value[1]} onChange={cell.valueChange} />
+        case 'date':
+            return <span>{cell.value[1]}</span>
         case 'dropdown':
-            return <KernDropdown options={ADMIN_LOG_LEVELS} buttonName={cell.value} dropdownWidth="w-32" selectedOption={(value) => cell.selectedOption(value)} />
+            return <KernDropdown options={cell.options} disabled={cell.disabled} buttonName={cell.value} dropdownWidth="w-32" selectedOption={(value) => cell.selectedOption(value)} />
         default:
             return null;
     }
