@@ -41,7 +41,7 @@ function CommentsCell({ hasComments, onClick }) {
     )
 }
 
-function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport, deleteOrg, saveOrg }) {
+function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport, deleteOrg }) {
     return (
         <div className="flex items-center gap-x-6 justify-end">
             <div className="cursor-pointer" onClick={onClickConsumptionExport}>
@@ -51,7 +51,7 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
                         className={"h-6 w-6 m-auto text-gray-500"} />
                 </Tooltip>
             </div>
-            <DeleteOrganizationButton organization={organization} onClick={deleteOrg} saveOrg={saveOrg} />
+            <DeleteOrganizationButton organization={organization} onClick={deleteOrg} />
         </div>
     )
 }
