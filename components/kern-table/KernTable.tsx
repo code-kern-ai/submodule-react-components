@@ -1,6 +1,6 @@
 import SortArrows from "@/src/components/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { BadgeCell, CommentsCell, DeleteUserCell, ExportConsumptionAndDeleteCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell } from "./CellComponents";
+import { ArchiveReasonCell, BadgeCell, CommentsCell, DeleteUserCell, ExportConsumptionAndDeleteCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -62,6 +62,10 @@ function ComponentMapper(cell: any) {
                     return <OrganizationUserCell {...cell} />;
                 case 'DeleteUserCell':
                     return <DeleteUserCell {...cell} />;
+                case 'LevelCell':
+                    return <LevelCell {...cell} />;
+                case 'ArchiveReasonCell':
+                    return <ArchiveReasonCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>

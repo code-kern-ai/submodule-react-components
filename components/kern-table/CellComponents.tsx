@@ -1,8 +1,9 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/src/components/Badges"
-import { DeleteOrganizationButton, DeleteUserButton } from "@/src/components/Buttons";
+import { ArchiveButton, DeleteOrganizationButton, DeleteUserButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
-import { IconFileDownload, IconNotes, IconUserX } from "@tabler/icons-react";
+import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
+import { AdminMessageLevel } from "@/src/types/admin-messages-types";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -79,4 +80,16 @@ function DeleteUserCell({ user, deleteUser }) {
     return <DeleteUserButton user={user} onClick={deleteUser} />
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell }
+function LevelCell({ value }) {
+    return <>{value == AdminMessageLevel.INFO ? (<IconInfoSquare className='text-blue-700 h-6 w-6' />) : (<IconInfoCircle className='text-yellow-700 h-6 w-6' />)}</>
+}
+
+function ArchiveReasonCell({ message, onClick }) {
+    return <>{message.archivedReason ? (
+        <span>{message.archivedReason}</span>
+    ) : (
+        <ArchiveButton messageId={message.id} modalName="archiveModal" onClick={() => onClick(message.id)} />
+    )}</>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell }
