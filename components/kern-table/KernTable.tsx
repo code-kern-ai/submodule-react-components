@@ -1,6 +1,6 @@
 import SortArrows from "@/src/components/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { ArchiveReasonCell, BadgeCell, CommentsCell, DeleteUserCell, ExportConsumptionAndDeleteCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell } from "./CellComponents";
+import { ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, DeleteUserCell, ExportConsumptionAndDeleteCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -66,13 +66,17 @@ function ComponentMapper(cell: any) {
                     return <LevelCell {...cell} />;
                 case 'ArchiveReasonCell':
                     return <ArchiveReasonCell {...cell} />;
+                case 'ProjectNameTaskCell':
+                    return <ProjectNameTaskCell {...cell} />;
+                case 'CancelTaskCell':
+                    return <CancelTaskCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
         case 'number':
             return <span>{cell.value[1]}</span>
         case 'boolean':
-            return <input type="checkbox" checked={cell.value} onClick={cell.valueChange} readOnly />
+            return <input type="checkbox" checked={cell.value} onClick={cell.valueChange ? cell.valueChange : undefined} readOnly />
         case 'dateInput':
             return <input type="date" id="start" className="border-0" value={cell.value[1]} onChange={cell.valueChange} />
         case 'date':

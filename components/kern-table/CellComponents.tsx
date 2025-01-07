@@ -1,9 +1,10 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/src/components/Badges"
-import { ArchiveButton, DeleteOrganizationButton, DeleteUserButton } from "@/src/components/Buttons";
+import { ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
 import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { AdminMessageLevel } from "@/src/types/admin-messages-types";
+import { Application } from "../../hooks/web-socket/constants";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -92,4 +93,17 @@ function ArchiveReasonCell({ message, onClick }) {
     )}</>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell }
+function ProjectNameTaskCell({ task }) {
+    return <div className="flex items-center flex-row justify-center">
+        {task.projectName ?? <NotApplicableBadge />}
+        {<Tooltip content={task.applicationName} color="invert" className="cursor-auto">
+            <img src={task.applicationName == Application.REFINERY ? '/admin/dashboard/refinery-icon.png' : '/admin/dashboard/kern-icon.png'} className="w-6 h-6 ml-2" />
+        </Tooltip>}
+    </div>
+}
+
+function CancelTaskCell({ task, onClick }) {
+    return <CancelDeleteTaskButton task={task} onClick={() => onClick(task)} />
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell }
