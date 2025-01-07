@@ -1,10 +1,11 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/src/components/Badges"
-import { ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton } from "@/src/components/Buttons";
+import { ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton, KernButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
 import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { AdminMessageLevel } from "@/src/types/admin-messages-types";
 import { Application } from "../../hooks/web-socket/constants";
+import SVGIcon from "../SVGIcon";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -106,4 +107,25 @@ function CancelTaskCell({ task, onClick }) {
     return <CancelDeleteTaskButton task={task} onClick={() => onClick(task)} />
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell }
+function IconCell({ icon }) {
+    return (<div className="flex items-center w-full h-full justify-center">
+        <SVGIcon icon={icon} size={32} strokeWidth={2} />
+    </div>)
+}
+
+function ConfigCell({ config }) {
+    return <Tooltip content={<span className="whitespace-pre">{config}</span>} color="invert" hideArrow={true} placement='bottom'>
+        <SVGIcon icon="IconFileInfo" size={32} strokeWidth={2} />
+    </Tooltip>
+}
+
+function EditDeleteOrgButtonCell({ button, clickEdit }) {
+    return <div className="flex flex-row gap-x-2 items-center">
+        <div className="rounded-lg cursor-pointer" onClick={() => clickEdit(button)}>
+            <SVGIcon icon="IconFilePencil" size={32} strokeWidth={2} />
+        </div>
+        <KernButton buttonName="Delete" onClick={button.delFunc} className="border-red-400 bg-red-100 text-red-700 hover:bg-red-50" />
+    </div>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell }
