@@ -4,7 +4,6 @@ import { BadgeCell, CommentsCell, DeleteUserCell, ExportConsumptionAndDeleteCell
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
-import { ADMIN_LOG_LEVELS } from "@/src/components/organization/OrganizationsTable";
 import { NotApplicableBadge } from "@/src/components/Badges";
 
 export default function KernTable(props: KernTableProps) {
@@ -73,9 +72,9 @@ function ComponentMapper(cell: any) {
         case 'dateInput':
             return <input type="date" id="start" className="border-0" value={cell.value[1]} onChange={cell.valueChange} />
         case 'date':
-            return <span>{cell.value[1]}</span>
+            return <span>{(cell.value[1] && cell.value !== "") ? cell.value[1] : <NotApplicableBadge />}</span>
         case 'dropdown':
-            return <KernDropdown options={cell.options} disabled={cell.disabled} buttonName={cell.value} dropdownWidth="w-32" selectedOption={(value) => cell.selectedOption(value)} />
+            return <KernDropdown options={cell.options} disabled={cell.disabled} buttonName={cell.value} dropdownWidth="w-40" selectedOption={(value) => cell.selectedOption(value)} />
         default:
             return null;
     }
