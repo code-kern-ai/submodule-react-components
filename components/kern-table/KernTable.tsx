@@ -17,10 +17,17 @@ export default function KernTable(props: KernTableProps) {
                             id={header.id} key={header.id}
                             onClick={header.hasSort ? () => props.config.onClickSort(header.id) : undefined}
                         >
-                            <div className="inline-flex flex-row items-center">
+                            {header.hasCheckboxes ? <>
+                                <input
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
+                                    checked={header.checked}
+                                    onChange={header.onChange}
+                                />
+                            </> : <div className="inline-flex flex-row items-center">
                                 {header.column}
                                 {header.hasSort && <SortArrows sortKey={props.config.sortKey} property={header.id} />}
-                            </div>
+                            </div>}
                         </th>))}
                 </tr>
             </thead>
