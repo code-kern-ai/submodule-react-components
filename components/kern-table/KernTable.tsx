@@ -1,6 +1,6 @@
 import SortArrows from "@/src/components/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, IconCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, IconCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, ViewStackCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -43,7 +43,6 @@ export default function KernTable(props: KernTableProps) {
     )
 }
 
-// First value is used for sorting, second value is used for display
 function ComponentMapper(cell: any) {
     switch (cell.type) {
         case 'Component':
@@ -76,6 +75,10 @@ function ComponentMapper(cell: any) {
                     return <ConfigCell {...cell} />;
                 case 'EditDeleteOrgButtonCell':
                     return <EditDeleteOrgButtonCell {...cell} />;
+                case 'ViewStackCell':
+                    return <ViewStackCell {...cell} />;
+                case 'AbortSessionButtonCell':
+                    return <AbortSessionButtonCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>

@@ -1,5 +1,5 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/src/components/Badges"
-import { ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton, KernButton } from "@/src/components/Buttons";
+import { AbortSessionButton, ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton, KernButton, ViewStackButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
 import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -128,4 +128,12 @@ function EditDeleteOrgButtonCell({ button, clickEdit }) {
     </div>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell }
+function ViewStackCell({ session, onClick }) {
+    return <ViewStackButton session={session} onClick={() => onClick(session)} />
+}
+
+function AbortSessionButtonCell({ session, onClick }) {
+    return <AbortSessionButton session={session} onClick={() => onClick(session)} />
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell }
