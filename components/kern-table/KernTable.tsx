@@ -1,10 +1,10 @@
-import SortArrows from "@/src/components/SortArrows";
+import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
 import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, IconCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, ViewStackCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
-import { NotApplicableBadge } from "@/src/components/Badges";
+import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
 
 export default function KernTable(props: KernTableProps) {
     return (

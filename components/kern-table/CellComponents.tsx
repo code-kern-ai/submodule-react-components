@@ -1,4 +1,4 @@
-import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/src/components/Badges"
+import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
 import { AbortSessionButton, ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton, KernButton, ViewStackButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
 import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
