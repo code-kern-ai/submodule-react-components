@@ -1,11 +1,12 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
-import { AbortSessionButton, ArchiveButton, CancelDeleteTaskButton, DeleteOrganizationButton, DeleteUserButton, KernButton, ViewStackButton } from "@/src/components/Buttons";
 import { Tooltip } from "@nextui-org/react";
 import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { AdminMessageLevel } from "@/src/types/admin-messages-types";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
+import { useCallback } from "react";
+import { KernButton } from "@/src/components/Buttons";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -46,6 +47,10 @@ function CommentsCell({ hasComments, onClick }) {
 }
 
 function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport, deleteOrg }) {
+    const clickDelete = useCallback(() => {
+        if (deleteOrg) deleteOrg(organization);
+    }, [deleteOrg, organization]);
+
     return (
         <div className="flex items-center gap-x-6 justify-end">
             <div className="cursor-pointer" onClick={onClickConsumptionExport}>
@@ -55,7 +60,7 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
                         className={"h-6 w-6 m-auto text-gray-500"} />
                 </Tooltip>
             </div>
-            <DeleteOrganizationButton organization={organization} onClick={deleteOrg} />
+            <KernButton buttonName="Delete" onClick={clickDelete} className="border-red-400 bg-red-100 text-red-700 hover:bg-red-50" />;
         </div>
     )
 }
@@ -79,7 +84,11 @@ function OrganizationUserCell({ userToOrganization, organizations, user, onClick
 }
 
 function DeleteUserCell({ user, deleteUser }) {
-    return <DeleteUserButton user={user} onClick={deleteUser} />
+    const clickDelete = useCallback(() => {
+        if (deleteUser) deleteUser(user);
+    }, [deleteUser, user]);
+
+    return <KernButton buttonName="Delete" onClick={clickDelete} className="border-red-400 bg-red-100 text-red-700 hover:bg-red-50" />;
 }
 
 function LevelCell({ value }) {
@@ -87,10 +96,14 @@ function LevelCell({ value }) {
 }
 
 function ArchiveReasonCell({ message, onClick }) {
+    const clickArchive = useCallback(() => {
+        if (onClick) onClick(message);
+    }, [onClick, message]);
+
     return <>{message.archivedReason ? (
         <span>{message.archivedReason}</span>
     ) : (
-        <ArchiveButton messageId={message.id} modalName="archiveModal" onClick={() => onClick(message.id)} />
+        <KernButton buttonName="Archive" onClick={clickArchive} />
     )}</>
 }
 
@@ -104,7 +117,11 @@ function ProjectNameTaskCell({ task }) {
 }
 
 function CancelTaskCell({ task, onClick }) {
-    return <CancelDeleteTaskButton task={task} onClick={() => onClick(task)} />
+    const clickCancel = useCallback(() => {
+        if (onClick) onClick(task);
+    }, [onClick, task]);
+
+    return <KernButton buttonName={task?.isActive ? "Cancel" : "Delete"} onClick={clickCancel} className="bg-red-100 text-red-700 border-red-400 hover:bg-red-50" />
 }
 
 function IconCell({ icon }) {
@@ -128,12 +145,19 @@ function EditDeleteOrgButtonCell({ button, clickEdit }) {
     </div>
 }
 
-function ViewStackCell({ session, onClick }) {
-    return <ViewStackButton session={session} onClick={() => onClick(session)} />
+function ViewStackCell({ onClick }) {
+    const clickView = useCallback(() => {
+        if (onClick) onClick();
+    }, [onClick]);
+    return <KernButton buttonName="View stack" onClick={clickView} />
 }
 
 function AbortSessionButtonCell({ session, onClick }) {
-    return <AbortSessionButton session={session} onClick={() => onClick(session)} />
+    const clickAbort = useCallback(() => {
+        if (onClick) onClick(session);
+    }, [onClick, session]);
+
+    return <KernButton buttonName="Abort" onClick={clickAbort} className="bg-red-100 text-red-700 border-red-400 hover:bg-red-50" />
 }
 
 export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell }
