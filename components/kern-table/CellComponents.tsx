@@ -2,11 +2,11 @@ import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/rea
 import { Tooltip } from "@nextui-org/react";
 import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
-import { AdminMessageLevel } from "@/src/types/admin-messages-types";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
 import { useCallback } from "react";
-import { KernButton } from "@/src/components/Buttons";
+import KernButton from "../kern-button/KernButton";
+import { AdminMessageLevel } from "../../types/admin-messages";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -60,7 +60,7 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
                         className={"h-6 w-6 m-auto text-gray-500"} />
                 </Tooltip>
             </div>
-            <KernButton buttonName="Delete" onClick={clickDelete} className="border-red-400 bg-red-100 text-red-700 hover:bg-red-50" />;
+            <KernButton text="Delete" onClick={clickDelete} buttonColor="red" />;
         </div>
     )
 }
@@ -88,7 +88,11 @@ function DeleteUserCell({ user, deleteUser }) {
         if (deleteUser) deleteUser(user);
     }, [deleteUser, user]);
 
-    return <KernButton buttonName="Delete" onClick={clickDelete} className="border-red-400 bg-red-100 text-red-700 hover:bg-red-50" />;
+    return <KernButton
+        text="Delete"
+        onClick={clickDelete}
+        buttonColor="red"
+    />;
 }
 
 function LevelCell({ value }) {
@@ -103,7 +107,7 @@ function ArchiveReasonCell({ message, onClick }) {
     return <>{message.archivedReason ? (
         <span>{message.archivedReason}</span>
     ) : (
-        <KernButton buttonName="Archive" onClick={clickArchive} />
+        <KernButton text="Archive" onClick={clickArchive} buttonColor="green" />
     )}</>
 }
 
@@ -121,7 +125,7 @@ function CancelTaskCell({ task, onClick }) {
         if (onClick) onClick(task);
     }, [onClick, task]);
 
-    return <KernButton buttonName={task?.isActive ? "Cancel" : "Delete"} onClick={clickCancel} className="bg-red-100 text-red-700 border-red-400 hover:bg-red-50" />
+    return <KernButton text={task?.isActive ? "Cancel" : "Delete"} onClick={clickCancel} buttonColor="red" />
 }
 
 function IconCell({ icon }) {
@@ -141,7 +145,7 @@ function EditDeleteOrgButtonCell({ button, clickEdit }) {
         <div className="rounded-lg cursor-pointer" onClick={() => clickEdit(button)}>
             <SVGIcon icon="IconFilePencil" size={32} strokeWidth={2} />
         </div>
-        <KernButton buttonName="Delete" onClick={button.delFunc} className="border-red-400 bg-red-100 text-red-700 hover:bg-red-50" />
+        <KernButton text="Delete" onClick={button.delFunc} buttonColor="red" />
     </div>
 }
 
@@ -149,7 +153,7 @@ function ViewStackCell({ onClick }) {
     const clickView = useCallback(() => {
         if (onClick) onClick();
     }, [onClick]);
-    return <KernButton buttonName="View stack" onClick={clickView} />
+    return <KernButton text="View stack" onClick={clickView} />
 }
 
 function AbortSessionButtonCell({ session, onClick }) {
@@ -157,7 +161,7 @@ function AbortSessionButtonCell({ session, onClick }) {
         if (onClick) onClick(session);
     }, [onClick, session]);
 
-    return <KernButton buttonName="Abort" onClick={clickAbort} className="bg-red-100 text-red-700 border-red-400 hover:bg-red-50" />
+    return <KernButton text="Abort" onClick={clickAbort} buttonColor="red" />
 }
 
 export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell }
