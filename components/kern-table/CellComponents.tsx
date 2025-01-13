@@ -1,13 +1,14 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
 import { Link, Tooltip } from "@nextui-org/react";
-import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconUserX } from "@tabler/icons-react";
+import { IconAlertCircle, IconAlertTriangleFilled, IconCircleCheckFilled, IconExternalLink, IconFileDownload, IconInfoCircle, IconInfoSquare, IconLoader, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconTrash, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
 import { useCallback } from "react";
 import KernButton from "../kern-button/KernButton";
 import { AdminMessageLevel } from "../../types/admin-messages";
-import { FeedbackType } from "@/submodules/javascript-functions/enums/enums";
+import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
+import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -188,4 +189,52 @@ function JumpToConversationCell({ projectId, conversationId }) {
     </div>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell }
+function RemoteVersionCell({ service }) {
+    return <div className="flex flex-row items-center justify-center">
+        <div className="mr-2">{service.remoteVersion}</div>
+        {service.remoteHasNewer && <Tooltip placement="right" trigger="hover" color="invert" content='Newer version available' className="cursor-auto">
+            <IconAlertCircle className="h-5 w-5 text-yellow-700" />
+        </Tooltip>}
+    </div>
+}
+
+function ExternalLinkCell({ link }) {
+    return <a href={link} target="_blank" rel="noopener noreferrer" className="h-4 w-4 m-auto block p-0">
+        <IconExternalLink className="h-4 w-4 m-auto" />
+    </a>
+}
+
+function ModelDateCell({ model }) {
+    return <>
+        {model.date != '0' && (model.status === ModelsDownloadedStatus.FINISHED || model.status === ModelsDownloadedStatus.DOWNLOADING) ? model.parseDate : '-'}
+        {model.status === ModelsDownloadedStatus.INITIALIZING && <>{model.date}</>}
+    </>
+}
+
+function FileSizeCell({ model }) {
+    return <>{model.status === ModelsDownloadedStatus.FINISHED ? model.sizeFormatted : '-'}</>
+}
+
+function StatusModelCell({ model }) {
+    return <div className="flex justify-center">
+        {model.status === ModelsDownloadedStatus.FINISHED && <Tooltip content="Successfully created" color="invert" placement="top" className="cursor-auto">
+            <IconCircleCheckFilled className="h-6 w-6 text-green-500" />
+        </Tooltip>}
+        {model.status === ModelsDownloadedStatus.FAILED && <Tooltip content="Execution ran into errors" color="invert" placement="top" className="cursor-auto">
+            <IconAlertTriangleFilled className="h-6 w-6 text-red-500" />
+        </Tooltip>}
+        {model.status === ModelsDownloadedStatus.DOWNLOADING && <Tooltip content="Model is downloading" color="invert" placement="top" className="cursor-auto">
+            <LoadingIcon />
+        </Tooltip>}
+        {model.status === ModelsDownloadedStatus.INITIALIZING && <Tooltip content="Model is initializing" color="invert" placement="top" className="cursor-auto">
+            <IconLoader className="h-6 w-6 text-gray-500" />
+        </Tooltip>}
+    </div>
+}
+
+function DeleteModelCell({ isAdmin, model, onClick }) {
+    return <>{isAdmin && <IconTrash onClick={() => onClick(model)}
+        className="h-6 w-6 text-red-700 cursor-pointer" />}</>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell }
