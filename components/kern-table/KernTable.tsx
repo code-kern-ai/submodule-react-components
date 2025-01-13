@@ -1,6 +1,6 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewStackCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewStackCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -104,6 +104,8 @@ function ComponentMapper(cell: any) {
                     return <StatusModelCell {...cell} />;
                 case 'DeleteModelCell':
                     return <DeleteModelCell {...cell} />;
+                case 'LabelCell':
+                    return <LabelCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
