@@ -1,4 +1,4 @@
-import { BadgeProps } from "../../../src/types/shared-components-types";
+import { BadgeProps } from "../types/badges";
 
 export function KernBadge(props: BadgeProps) {
     return (
