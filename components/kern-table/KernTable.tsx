@@ -1,6 +1,6 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, IconCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, ViewStackCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteUserCell, EditDeleteOrgButtonCell, ExportConsumptionAndDeleteCell, FeedbackMessageCell, FeedbackMessageTextCell, IconCell, JumpToConversationCell, LevelCell, MaxRowsColsCharsCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, ViewStackCell } from "./CellComponents";
 import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
@@ -86,13 +86,19 @@ function ComponentMapper(cell: any) {
                     return <ViewStackCell {...cell} />;
                 case 'AbortSessionButtonCell':
                     return <AbortSessionButtonCell {...cell} />;
+                case 'FeedbackMessageCell':
+                    return <FeedbackMessageCell {...cell} />;
+                case 'FeedbackMessageTextCell':
+                    return <FeedbackMessageTextCell {...cell} />;
+                case 'JumpToConversationCell':
+                    return <JumpToConversationCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
         case 'number':
             return <span>{cell.value[1]}</span>
         case 'boolean':
-            return <input type="checkbox" checked={cell.value} onClick={cell.valueChange ? cell.valueChange : undefined} readOnly />
+            return <input type="checkbox" value={cell.value} checked={cell.checked} onClick={cell.valueChange ? cell.valueChange : undefined} readOnly />
         case 'dateInput':
             return <input type="date" id="start" className="border-0" value={cell.value[1]} onChange={cell.valueChange} />
         case 'date':

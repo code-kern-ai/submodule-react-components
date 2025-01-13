@@ -1,12 +1,13 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
-import { Tooltip } from "@nextui-org/react";
-import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconUserX } from "@tabler/icons-react";
+import { Link, Tooltip } from "@nextui-org/react";
+import { IconFileDownload, IconInfoCircle, IconInfoSquare, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
 import { useCallback } from "react";
 import KernButton from "../kern-button/KernButton";
 import { AdminMessageLevel } from "../../types/admin-messages";
+import { FeedbackType } from "@/submodules/javascript-functions/enums/enums";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -164,4 +165,27 @@ function AbortSessionButtonCell({ session, onClick }) {
     return <KernButton text="Abort" onClick={clickAbort} buttonColor="red" />
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell }
+function FeedbackMessageCell({ value }) {
+    return <div className="flex justify-center">
+        {value === FeedbackType.POSITIVE && <IconThumbUpFilled className="h-6 w-6 text-green-600" aria-hidden="true" />}
+        {value === FeedbackType.NEGATIVE && <IconThumbDownFilled className="h-6 w-6 text-red-600" aria-hidden="true" />}
+        {value === FeedbackType.NEUTRAL && <IconThumbUpFilled className="h-6 w-6 text-orange-600 -rotate-90" aria-hidden="true" />}
+    </div>
+}
+
+function FeedbackMessageTextCell({ value }) {
+    return <span className={`${!value ? 'italic' : ''}`}>{value || 'No entry'}</span>
+}
+
+function JumpToConversationCell({ projectId, conversationId }) {
+    return <div className="flex justify-center">
+        <Link
+            href={`/cognition/projects/${projectId}/ui/${conversationId}`}
+            className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'
+        >
+            <IconTag className='h-4 w-4' />
+        </Link>
+    </div>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell }
