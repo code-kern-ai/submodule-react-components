@@ -1,4 +1,4 @@
-import { MultilineTooltipAutoProps as MultilineTooltipAutoContentProps } from "@/src/types/shared/multiline-tooltip";
+import { MultilineTooltipAutoProps as MultilineTooltipAutoContentProps } from "@/submodules/react-components/types/multiline-tooltip";
 import { extendArrayElementsByUniqueId } from "@/submodules/javascript-functions/id-prep";
 import { useMemo } from "react";
 
