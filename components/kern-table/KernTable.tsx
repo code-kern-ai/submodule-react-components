@@ -5,6 +5,8 @@ import { Fragment } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
+import { Tooltip } from "@nextui-org/react";
+import MultilineTooltipAutoContent from "@/submodules/react-components/components/MultilineTooltipAuto";
 
 export default function KernTable(props: KernTableProps) {
     return (
@@ -25,7 +27,13 @@ export default function KernTable(props: KernTableProps) {
                                     onChange={header.onChange}
                                 />
                             </> : <div className="inline-flex flex-row items-center">
-                                {header.column}
+                                {!header.tooltip ? header.column :
+                                    <div className="flex w-full justify-center">
+                                        <Tooltip
+                                            content={<MultilineTooltipAutoContent tooltip="True positives / (True positives + False positives)\nfor the reference data you labeled" splitOn="\n" />}
+                                            color="invert"
+                                            placement="top">Est. Precision</Tooltip>
+                                    </div>}
                                 {header.hasSort && <SortArrows sortKey={props.config.sortKey} property={header.id} />}
                             </div>}
                         </th>))}
