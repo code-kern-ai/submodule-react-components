@@ -1,5 +1,5 @@
-import { LoadingIconProps } from "@/src/types/shared/loading";
-import { prepareColorClasses, prepareSize } from "@/src/util/shared/loading-helper";
+import { LoadingIconProps } from "@/submodules/react-components/types/loading";
+import { prepareColorClasses, prepareSize } from "@/submodules/react-components/helpers/loading-helper";
 import { memo, useState } from "react";
 
 function LoadingIcon(props: LoadingIconProps) {
