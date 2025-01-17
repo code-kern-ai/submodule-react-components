@@ -6,5 +6,7 @@ export type KernTableProps = {
     config?: {
         sortKey?: SortKey;
         onClickSort?: (property: string) => void;
+        addBorder?: boolean;
+        noEntriesText?: string;
     }
 }

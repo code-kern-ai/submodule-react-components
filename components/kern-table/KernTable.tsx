@@ -7,10 +7,11 @@ import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
 import { Tooltip } from "@nextui-org/react";
 import MultilineTooltipAutoContent from "@/submodules/react-components/components/MultilineTooltipAuto";
+import { NoTableEntriesYet } from "../NoTableEntriesYet";
 
 export default function KernTable(props: KernTableProps) {
     return (
-        <table className="min-w-full divide-y divide-gray-300 rounded-b-lg">
+        <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config.addBorder ? 'border border-gray-300' : ''}`}>
             <thead className="bg-gray-50">
                 <tr>
                     {props.headers.map((header) => (
@@ -40,6 +41,7 @@ export default function KernTable(props: KernTableProps) {
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
+                {props.values?.length === 0 && props.config?.noEntriesText && <NoTableEntriesYet tableColumns={5} text={props.config.noEntriesText} marginBottomClass='-mb-4' />}
                 {props.values?.map((row, index) => (
                     <tr key={index} className={index % 2 != 0 ? "bg-gray-50" : "bg-white"}>
                         {row.map((cell, index) => {
