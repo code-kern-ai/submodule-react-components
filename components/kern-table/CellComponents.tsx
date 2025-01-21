@@ -244,11 +244,11 @@ function LabelCell({ sourceContainer }) {
     </span>
 }
 
-function ViewCell({ onClick }) {
+function ViewCell({ onClick, disabled }) {
     const clickView = useCallback(() => {
         if (onClick) onClick();
     }, [onClick]);
-    return <KernButton text="View" onClick={clickView} />
+    return <KernButton text="View" onClick={clickView} disabled={disabled} />
 }
 
 function EvaluationRunStateCell({ value }) {
