@@ -4,11 +4,12 @@ import { IconAlertCircle, IconAlertTriangleFilled, IconCircleCheckFilled, IconEx
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import KernButton from "../kern-button/KernButton";
 import { AdminMessageLevel } from "../../types/admin-messages";
 import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
+import { EvaluationRunState } from "@/src/types/components/projects/projectId/settings/playground";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -250,4 +251,28 @@ function ViewCell({ onClick }) {
     return <KernButton text="View" onClick={clickView} />
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell }
+function EvaluationRunStateCell({ value }) {
+    const color = useMemo(() => {
+        switch (value) {
+            case EvaluationRunState.INITIATED:
+                return 'gray';
+            case EvaluationRunState.RUNNING:
+                return 'yellow';
+            case EvaluationRunState.SUCCESS:
+                return 'green';
+            case EvaluationRunState.FAILED:
+                return 'red';
+        }
+    }, [value]);
+
+    return <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${color === 'green'
+        ? 'bg-green-300'
+        : 'bg-' + color + '-100 text-' + color + '-800'} `}>
+        <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'} `} fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+        </svg>
+        <span className={' text-' + color + '-800'}>{value}</span>
+    </span>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell }
