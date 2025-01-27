@@ -1,6 +1,6 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
 import { Link, Tooltip } from "@nextui-org/react";
-import { IconAlertCircle, IconAlertTriangleFilled, IconCircleCheckFilled, IconExternalLink, IconFileDownload, IconInfoCircle, IconInfoSquare, IconLoader, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconTrash, IconUserX } from "@tabler/icons-react";
+import { IconAlertCircle, IconAlertTriangleFilled, IconArrowRight, IconCircleCheckFilled, IconExternalLink, IconFileDownload, IconInfoCircle, IconInfoSquare, IconLoader, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconTrash, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
@@ -275,4 +275,13 @@ function EvaluationRunStateCell({ value }) {
     </span>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell }
+function EvaluationRunDetailsCell({ onClick, disabled }) {
+    return <button type="button" className="text-green-800 text-sm font-medium"
+        onClick={onClick} disabled={disabled}>
+        <span className="leading-5">Details</span>
+        <IconArrowRight className="h-5 w-5 inline-block text-green-800" />
+    </button>
+}
+
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell }
