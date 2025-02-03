@@ -276,7 +276,7 @@ function EvaluationRunStateCell({ value }) {
 }
 
 function EvaluationRunDetailsCell({ onClick, disabled }) {
-    return <button type="button" className="text-green-800 text-sm font-medium"
+    return <button type="button" className="text-green-800 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={onClick} disabled={disabled}>
         <span className="leading-5">Details</span>
         <IconArrowRight className="h-5 w-5 inline-block text-green-800" />
