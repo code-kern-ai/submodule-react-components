@@ -9,7 +9,8 @@ import KernButton from "../kern-button/KernButton";
 import { AdminMessageLevel } from "../../types/admin-messages";
 import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
-import { EvaluationRunState } from "@/src/types/components/projects/projectId/settings/playground";
+import { EvaluationRunState } from "../../types/evaluationRun";
+
 
 function OrganizationAndUsersCell({ organization }) {
     return (
