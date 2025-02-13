@@ -1,14 +1,15 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
 import { Link, Tooltip } from "@nextui-org/react";
-import { IconAlertCircle, IconAlertTriangleFilled, IconCircleCheckFilled, IconExternalLink, IconFileDownload, IconInfoCircle, IconInfoSquare, IconLoader, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconTrash, IconUserX } from "@tabler/icons-react";
+import { IconAlertCircle, IconAlertTriangleFilled, IconArrowRight, IconCircleCheckFilled, IconExternalLink, IconFileDownload, IconInfoCircle, IconInfoSquare, IconLoader, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconTrash, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import KernButton from "../kern-button/KernButton";
 import { AdminMessageLevel } from "../../types/admin-messages";
 import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
+import { EvaluationRunState } from "@/src/types/components/projects/projectId/settings/playground";
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -243,4 +244,50 @@ function LabelCell({ sourceContainer }) {
     </span>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell }
+function ViewCell({ onClick, disabled }) {
+    const clickView = useCallback(() => {
+        if (onClick) onClick();
+    }, [onClick]);
+    return <KernButton text="View" onClick={clickView} disabled={disabled} />
+}
+
+function EvaluationRunStateCell({ value }) {
+    const color = useMemo(() => {
+        switch (value) {
+            case EvaluationRunState.INITIATED:
+                return 'gray';
+            case EvaluationRunState.RUNNING:
+                return 'yellow';
+            case EvaluationRunState.SUCCESS:
+                return 'green';
+            case EvaluationRunState.FAILED:
+                return 'red';
+        }
+    }, [value]);
+
+    const className = useMemo(() => {
+        return `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${color === 'green'
+            ? 'bg-green-300'
+            : 'bg-' + color + '-100 text-' + color + '-800'}`;
+    }, [color]);
+
+    return (
+        <span className={className}>
+            <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'}`} fill="currentColor" viewBox="0 0 8 8">
+                <circle cx="4" cy="4" r="3" />
+            </svg>
+            <span className={' text-' + color + '-800'}>{value}</span>
+        </span>
+    );
+}
+
+function EvaluationRunDetailsCell({ onClick, disabled }) {
+    return <button type="button" className="text-green-800 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={onClick} disabled={disabled}>
+        <span className="leading-5">Details</span>
+        <IconArrowRight className="h-5 w-5 inline-block text-green-800" />
+    </button>
+}
+
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell }
