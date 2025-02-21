@@ -11,7 +11,7 @@ import { NoTableEntriesYet } from "../NoTableEntriesYet";
 
 export default function KernTable(props: KernTableProps) {
     return (
-        <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config?.addBorder ? 'border border-gray-300' : ''}`}>
+        <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config && props.config?.addBorder ? 'border border-gray-300' : ''}`}>
             <thead className="bg-gray-50">
                 <tr>
                     {props.headers.map((header) => (
