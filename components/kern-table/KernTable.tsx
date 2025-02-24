@@ -1,7 +1,7 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
 import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteUserCell, EditDeleteOrgButtonCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell } from "./CellComponents";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
@@ -10,6 +10,7 @@ import MultilineTooltipAutoContent from "@/submodules/react-components/component
 import { NoTableEntriesYet } from "../NoTableEntriesYet";
 
 export default function KernTable(props: KernTableProps) {
+    const length = useMemo(() => props.headers?.length || 5, [props.headers?.length]);
     return (
         <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config && props.config?.addBorder ? 'border border-gray-300' : ''}`}>
             <thead className="bg-gray-50">
@@ -41,7 +42,7 @@ export default function KernTable(props: KernTableProps) {
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-                {props.values?.length === 0 && props.config?.noEntriesText && <NoTableEntriesYet tableColumns={5} text={props.config.noEntriesText} marginBottomClass='-mb-4' />}
+                {props.values?.length === 0 && props.config?.noEntriesText && <NoTableEntriesYet tableColumns={length} text={props.config.noEntriesText} marginBottomClass='-mb-4' />}
                 {props.values?.map((row, index) => (
                     <tr key={index} className={index % 2 != 0 ? "bg-gray-50" : "bg-white"}>
                         {row.map((cell, index) => {
