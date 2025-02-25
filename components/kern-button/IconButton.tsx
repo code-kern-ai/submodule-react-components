@@ -6,7 +6,7 @@ import { useState } from "react";
 interface IconButtonProps {
     icon: (props: any) => React.ReactNode;
     iconColor?: string;
-    onClick?: () => void;
+    onClick?: (e?: any) => void;
     buttonColor?: string;
     disabled?: boolean;
     keepOpacity?: boolean;
@@ -14,6 +14,7 @@ interface IconButtonProps {
     tooltip?: string;
     tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
     confirm?: boolean;
+    onMouseDown?: (e?: any) => void;
 }
 
 function InnerButton(props: IconButtonProps) {
@@ -21,8 +22,8 @@ function InnerButton(props: IconButtonProps) {
 
     return (
         <button
-            onClick={() => {
-                if (props.onClick) props.onClick();
+            onClick={(e?: any) => {
+                if (props.onClick) props.onClick(e);
                 if (props.confirm) {
                     setConfirmed(true);
                     setTimeout(() => {
@@ -30,6 +31,7 @@ function InnerButton(props: IconButtonProps) {
                     }, 3000);
                 }
             }}
+            onMouseDown={props.onMouseDown ? props.onMouseDown : undefined}
             className={
                 combineClassNames(
                     'text-sm group flex items-center justify-center rounded-md h-fit hover:shadow-sm transition duration-200 ease-in-out disabled:cursor-not-allowed',
