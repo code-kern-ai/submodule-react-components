@@ -20,6 +20,7 @@ type SaveButtonProps = {
     tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
     confirm?: boolean;
     warningCue?: any
+    className?: string;
 }
 
 export default function SaveButton(props: SaveButtonProps) {

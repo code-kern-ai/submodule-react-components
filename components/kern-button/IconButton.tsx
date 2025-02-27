@@ -15,6 +15,7 @@ interface IconButtonProps {
     tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
     confirm?: boolean;
     onMouseDown?: (e?: any) => void;
+    className?: string;
 }
 
 function InnerButton(props: IconButtonProps) {

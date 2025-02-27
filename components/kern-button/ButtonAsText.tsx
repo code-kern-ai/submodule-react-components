@@ -9,7 +9,8 @@ export type ButtonAsTextProps = {
     iconLeft?: (props: any) => React.ReactNode;
     iconRight?: (props: any) => React.ReactNode;
     iconColor?: string;
-    size?: 'small' | 'large';
+    size?: 'small' | 'medium' | 'large';
+    className?: string;
 }
 
 export default function ButtonAsText(props: ButtonAsTextProps) {
