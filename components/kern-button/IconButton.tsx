@@ -36,6 +36,7 @@ function InnerButton(props: IconButtonProps) {
             className={
                 combineClassNames(
                     'text-sm group flex items-center justify-center rounded-md h-fit hover:shadow-sm transition duration-200 ease-in-out disabled:cursor-not-allowed',
+                    props.className,
                     props.keepOpacity ? '' : (
                         'disabled:opacity-50 '
                     ),

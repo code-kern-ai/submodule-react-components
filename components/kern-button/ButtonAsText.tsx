@@ -16,6 +16,7 @@ export type ButtonAsTextProps = {
 export default function ButtonAsText(props: ButtonAsTextProps) {
     const classCombined = useMemo(() => combineClassNames(
         'disabled:text-gray-400 disabled:cursor-not-allowed flex items-center space-x-1',
+        props.className,
         props.color ? (
             `text-${props.color}-600 hover:text-${props.color}-900`
         ) : (
