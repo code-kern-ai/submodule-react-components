@@ -20,6 +20,7 @@ type SaveButtonProps = {
     tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
     confirm?: boolean;
     warningCue?: any
+    className?: string;
 }
 
 export default function SaveButton(props: SaveButtonProps) {
@@ -47,8 +48,8 @@ export default function SaveButton(props: SaveButtonProps) {
 
     const sizeClasses: string = useMemo(() => getSizeClasses(props.size), [props.size]);
 
-    const buttonClasses = useMemo(() => combineClassNames("flex gap-x-1 items-center hover:shadow-sm rounded-lg px-2 py-1", disabledClasses, buttonColorClasses, widthClasses, heightClasses, props.warningCue && buttonWarningColorClasses),
-        [disabledClasses, buttonColorClasses, widthClasses, heightClasses, props.warningCue]);
+    const buttonClasses = useMemo(() => combineClassNames("flex gap-x-1 items-center hover:shadow-sm rounded-lg px-2 py-1", disabledClasses, buttonColorClasses, widthClasses, heightClasses, props.warningCue && buttonWarningColorClasses, props.className),
+        [disabledClasses, buttonColorClasses, widthClasses, heightClasses, props.warningCue, props.className]);
 
     return (
         <div className='text-sm group flex items-center rounded-md transition duration-200 ease-in-out'        >

@@ -22,6 +22,7 @@ interface KernButtonProps {
     tooltip?: string;
     tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
     confirm?: boolean;
+    className?: string;
 }
 
 export default function KernButton(props: KernButtonProps) {
@@ -44,6 +45,7 @@ export default function KernButton(props: KernButtonProps) {
             className={
                 combineClassNames(
                     'text-sm group flex gap-x-2 items-center rounded-md hover:shadow-sm transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed',
+                    props.className,
                     props.buttonColor ? (
                         props.solidTheme ? (
                             `border border-${props.buttonColor}-600 bg-${props.buttonColor}-600 hover:bg-${props.buttonColor}-600 active:bg-${props.buttonColor}-600 active:border-${props.buttonColor}-600`
