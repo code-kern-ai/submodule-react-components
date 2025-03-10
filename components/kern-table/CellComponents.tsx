@@ -64,7 +64,7 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
                         className={"h-6 w-6 m-auto text-gray-500"} />
                 </Tooltip>
             </div>
-            <KernButton text="Delete" onClick={clickDelete} buttonColor="red" />;
+            <KernButton text="Delete" onClick={clickDelete} buttonColor="red" />
         </div>
     )
 }
