@@ -64,7 +64,7 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
                         className={"h-6 w-6 m-auto text-gray-500"} />
                 </Tooltip>
             </div>
-            <KernButton text="Delete" onClick={clickDelete} buttonColor="red" />;
+            <KernButton text="Delete" onClick={clickDelete} buttonColor="red" />
         </div>
     )
 }
@@ -290,5 +290,12 @@ function EvaluationRunDetailsCell({ onClick, disabled }) {
     </button>
 }
 
+function EtlApiTokenCell({ organization }) {
+    return (
+        <div className="flex flex-row items-center justify-center">
+            <span>{organization.fileUploadLimit ?? <NotApplicableBadge />} | {organization.fileUploadInterval ?? <NotApplicableBadge />}</span>
+        </div>
+    )
+}
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell }
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell }
