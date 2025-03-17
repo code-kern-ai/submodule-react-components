@@ -15,7 +15,7 @@ import { EvaluationRunState } from "../../types/evaluationRun";
 function OrganizationAndUsersCell({ organization }) {
     return (
         <div className="grid justify-items-center">
-            <div style={{ minWidth: "80px" }} className="text-center text-indigo-600 font-medium text-sm">{organization.name} </div>
+            <div className="text-center text-indigo-600 font-medium text-sm">{organization.name} </div>
 
             <div className="w-5 text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block font-medium text-sm" viewBox="0 0 20 20"
