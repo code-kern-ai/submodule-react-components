@@ -47,7 +47,7 @@ export default function KernTable(props: KernTableProps) {
                     <tr key={index} className={index % 2 != 0 ? "bg-gray-50" : "bg-white"}>
                         {row.map((cell, index) => {
                             return <Fragment key={index}>
-                                <td className={"text-center px-3 py-2 text-sm text-gray-500 " + props.headers[index].wrapWhitespace ? "whitespace-normal" : "whitespace-nowrap"}>
+                                <td className={"text-center px-3 py-2 text-sm text-gray-500 " + (props.headers[index].wrapWhitespace ? "whitespace-normal" : "whitespace-nowrap")}>
                                     <div className="flex flex-row items-center justify-center gap-x-2">
                                         <ComponentMapper {...cell} />
                                         {cell.editFunction && <IconEdit className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} />}
