@@ -4,7 +4,7 @@ import { IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
 
 interface IconButtonProps {
-    icon: (props: any) => React.ReactNode | React.ReactElement;
+    icon: (props: any) => any;
     iconColor?: string;
     onClick?: (e?: any) => void;
     buttonColor?: string;

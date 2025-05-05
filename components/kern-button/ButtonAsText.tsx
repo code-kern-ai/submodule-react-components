@@ -6,8 +6,8 @@ export type ButtonAsTextProps = {
     color?: string;
     onClick?: () => void;
     disabled?: boolean;
-    iconLeft?: (props: any) => React.ReactNode | React.ReactElement;
-    iconRight?: (props: any) => React.ReactNode | React.ReactElement;
+    iconLeft?: (props: any) => any;
+    iconRight?: (props: any) => any;
     iconColor?: string;
     size?: 'small' | 'medium' | 'large';
     className?: string;
