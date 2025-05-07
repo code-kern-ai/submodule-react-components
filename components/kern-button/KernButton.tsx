@@ -7,7 +7,7 @@ import { IconCheck } from "@tabler/icons-react";
 interface KernButtonProps {
     text?: string;
     type?: 'button' | 'submit' | 'reset';
-    icon?: (props: any) => React.ReactNode;
+    icon?: (props: any) => any;
     iconColor?: string;
     onClick?: (event?) => void;
     buttonColor?: string;
