@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { IconDeviceFloppy, IconCheck, IconAlertTriangle } from '@tabler/icons-react';
 import { combineClassNames, } from "@/submodules/javascript-functions/general"
 import { Tooltip } from '@nextui-org/react';
 import { getButtonColorClasses, getDisabledClasses, getWidthClasses, getHeightClasses, getSizeClasses, buttonWarningColorClasses } from '../../helpers/button-helper';

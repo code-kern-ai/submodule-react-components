@@ -1,4 +1,3 @@
-import { IconX } from "@tabler/icons-react";
 import { MemoIconX } from "./kern-icons/icons";
 
 export type InputWithClearIconProps = {

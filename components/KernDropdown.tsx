@@ -4,8 +4,6 @@ import { KernDropdownProps } from '../types/dropdown';
 import { combineClassNames } from '../../javascript-functions/general';
 import { SELECT_ALL, checkDropdownProps, getActiveNegateGroupColor, getDropdownDisplayText, prepareDropdownOptionsToArray, reduceColorProperty, setOptionsWithSearchBar } from '../helpers/dropdown-helper';
 import { Tooltip } from '@nextui-org/react';
-import { IconChevronDown, IconDotsVertical, IconExternalLink } from '@tabler/icons-react';
-import { IconTrashXFilled } from '@tabler/icons-react';
 import useOnClickOutside from '../hooks/useHooks/useOnClickOutside';
 import { useDefaults } from '../hooks/useDefaults';
 import SVGIcon from './SVGIcon';

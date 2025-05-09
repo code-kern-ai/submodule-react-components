@@ -1,4 +1,3 @@
-import { IconArrowDown, IconArrowUp, IconArrowsSort } from '@tabler/icons-react';
 import { SortArrowsProps } from '../../types/sort';
 import { MemoIconArrowDown, MemoIconArrowsSort, MemoIconArrowUp } from '../kern-icons/icons';
 

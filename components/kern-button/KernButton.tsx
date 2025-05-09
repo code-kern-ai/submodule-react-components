@@ -1,8 +1,6 @@
 import { combineClassNames } from "@/submodules/javascript-functions/general";
-import { IconLoader2 } from "@tabler/icons-react";
 import { Tooltip } from '@nextui-org/react'
 import React, { useCallback, useMemo, useState } from "react";
-import { IconCheck } from "@tabler/icons-react";
 import { MemoIconCheck, MemoIconLoader2 } from "../kern-icons/icons";
 
 interface KernButtonProps {

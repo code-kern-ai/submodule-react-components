@@ -1,6 +1,5 @@
 import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { useDefaults } from "@/submodules/react-components/hooks/useDefaults";
-import { IconInfoCircle } from "@tabler/icons-react";
 import { Dispatch, Fragment, SetStateAction, useEffect, useRef, useState } from "react";
 import useOnClickOutside from "@/submodules/react-components/hooks/useHooks/useOnClickOutside";
 import { Transition } from "@headlessui/react";

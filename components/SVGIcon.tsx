@@ -1,4 +1,3 @@
-import { IconBolt, IconChevronDown, IconCode, IconDotsVertical, IconEdit, IconExternalLink, IconFileInfo, IconFilePencil, IconLoader, IconPlayerPlayFilled, IconShieldCheckFilled, IconShieldFilled, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
 import { MemoIconBolt, MemoIconChevronDown, MemoIconCode, MemoIconDotsVertical, MemoIconEdit, MemoIconExternalLink, MemoIconFileInfo, MemoIconFilePencil, MemoIconLoader, MemoIconPlayerPlayFilled, MemoIconShieldCheckFilled, MemoIconShieldFilled, MemoIconSquare, MemoIconSquareCheck, MemoIconTrash } from './kern-icons/icons';
 
 export const SUPPORTED_ICONS = ['IconCode', 'IconBolt', 'IconSquareCheck', 'IconSquare', 'IconPlayerPlayFilled', 'IconTrash', 'IconExternalLink',

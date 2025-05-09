@@ -1,6 +1,5 @@
 import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { Tooltip } from '@nextui-org/react'
-import { IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
 import { MemoIconCheck } from "../kern-icons/icons";
 
