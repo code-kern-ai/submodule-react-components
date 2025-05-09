@@ -11,6 +11,7 @@ import { useDefaults } from '../hooks/useDefaults';
 import SVGIcon from './SVGIcon';
 import { CSSProperties } from 'react';
 import useRefFor from '../hooks/useRefFor';
+import { MemoIconChevronDown, MemoIconDotsVertical, MemoIconExternalLink, MemoIconTrashXFilled } from './kern-icons/icons';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
@@ -197,14 +198,14 @@ export default function KernDropdown(props: KernDropdownProps) {
                         className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isDisabled && !props.ignoreDisabledForSearch}
                         placeholder="Type to search..." />
-                    <IconChevronDown
+                    <MemoIconChevronDown
                         className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled && !props.ignoreDisabledForSearch ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         aria-hidden="true"
                     />
                 </div> : <>
                     {props.hasButtonDots ? (<Menu.Button onClick={toggleDropdown} className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full">
                         <span className="flex h-full w-full items-center justify-center rounded-full">
-                            <IconDotsVertical
+                            <MemoIconDotsVertical
                                 size={24}
                                 strokeWidth={2}
                                 className='text-gray-700 font-bold' />
@@ -219,7 +220,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                             <span style={{ color: '#4e46e5' }}>{getDropdownDisplayText(props.options, "NOT_NEGATED")}</span>
                             <span style={{ color: '#ef4444' }}>{getDropdownDisplayText(props.options, "NEGATED")}</span>
                         </label>}
-                        <IconChevronDown
+                        <MemoIconChevronDown
                             className="-mr-1 ml-2 h-5 w-5"
                             aria-hidden="true"
                         />
@@ -271,8 +272,8 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                     {props.iconsArray && props.iconsArray[index] && <span className='mx-2 text-gray-700'>
                                                         <SVGIcon icon={props.iconsArray[index]} size={16} strokeWidth={2} useFillForIcons={props.useFillForIcons && props.useFillForIcons[index]} /></span>}
                                                     <span className='truncate'>{option}</span>
-                                                    {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><IconTrashXFilled size={20} /></div>}
-                                                    {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><IconExternalLink size={16} /></a>}
+                                                    {props.onClickDelete && <div className="ml-auto flex items-center cursor-pointer hover:bg-gray-200" onClick={(e) => { e.stopPropagation(); props.onClickDelete(option) }}><MemoIconTrashXFilled size={20} /></div>}
+                                                    {props.optionsHaveLink && <a href={props.linkList[index]} target="_blank" className="h-4 w-4 mr-2 ml-auto flex items-center cursor-pointer"><MemoIconExternalLink size={16} /></a>}
                                                     {props.dropdownAdd && props.dropdownAdd[index]}
                                                 </label>
                                             </Tooltip>

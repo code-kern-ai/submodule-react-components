@@ -3,6 +3,7 @@ import { IconLoader2 } from "@tabler/icons-react";
 import { Tooltip } from '@nextui-org/react'
 import React, { useCallback, useMemo, useState } from "react";
 import { IconCheck } from "@tabler/icons-react";
+import { MemoIconCheck, MemoIconLoader2 } from "../kern-icons/icons";
 
 interface KernButtonProps {
     text?: string;
@@ -76,7 +77,7 @@ export default function KernButton(props: KernButtonProps) {
     const children = <Tooltip className={"flex gap-x-2 items-center " + (props.disabled ? "cursor-not-allowed" : "")} color="invert" content={props.tooltip} placement={props.tooltipPlacement || "bottom"} >
         {
             props.loading ? (
-                <IconLoader2 className={combineClassNames(
+                <MemoIconLoader2 className={combineClassNames(
                     props.iconColor === "white" ? (
                         `animate-spin text-white group-hover:text-white`
                     ) : (
@@ -86,7 +87,7 @@ export default function KernButton(props: KernButtonProps) {
                 } />
             ) : props.icon ? (
                 confirm ? (
-                    <IconCheck className={combineClassNames(`text-green-500 group-hover:text-green-600`,
+                    <MemoIconCheck className={combineClassNames(`text-green-500 group-hover:text-green-600`,
                         iconSize)} />
                 ) : (
                     <props.icon className={combineClassNames(

@@ -4,6 +4,7 @@ import { combineClassNames, } from "@/submodules/javascript-functions/general"
 import { Tooltip } from '@nextui-org/react';
 import { getButtonColorClasses, getDisabledClasses, getWidthClasses, getHeightClasses, getSizeClasses, buttonWarningColorClasses } from '../../helpers/button-helper';
 import { Loading } from '@nextui-org/react';
+import { MemoIconAlertTriangle, MemoIconCheck, MemoIconDeviceFloppy } from '../kern-icons/icons';
 
 type SaveButtonProps = {
     text?: string;
@@ -55,7 +56,7 @@ export default function SaveButton(props: SaveButtonProps) {
         <div className='text-sm group flex items-center rounded-md transition duration-200 ease-in-out'        >
             {(props.warningCue) ?
                 <Tooltip className="flex items-center justify-center mr-2" content="Warning: Potential invalid config!" color="invert">
-                    <IconAlertTriangle className="h-4 w-4 text-orange-400" />
+                    <MemoIconAlertTriangle className="h-4 w-4 text-orange-400" />
                 </Tooltip> : null}
             <button
                 onClick={handleButtonClick}
@@ -70,10 +71,10 @@ export default function SaveButton(props: SaveButtonProps) {
                     </div>
 
                 ) : confirm ? (
-                    <IconCheck className={combineClassNames(`text-green-500 group-hover:text-green-600`,
+                    <MemoIconCheck className={combineClassNames(`text-green-500 group-hover:text-green-600`,
                         sizeClasses)} />
                 ) : (
-                    <IconDeviceFloppy className={combineClassNames(`text-${props.iconColor}-500 group-hover:text-${props.iconColor}-600`,
+                    <MemoIconDeviceFloppy className={combineClassNames(`text-${props.iconColor}-500 group-hover:text-${props.iconColor}-600`,
                         sizeClasses)} />
                 )
                 }

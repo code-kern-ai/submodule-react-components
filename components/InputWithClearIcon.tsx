@@ -1,4 +1,5 @@
 import { IconX } from "@tabler/icons-react";
+import { MemoIconX } from "./kern-icons/icons";
 
 export type InputWithClearIconProps = {
     value: string;
@@ -15,7 +16,7 @@ export default function InputWithClearIcon(props: InputWithClearIconProps) {
             onChange={(event) => props.onChange(event.target.value)}
         />
         {props.value && (
-            <IconX className='absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500' onClick={() => props.onChange("")} />
+            <MemoIconX className='absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500' onClick={() => props.onChange("")} />
         )}
     </div>)
 }

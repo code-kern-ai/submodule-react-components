@@ -8,6 +8,7 @@ import { NotApplicableBadge } from "@/submodules/react-components/components/Bad
 import { Tooltip } from "@nextui-org/react";
 import MultilineTooltipAutoContent from "@/submodules/react-components/components/MultilineTooltipAuto";
 import { NoTableEntriesYet } from "../NoTableEntriesYet";
+import { MemoIconCell, MemoIconEdit } from "../kern-icons/icons";
 
 export default function KernTable(props: KernTableProps) {
     const length = useMemo(() => props.headers?.length || 5, [props.headers?.length]);
@@ -50,7 +51,7 @@ export default function KernTable(props: KernTableProps) {
                                 <td className={"text-center px-3 py-2 text-sm text-gray-500 " + (props.headers[index].wrapWhitespace ? "whitespace-normal" : "whitespace-nowrap")}>
                                     <div className="flex flex-row items-center justify-center gap-x-2">
                                         <ComponentMapper {...cell} />
-                                        {cell.editFunction && <IconEdit className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} />}
+                                        {cell.editFunction && <MemoIconEdit className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} />}
                                     </div>
                                 </td>
                             </Fragment>
@@ -88,7 +89,7 @@ function ComponentMapper(cell: any) {
                 case 'CancelTaskCell':
                     return <CancelTaskCell {...cell} />;
                 case 'IconCell':
-                    return <IconCell {...cell} />;
+                    return <MemoIconCell {...cell} />;
                 case 'ConfigCell':
                     return <ConfigCell {...cell} />;
                 case 'EditDeleteOrgButtonCell':
