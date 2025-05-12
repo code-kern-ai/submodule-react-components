@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MemoIconCheck } from "../kern-icons/icons";
 
 interface IconButtonProps {
-    icon: (props: any) => React.ReactNode;
+    icon: (props: any) => any;
     iconColor?: string;
     onClick?: (e?: any) => void;
     buttonColor?: string;
