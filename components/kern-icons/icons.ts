@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { IconActivity, IconAlertCircle, IconAlertTriangle, IconAlertTriangleFilled, IconApi, IconArchive, IconArrowCurveRight, IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowsSort, IconArrowUp, IconArrowUpRight, IconBolt, IconBox, IconBoxOff, IconBrandOpenai, IconBrandPython, IconBulldozer, IconCell, IconChartDots3, IconChartLine, IconCheck, IconChevronCompactLeft, IconChevronCompactRight, IconChevronDown, IconChevronRight, IconChevronUp, IconCircleCheckFilled, IconClick, IconClipboard, IconClipboardCheck, IconCode, IconCodePlus, IconColumns, IconCopy, IconCrown, IconCrownOff, IconDatabase, IconDatabasePlus, IconDeviceFloppy, IconDots, IconDotsVertical, IconEdit, IconEngine, IconExclamationCircle, IconExclamationMark, IconExternalLink, IconEye, IconEyeCancel, IconEyeCheck, IconEyeOff, IconFile, IconFileDownload, IconFileImport, IconFileInfo, IconFilePencil, IconFiles, IconFileText, IconFileUpload, IconFilter, IconFolderBolt, IconGripVertical, IconHeading, IconHelp, IconHierarchy, IconHierarchy3, IconHome, IconHourglass, IconHourglassEmpty, IconInfoCircle, IconInfoSquare, IconLayoutList, IconLetterGSmall, IconLink, IconList, IconLoader, IconLoader2, IconLockAccess, IconMap, IconMessages, IconMoustache, IconNotes, IconPlayerPlayFilled, IconPlus, IconPoint, IconPointerSearch, IconPointFilled, IconQuestionMark, IconRefresh, IconResize, IconRobot, IconScissors, IconSearch, IconSend, IconSettings, IconShieldCheckFilled, IconShieldFilled, IconSquare, IconSquareCheck, IconTag, IconTemplate, IconTerminal, IconThumbDown, IconThumbDownFilled, IconThumbUp, IconThumbUpFilled, IconTrash, IconTrashFilled, IconTrashXFilled, IconUpload, IconUser, IconUserX, IconVariable, IconVariablePlus, IconVersions, IconWebhook, IconX, IconZoomCode } from '@tabler/icons-react';
+import { IconActivity, IconAlertCircle, IconAlertTriangle, IconAlertTriangleFilled, IconApi, IconArchive, IconArrowCurveRight, IconArrowDown, IconArrowLeft, IconArrowRight, IconArrowsRandom, IconArrowsSort, IconArrowUp, IconArrowUpRight, IconAssembly, IconBallpen, IconBallpenOff, IconBell, IconBolt, IconBottle, IconBox, IconBoxOff, IconBrandOpenai, IconBrandPython, IconBulb, IconBulldozer, IconCategoryPlus, IconCell, IconChartCircles, IconChartDots3, IconChartLine, IconChartPie, IconCheck, IconChecks, IconChevronCompactLeft, IconChevronCompactRight, IconChevronDown, IconChevronRight, IconChevronUp, IconCircle, IconCircleCheckFilled, IconCirclePlus, IconClick, IconClipboard, IconClipboardCheck, IconCode, IconCodePlus, IconColorPicker, IconColumns, IconCopy, IconCrown, IconCrownOff, IconDatabase, IconDatabasePlus, IconDeviceFloppy, IconDots, IconDotsVertical, IconEdit, IconEngine, IconExclamationCircle, IconExclamationMark, IconExternalLink, IconEye, IconEyeCancel, IconEyeCheck, IconEyeOff, IconFile, IconFileDownload, IconFileImport, IconFileInfo, IconFilePencil, IconFiles, IconFileText, IconFileUpload, IconFilter, IconFilterOff, IconFishHook, IconFolderBolt, IconGripVertical, IconHeading, IconHelp, IconHexagons, IconHierarchy, IconHierarchy3, IconHome, IconHourglass, IconHourglassEmpty, IconInfoCircle, IconInfoCircleFilled, IconInfoSquare, IconLayoutList, IconLayoutNavbarCollapse, IconLayoutSidebar, IconLetterGSmall, IconLink, IconList, IconLoader, IconLoader2, IconLockAccess, IconMap, IconMaximize, IconMessageCircle, IconMessages, IconMinimize, IconMoustache, IconNews, IconNotes, IconPencil, IconPlayCardStar, IconPlayerPlayFilled, IconPlus, IconPoint, IconPointerSearch, IconPointFilled, IconQuestionMark, IconRefresh, IconResize, IconRobot, IconScissors, IconScreenshot, IconSearch, IconSend, IconSettings, IconShieldCheckFilled, IconShieldFilled, IconSquare, IconSquareCheck, IconStar, IconTag, IconTemplate, IconTerminal, IconThumbDown, IconThumbDownFilled, IconThumbUp, IconThumbUpFilled, IconTrash, IconTrashXFilled, IconTriangleInverted, IconTriangleSquareCircle, IconUpload, IconUser, IconUsersGroup, IconUserX, IconVariable, IconVariablePlus, IconVersions, IconWebhook, IconX, IconZoomCode } from '@tabler/icons-react';
 
 export const MemoIconHome = memo(IconHome);
 export const MemoIconInfoCircle = memo(IconInfoCircle);
@@ -119,3 +119,34 @@ export const MemoIconFileUpload = memo(IconFileUpload);
 export const MemoIconArrowRight = memo(IconArrowRight)
 export const MemoIconArrowLeft = memo(IconArrowLeft)
 export const MemoIconArrowCurveRight = memo(IconArrowCurveRight);
+export const MemoIconFishHook = memo(IconFishHook);
+export const MemoIconMessageCircle = memo(IconMessageCircle);
+export const MemoIconNews = memo(IconNews);
+export const MemoIconScreenshot = memo(IconScreenshot);
+export const MemoIconPlayCardStar = memo(IconPlayCardStar);
+export const MemoIconChartCircles = memo(IconChartCircles);
+export const MemoIconLayoutSidebar = memo(IconLayoutSidebar);
+export const MemoIconFilterOff = memo(IconFilterOff);
+export const MemoIconArrowsRandom = memo(IconArrowsRandom);
+export const MemoIconBallpenOff = memo(IconBallpenOff);
+export const MemoIconBallpen = memo(IconBallpen);
+export const MemoIconInfoCircleFilled = memo(IconInfoCircleFilled);
+export const MemoIconStar = memo(IconStar);
+export const MemoIconCircle = memo(IconCircle);
+export const MemoIconAssembly = memo(IconAssembly);
+export const MemoIconLayoutNavbarCollapse = memo(IconLayoutNavbarCollapse);
+export const MemoIconCirclePlus = memo(IconCirclePlus);
+export const MemoIconChecks = memo(IconChecks);
+export const MemoIconBottle = memo(IconBottle);
+export const MemoIconBulb = memo(IconBulb);
+export const MemoIconCategoryPlus = memo(IconCategoryPlus);
+export const MemoIconPencil = memo(IconPencil);
+export const MemoIconColorPicker = memo(IconColorPicker);
+export const MemoIconTriangleInverted = memo(IconTriangleInverted);
+export const MemoIconHexagons = memo(IconHexagons);
+export const MemoIconBell = memo(IconBell);
+export const MemoIconChartPie = memo(IconChartPie);
+export const MemoIconTriangleSquareCircle = memo(IconTriangleSquareCircle);
+export const MemoIconMaximize = memo(IconMaximize);
+export const MemoIconMinimize = memo(IconMinimize);
+export const MemoIconUsersGroup = memo(IconUsersGroup);
