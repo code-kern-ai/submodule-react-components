@@ -1,6 +1,5 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
 import { Link, Tooltip } from "@nextui-org/react";
-import { IconAlertCircle, IconAlertTriangleFilled, IconArrowRight, IconCircleCheckFilled, IconExternalLink, IconFileDownload, IconInfoCircle, IconInfoSquare, IconLoader, IconNotes, IconTag, IconThumbDownFilled, IconThumbUpFilled, IconTrash, IconUserX } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
@@ -10,6 +9,7 @@ import { AdminMessageLevel } from "../../types/admin-messages";
 import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
 import { EvaluationRunState } from "../../types/evaluationRun";
+import { MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCircleCheckFilled, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX } from "../kern-icons/icons";
 
 
 function OrganizationAndUsersCell({ organization }) {
@@ -42,7 +42,7 @@ function CommentsCell({ hasComments, onClick }) {
     return (
         <div className="cursor-pointer" onClick={onClick}>
             <Tooltip content={hasComments ? 'Has comments' : 'No comments'} color="invert" className="m-auto">
-                <IconNotes
+                <MemoIconNotes
                     strokeWidth={1.5}
                     className={`h-6 w-6 m-auto ${hasComments ? 'text-gray-500' : 'text-gray-300'}`} />
             </Tooltip>
@@ -59,7 +59,7 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
         <div className="flex items-center gap-x-6 justify-end">
             <div className="cursor-pointer" onClick={onClickConsumptionExport}>
                 <Tooltip content="Export Consumption" color="invert">
-                    <IconFileDownload
+                    <MemoIconFileDownload
                         strokeWidth={1.5}
                         className={"h-6 w-6 m-auto text-gray-500"} />
                 </Tooltip>
@@ -77,7 +77,7 @@ function OrganizationUserCell({ userToOrganization, organizations, user, onClick
     return <>{(userToOrganization && user.id in userToOrganization) ? (<div className="flex items-center flex-row">
         <span className="mr-2">{userToOrganization[user.id]['name']}</span>
         <div onClick={() => onClickRemove(user.id)} className="cursor-pointer">
-            <IconUserX
+            <MemoIconUserX
                 size={20}
                 strokeWidth={2}
                 className='text-gray-900 font-bold cursor-pointer' />
@@ -100,7 +100,7 @@ function DeleteUserCell({ user, deleteUser }) {
 }
 
 function LevelCell({ value }) {
-    return <>{value == AdminMessageLevel.INFO ? (<IconInfoSquare className='text-blue-700 h-6 w-6' />) : (<IconInfoCircle className='text-yellow-700 h-6 w-6' />)}</>
+    return <>{value == AdminMessageLevel.INFO ? (<MemoIconInfoSquare className='text-blue-700 h-6 w-6' />) : (<MemoIconInfoCircle className='text-yellow-700 h-6 w-6' />)}</>
 }
 
 function ArchiveReasonCell({ message, onClick }) {
@@ -170,9 +170,9 @@ function AbortSessionButtonCell({ session, onClick }) {
 
 function FeedbackMessageCell({ value }) {
     return <div className="flex justify-center">
-        {value === FeedbackType.POSITIVE && <IconThumbUpFilled className="h-6 w-6 text-green-600" aria-hidden="true" />}
-        {value === FeedbackType.NEGATIVE && <IconThumbDownFilled className="h-6 w-6 text-red-600" aria-hidden="true" />}
-        {value === FeedbackType.NEUTRAL && <IconThumbUpFilled className="h-6 w-6 text-orange-600 -rotate-90" aria-hidden="true" />}
+        {value === FeedbackType.POSITIVE && <MemoIconThumbUpFilled className="h-6 w-6 text-green-600" aria-hidden="true" />}
+        {value === FeedbackType.NEGATIVE && <MemoIconThumbDownFilled className="h-6 w-6 text-red-600" aria-hidden="true" />}
+        {value === FeedbackType.NEUTRAL && <MemoIconThumbUpFilled className="h-6 w-6 text-orange-600 -rotate-90" aria-hidden="true" />}
     </div>
 }
 
@@ -186,7 +186,7 @@ function JumpToConversationCell({ projectId, conversationId }) {
             href={`/cognition/projects/${projectId}/ui/${conversationId}`}
             className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'
         >
-            <IconTag className='h-4 w-4' />
+            <MemoIconTag className='h-4 w-4' />
         </Link>
     </div>
 }
@@ -195,14 +195,14 @@ function RemoteVersionCell({ service }) {
     return <div className="flex flex-row items-center justify-center">
         <div className="mr-2">{service.remoteVersion}</div>
         {service.remoteHasNewer && <Tooltip placement="right" trigger="hover" color="invert" content='Newer version available' className="cursor-auto">
-            <IconAlertCircle className="h-5 w-5 text-yellow-700" />
+            <MemoIconAlertCircle className="h-5 w-5 text-yellow-700" />
         </Tooltip>}
     </div>
 }
 
 function ExternalLinkCell({ link }) {
     return <a href={link} target="_blank" rel="noopener noreferrer" className="h-4 w-4 m-auto block p-0">
-        <IconExternalLink className="h-4 w-4 m-auto" />
+        <MemoIconExternalLink className="h-4 w-4 m-auto" />
     </a>
 }
 
@@ -220,22 +220,22 @@ function FileSizeCell({ model }) {
 function StatusModelCell({ model }) {
     return <div className="flex justify-center">
         {model.status === ModelsDownloadedStatus.FINISHED && <Tooltip content="Successfully created" color="invert" placement="top" className="cursor-auto">
-            <IconCircleCheckFilled className="h-6 w-6 text-green-500" />
+            <MemoIconCircleCheckFilled className="h-6 w-6 text-green-500" />
         </Tooltip>}
         {model.status === ModelsDownloadedStatus.FAILED && <Tooltip content="Execution ran into errors" color="invert" placement="top" className="cursor-auto">
-            <IconAlertTriangleFilled className="h-6 w-6 text-red-500" />
+            <MemoIconAlertTriangleFilled className="h-6 w-6 text-red-500" />
         </Tooltip>}
         {model.status === ModelsDownloadedStatus.DOWNLOADING && <Tooltip content="Model is downloading" color="invert" placement="top" className="cursor-auto">
             <LoadingIcon />
         </Tooltip>}
         {model.status === ModelsDownloadedStatus.INITIALIZING && <Tooltip content="Model is initializing" color="invert" placement="top" className="cursor-auto">
-            <IconLoader className="h-6 w-6 text-gray-500" />
+            <MemoIconLoader className="h-6 w-6 text-gray-500" />
         </Tooltip>}
     </div>
 }
 
 function DeleteModelCell({ isAdmin, model, onClick }) {
-    return <>{isAdmin && <IconTrash onClick={() => onClick(model)}
+    return <>{isAdmin && <MemoIconTrash onClick={() => onClick(model)}
         className="h-6 w-6 text-red-700 cursor-pointer" />}</>
 }
 
@@ -286,7 +286,7 @@ function EvaluationRunDetailsCell({ onClick, disabled }) {
     return <button type="button" className="text-green-800 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={onClick} disabled={disabled}>
         <span className="leading-5">Details</span>
-        <IconArrowRight className="h-5 w-5 inline-block text-green-800" />
+        <MemoIconArrowRight className="h-5 w-5 inline-block text-green-800" />
     </button>
 }
 

@@ -1,7 +1,7 @@
 import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { Tooltip } from '@nextui-org/react'
-import { IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
+import { MemoIconCheck } from "../kern-icons/icons";
 
 interface IconButtonProps {
     icon: (props: any) => any;
@@ -59,7 +59,7 @@ function InnerButton(props: IconButtonProps) {
             disabled={props.disabled}
         >
             {confirmed ? (
-                <IconCheck
+                <MemoIconCheck
                     className={combineClassNames(
                         `text-green-500 group-hover:text-green-600`,
                         props.size == 'small' ? (
