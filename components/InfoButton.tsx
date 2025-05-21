@@ -1,10 +1,10 @@
 import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { useDefaults } from "@/submodules/react-components/hooks/useDefaults";
-import { IconInfoCircle } from "@tabler/icons-react";
 import { Dispatch, Fragment, SetStateAction, useEffect, useRef, useState } from "react";
 import useOnClickOutside from "@/submodules/react-components/hooks/useHooks/useOnClickOutside";
 import { Transition } from "@headlessui/react";
 import { INFO_BUTTON_DEFAULT_VALUES, InfoButtonConfig, InfoButtonProps } from "../types/infoButton";
+import { MemoIconInfoCircle } from "./kern-icons/icons";
 
 
 function generateAndCheckConfig(props: InfoButtonProps, setOpen: Dispatch<SetStateAction<boolean>>): InfoButtonConfig {
@@ -45,7 +45,7 @@ export function InfoButton(_props: InfoButtonProps) {
     if (!config) return null;
     return (
         <div className={combineClassNames("relative w-fit p-1", config.cursorClass)} onClick={props.access == 'click' ? config.showInfo : undefined} onMouseEnter={props.access == 'hover' ? config.showInfo : undefined} onMouseLeave={props.access == 'hover' ? config.hideInfo : undefined}>
-            <IconInfoCircle size={config.size} className={props.infoButtonColorClass} />
+            <MemoIconInfoCircle size={config.size} className={props.infoButtonColorClass} />
             {props.display == "absoluteDiv" ? <RenderDiv
                 positionClass={config.positionClass + " " + props.addClasses}
                 content={props.content}
@@ -76,7 +76,7 @@ function RenderDiv({ positionClass, open, content, access, onMouseEnter, onMouse
                     {typeof content == "string" ?
                         <div className="flex items-center gap-x-2">
                             <div className="flex-shrink-0">
-                                <IconInfoCircle className="h-5 w-5 text-blue-400" aria-hidden="true" />
+                                <MemoIconInfoCircle className="h-5 w-5 text-blue-400" aria-hidden="true" />
                             </div>
                             <p className="text-sm text-blue-700 w-max max-w-sm">{content}</p>
                         </div> : content}
