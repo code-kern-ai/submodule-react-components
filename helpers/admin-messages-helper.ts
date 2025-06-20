@@ -18,4 +18,3 @@ export function postProcessAdminMessages(adminMessages: AdminMessage[]): AdminMe
         return message;
     });;
 }
-
