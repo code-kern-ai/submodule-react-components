@@ -55,6 +55,7 @@ export type KernDropdownProps = {
     doNotUseTextArray?: boolean;
     disabledOptions?: boolean[];
     buttonClasses?: string;
+    buttonIconClasses?: string;
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;

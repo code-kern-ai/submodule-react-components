@@ -197,7 +197,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                         disabled={isDisabled && !props.ignoreDisabledForSearch}
                         placeholder="Type to search..." />
                     <MemoIconChevronDown
-                        className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled && !props.ignoreDisabledForSearch ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled && !props.ignoreDisabledForSearch ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${props.buttonIconClasses}`}
                         aria-hidden="true"
                     />
                 </div> : <>
@@ -219,7 +219,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                             <span style={{ color: '#ef4444' }}>{getDropdownDisplayText(props.options, "NEGATED")}</span>
                         </label>}
                         <MemoIconChevronDown
-                            className="-mr-1 ml-2 h-5 w-5"
+                            className={`-mr-1 ml-2 h-5 w-5 ${props.buttonIconClasses}`}
                             aria-hidden="true"
                         />
                     </Menu.Button>)}
