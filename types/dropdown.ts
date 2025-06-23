@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  * Optionset for kern dropdown
  * @buttonName {string} - The name of the button
@@ -56,6 +58,7 @@ export type KernDropdownProps = {
     disabledOptions?: boolean[];
     buttonClasses?: string;
     buttonIconClasses?: string;
+    buttonPrefixIcon?: React.ReactNode;
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;
