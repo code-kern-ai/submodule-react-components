@@ -8,18 +8,45 @@ import { Tooltip } from "@nextui-org/react";
 import MultilineTooltipAutoContent from "@/submodules/react-components/components/MultilineTooltipAuto";
 import { NoTableEntriesYet } from "../NoTableEntriesYet";
 import { MemoIconCell, MemoIconEdit } from "../kern-icons/icons";
+import SortArrowsIdx from "./SortArrowsIdx";
 
 export default function KernTable(props: KernTableProps) {
     const length = useMemo(() => props.headers?.length || 5, [props.headers?.length]);
+
+
+    const onClickSortLookup = useMemo(() => {
+        if (!props.headers) return undefined;
+        const x = props.headers.map((header, idx) => {
+            if (!header.hasSort) return undefined;
+            if (!props.config) return undefined;
+            if (props.config.sortKey && props.config.onClickSort) return () => props.config.onClickSort(header.id);
+            if (props.config.sortKeyIdx && props.config.onClickSortIdx) return () => props.config.onClickSortIdx(idx);
+            throw new Error("KernTable: No onClickSort or onClickSortIdx provided in config for sortable header: " + header.id);
+            return undefined;
+        })
+        return x;
+    }, [props.headers, props.config]);
+
+    const sortArrowLookup = useMemo(() => {
+        if (!props.headers) return undefined;
+        return props.headers.map((header, idx) => {
+            if (!props.config || !(props.config.sortKeyIdx || props.config.sortKey)) return undefined;
+            if (!header.hasSort) return undefined;
+            if (props.config.sortKey) return <SortArrows sortKey={props.config.sortKey} property={header.id} />;
+            if (props.config.sortKeyIdx) return <SortArrowsIdx sortKey={props.config.sortKeyIdx} idx={idx} />;
+            return undefined;
+        })
+    }, [props.config, props.headers])
+
     return (
         <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config && props.config?.addBorder ? 'border border-gray-300' : ''}`}>
             <thead className="bg-gray-50">
                 <tr>
-                    {props.headers.map((header) => (
+                    {props.headers.map((header, idx) => (
                         <th scope="col"
                             className={`px-3 py-2 text-center text-xs font-medium uppercase tracking-wide text-gray-500 ${header.hasSort ? 'hover:text-gray-700 cursor-pointer' : ''}`}
                             id={header.id} key={header.id}
-                            onClick={header.hasSort ? () => props.config.onClickSort(header.id) : undefined}
+                            onClick={onClickSortLookup[idx]}
                         >
                             {header.hasCheckboxes ? <>
                                 <input
@@ -36,7 +63,7 @@ export default function KernTable(props: KernTableProps) {
                                             color="invert"
                                             placement="top">Est. Precision</Tooltip>
                                     </div>}
-                                {header.hasSort && <SortArrows sortKey={props.config.sortKey} property={header.id} />}
+                                {sortArrowLookup[idx]}
                             </div>}
                         </th>))}
                 </tr>
@@ -88,7 +115,7 @@ function ComponentMapper(cell: any) {
                 case 'CancelTaskCell':
                     return <CancelTaskCell {...cell} />;
                 case 'IconCell':
-                    return <MemoIconCell {...cell} />;
+                    return <IconCell {...cell} />;
                 case 'ConfigCell':
                     return <ConfigCell {...cell} />;
                 case 'EditDeleteOrgButtonCell':
@@ -131,7 +158,7 @@ function ComponentMapper(cell: any) {
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
         case 'number':
-            return <span>{cell.value[1]}</span>
+            return <span>{cell.value[1] ?? <NotApplicableBadge />}</span>
         case 'boolean':
             return <input type="checkbox" value={cell.value} checked={cell.checked} onClick={cell.valueChange ? cell.valueChange : undefined} readOnly />
         case 'dateInput':
