@@ -144,12 +144,12 @@ function ConfigCell({ config }) {
     </Tooltip>
 }
 
-function EditDeleteOrgButtonCell({ button, clickEdit }) {
+function EditDeleteOrgButtonCell({ clickDelete, clickEdit }) {
     return <div className="flex flex-row gap-x-2 items-center">
-        <div className="rounded-lg cursor-pointer" onClick={() => clickEdit(button)}>
+        <div className="rounded-lg cursor-pointer" onClick={clickEdit}>
             <SVGIcon icon="IconFilePencil" size={32} strokeWidth={2} />
         </div>
-        <KernButton text="Delete" onClick={button.delFunc} buttonColor="red" />
+        <KernButton text="Delete" onClick={clickDelete} buttonColor="red" />
     </div>
 }
 
