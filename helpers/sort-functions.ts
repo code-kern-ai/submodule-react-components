@@ -1,5 +1,7 @@
-import { SortDirection, SortKey } from "../types/sort";
+import { SortDirection, SortKey, SortKeyIdx } from "../types/sort";
 
+
+//keeping some older methods to prevent breaking cognition
 export function sortArrayByProperty(arr: any[], property: string, sortKey: SortKey, usersTable: boolean = false) {
     if (!arr || arr.length == 0) return sortKey;
     let order = nextSortDirection(property, sortKey);
@@ -67,14 +69,68 @@ export function getPropertyValue(obj: any, path: string) {
     return value;
 }
 
+export function sortPreppedArrayByIdx(arr: any[][], idx: number, sortKey: SortKeyIdx) {
+    if (!arr || arr.length == 0) return sortKey;
+
+    let dataType = arr[0][idx].type;
+    if (dataType == 'Component' || dataType == 'dropdown') {
+        if (!("value" in arr[0][idx])) throw new Error("No value found for idx: " + idx);
+        let firstValue = arr[0][idx].value;
+        if (Array.isArray(firstValue)) firstValue = firstValue[0];
+        if (firstValue instanceof Date) dataType = 'date';
+        else dataType = typeof firstValue;
+    }
+    sortKey = {
+        idx: idx,
+        dataType: dataType,
+        direction: nextSortDirectionByIdx(idx, sortKey)
+    };
+    sortBySortKeyIdx(arr, sortKey);
+    return sortKey;
+}
+
+export function nextSortDirectionByIdx(idx: number, sortKey: SortKeyIdx): SortDirection {
+    if (sortKey && sortKey.idx == idx) {
+        if (sortKey.direction == SortDirection.ASC) return SortDirection.DESC;
+        else if (sortKey.direction == SortDirection.DESC) return SortDirection.NO_SORT;
+        else if (sortKey.direction == SortDirection.NO_SORT) return SortDirection.ASC;
+    }
+    return SortDirection.ASC;
+}
+
+
+export function sortBySortKeyIdx(arr: any[], sortKey: SortKeyIdx) {
+    if (!sortKey) return;
+    const order = sortKey.direction;
+    switch (sortKey.dataType) {
+        case 'string':
+            arr.sort((a, b) => sortString(a[sortKey.idx].value, b[sortKey.idx].value, order));
+            break;
+        case 'number':
+            arr.sort((a, b) => sortNumber(a[sortKey.idx].value[0], b[sortKey.idx].value[0], order));
+            break;
+        case 'date':
+        case 'dateInput':
+            arr.sort((a, b) => sortDate(a[sortKey.idx].value[0], b[sortKey.idx].value[0], order));
+            break;
+        case 'boolean':
+            arr.sort((a, b) => sortBoolean(a[sortKey.idx].value, b[sortKey.idx].value, order));
+            break;
+        default:
+            arr.sort((a, b) => sortString(a[sortKey.idx].value, b[sortKey.idx].value, order));
+            break;
+    }
+}
+
+
 export function sortString(a: string, b: string, order: SortDirection) {
     if (!a && a != '') return -1;
     if (!b && b != '') return 1;
     switch (order) {
         case SortDirection.ASC:
-            return (a < b ? -1 : (a > b ? 1 : 0));
+            return a.localeCompare(b);
         case SortDirection.DESC:
-            return (b < a ? -1 : (b > a ? 1 : 0));
+            return a.localeCompare(b) * -1;
         case SortDirection.NO_SORT:
             return 0;
     }
