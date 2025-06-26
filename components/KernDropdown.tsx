@@ -197,7 +197,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                         disabled={isDisabled && !props.ignoreDisabledForSearch}
                         placeholder="Type to search..." />
                     <MemoIconChevronDown
-                        className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled && !props.ignoreDisabledForSearch ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled && !props.ignoreDisabledForSearch ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${props.buttonIconClasses}`}
                         aria-hidden="true"
                     />
                 </div> : <>
@@ -212,14 +212,17 @@ export default function KernDropdown(props: KernDropdownProps) {
                     ) : (<Menu.Button onClick={toggleDropdown} className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm  focus:outline-none focus:ring-2
             focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed ${props.buttonClasses ?? ''} ${props.buttonCaptionBgColor ?? 'bg-white hover:bg-gray-50'}`}
                         disabled={isDisabled && !props.hasCheckboxes}>
-                        {!props.hasCheckboxesThreeStates && props.buttonName}
+                        <div className='flex items-center gap-x-1'>
+                            {props.buttonPrefixIcon}
+                            {!props.hasCheckboxesThreeStates && props.buttonName}
+                        </div>
                         {props.hasCheckboxesThreeStates && <label
                             className="truncate cursor-pointer text-sm">{getDropdownDisplayText(props.options, "EMPTY")}
                             <span style={{ color: '#4e46e5' }}>{getDropdownDisplayText(props.options, "NOT_NEGATED")}</span>
                             <span style={{ color: '#ef4444' }}>{getDropdownDisplayText(props.options, "NEGATED")}</span>
                         </label>}
                         <MemoIconChevronDown
-                            className="-mr-1 ml-2 h-5 w-5"
+                            className={`-mr-1 ml-2 h-5 w-5 ${props.buttonIconClasses}`}
                             aria-hidden="true"
                         />
                     </Menu.Button>)}
