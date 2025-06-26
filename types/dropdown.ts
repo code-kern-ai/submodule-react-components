@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  * Optionset for kern dropdown
  * @buttonName {string} - The name of the button
@@ -12,6 +14,7 @@
  * @doNotUseTextArray {boolean} - If the dropdown should not use the text array
  * @disabledOptions {boolean[], optional} - disables the dropdown option (needs to be the exact same length as the optionArray)
  * @buttonClasses {string} - The classes that will be applied to the button
+ * @buttonIconClasses {string} - The classes that will be applied to the chevron down icon of the button
  * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
  * @hasSearchBar {boolean} - If the dropdown has a search bar
@@ -55,6 +58,8 @@ export type KernDropdownProps = {
     doNotUseTextArray?: boolean;
     disabledOptions?: boolean[];
     buttonClasses?: string;
+    buttonIconClasses?: string;
+    buttonPrefixIcon?: React.ReactNode;
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;
