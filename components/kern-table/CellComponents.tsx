@@ -87,10 +87,10 @@ function OrganizationUserCell({ userToOrganization, organizations, user, onClick
     )}</>
 }
 
-function DeleteUserCell({ user, deleteUser }) {
+function DeleteCell({ deleteEntity }) {
     const clickDelete = useCallback(() => {
-        if (deleteUser) deleteUser(user);
-    }, [deleteUser, user]);
+        if (deleteEntity) deleteEntity();
+    }, [deleteEntity]);
 
     return <KernButton
         text="Delete"
@@ -308,4 +308,12 @@ function EmailCell({ user }) {
     )
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteUserCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell }
+function EditIntegrationCell({ onClick }) {
+    const clickEdit = useCallback(() => {
+        if (onClick) onClick();
+    }, [onClick]);
+
+    return <KernButton text="Edit" onClick={clickEdit} className="text-gray-700" />
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell }

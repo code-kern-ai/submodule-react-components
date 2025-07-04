@@ -1,6 +1,6 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteUserCell, EditDeleteOrgButtonCell, EmailCell, EtlApiTokenCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteCell, EditDeleteOrgButtonCell, EmailCell, EtlApiTokenCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell, EditIntegrationCell } from "./CellComponents";
 import { Fragment, useMemo } from "react";
 import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
@@ -104,8 +104,8 @@ function ComponentMapper(cell: any) {
                     return <BadgeCell {...cell} />;
                 case 'OrganizationUserCell':
                     return <OrganizationUserCell {...cell} />;
-                case 'DeleteUserCell':
-                    return <DeleteUserCell {...cell} />;
+                case 'DeleteCell':
+                    return <DeleteCell {...cell} />;
                 case 'LevelCell':
                     return <LevelCell {...cell} />;
                 case 'ArchiveReasonCell':
@@ -154,6 +154,8 @@ function ComponentMapper(cell: any) {
                     return <EtlApiTokenCell {...cell} />;
                 case 'EmailCell':
                     return <EmailCell {...cell} />;
+                case 'EditIntegrationCell':
+                    return <EditIntegrationCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
