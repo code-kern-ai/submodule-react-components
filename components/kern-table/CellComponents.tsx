@@ -10,6 +10,7 @@ import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-fu
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
 import { EvaluationRunState } from "../../types/evaluationRun";
 import { MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCircleCheckFilled, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX } from "../kern-icons/icons";
+import { convertUTCTimeStringToLocalTimeString } from "@/src/services/environmentVariable";
 
 
 function OrganizationAndUsersCell({ organization }) {
@@ -316,4 +317,17 @@ function EditIntegrationCell({ onClick }) {
     return <KernButton text="Edit" onClick={clickEdit} className="text-gray-700" />
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell }
+function ExpiredTokenCell({ value }) {
+    const valueIsExpired = useMemo(() => {
+        return new Date(value) < new Date();
+    }, [value]);
+
+    return <div className="flex justify-center">
+        {convertUTCTimeStringToLocalTimeString(value, null)}
+        {valueIsExpired && <Tooltip content="Expired Token" color="invert" placement="top" className="cursor-auto">
+            <MemoIconAlertCircle className="h-6 w-6 text-red-500" />
+        </Tooltip>}
+    </div>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell }
