@@ -14,7 +14,7 @@ import { MemoIconChevronDown, MemoIconDotsVertical, MemoIconExternalLink, MemoIc
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
 export default function KernDropdown(props: KernDropdownProps) {
-    const isDisabled = props.disabled || props.options.length == 0;
+    const isDisabled = props.disabled || (props.options && props.options.length == 0);
 
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
