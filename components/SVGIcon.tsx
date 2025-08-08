@@ -1,10 +1,9 @@
 import { IconHammer, IconSettingsFilled, IconZoomIn, IconZoomOut } from '@tabler/icons-react';
-import { MemoIconBolt, MemoIconChevronDown, MemoIconCode, MemoIconDotsVertical, MemoIconEdit, MemoIconExternalLink, MemoIconFileInfo, MemoIconFilePencil, MemoIconLoader, MemoIconPlayerPlayFilled, MemoIconPlus, MemoIconSettings, MemoIconShieldCheckFilled, MemoIconShieldFilled, MemoIconSquare, MemoIconSquareCheck, MemoIconTrash } from './kern-icons/icons';
+import { MemoIconBolt, MemoIconChevronDown, MemoIconCode, MemoIconDotsVertical, MemoIconEdit, MemoIconExternalLink, MemoIconFileInfo, MemoIconFilePencil, MemoIconLoader, MemoIconPlayerPlayFilled, MemoIconPlus, MemoIconSettings, MemoIconShieldCheckFilled, MemoIconShieldFilled, MemoIconSquare, MemoIconSquareCheck, MemoIconTag, MemoIconTrash } from './kern-icons/icons';
 
 export const SUPPORTED_ICONS = ['IconCode', 'IconBolt', 'IconSquareCheck', 'IconSquare', 'IconPlayerPlayFilled', 'IconTrash', 'IconExternalLink',
     'IconLoader', 'IconFilePencil', 'IconFileInfo', 'IconEdit', 'IconShieldFilled', 'IconShieldCheckFilled', 'IconPlus', 'IconSettings', 'IconSettingsFilled',
-    'IconHammer', 'IconZoomIn', 'IconZoomOut'
-
+    'IconHammer', 'IconZoomIn', 'IconZoomOut', 'IconTag'
 ]
 
 type SVGIconProps = {
@@ -16,6 +15,8 @@ type SVGIconProps = {
 
 export default function SVGIcon(props: SVGIconProps) {
     switch (props.icon) {
+        case 'IconTag':
+            return <MemoIconTag size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
         case 'IconCode':
             return <MemoIconCode size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
         case 'IconBolt':
