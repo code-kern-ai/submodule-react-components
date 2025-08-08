@@ -10,56 +10,57 @@ type SVGIconProps = {
     icon: string,
     size?: number,
     strokeWidth?: number,
-    useFillForIcons?: boolean
+    useFillForIcons?: boolean,
+    addClasses?: string
 }
 
 export default function SVGIcon(props: SVGIconProps) {
     switch (props.icon) {
         case 'IconTag':
-            return <MemoIconTag size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconTag size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconCode':
-            return <MemoIconCode size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconCode size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconBolt':
-            return <MemoIconBolt size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconBolt size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconSquareCheck':
-            return <MemoIconSquareCheck size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconSquareCheck size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconSquare':
-            return <MemoIconSquare size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconSquare size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconPlayerPlayFilled':
-            return <MemoIconPlayerPlayFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconPlayerPlayFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconTrash':
-            return <MemoIconTrash size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconTrash size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconExternalLink':
-            return <MemoIconExternalLink size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconExternalLink size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconChevronDown':
-            return <MemoIconChevronDown size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconChevronDown size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconDotsVertical':
-            return <MemoIconDotsVertical size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconDotsVertical size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconLoader':
-            return <MemoIconLoader size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconLoader size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconFilePencil':
-            return <MemoIconFilePencil size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconFilePencil size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconFileInfo':
-            return <MemoIconFileInfo size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconFileInfo size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconEdit':
-            return <MemoIconEdit size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconEdit size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconShieldFilled':
-            return <MemoIconShieldFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconShieldFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconShieldCheckFilled':
-            return <MemoIconShieldCheckFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconShieldCheckFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconPlus':
-            return <MemoIconPlus size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconPlus size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconSettings':
-            return <MemoIconSettings size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <MemoIconSettings size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconSettingsFilled':
-            return <IconSettingsFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <IconSettingsFilled size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconHammer':
-            return <IconHammer size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <IconHammer size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconZoomIn':
-            return <IconZoomIn size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <IconZoomIn size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
         case 'IconZoomOut':
-            return <IconZoomOut size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
-        default: return <MemoIconLoader size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''}`} />
+            return <IconZoomOut size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
+        default: return <MemoIconLoader size={props.size} strokeWidth={props.strokeWidth} className={`${props.useFillForIcons ? 'fill-gray-800' : ''} ${props.addClasses}`} />
     }
 
 }
