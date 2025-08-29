@@ -89,7 +89,7 @@ export type KernDropdownProps = {
     fontSizeClass?: string;
     filteredOptions?: (option: string) => void;
     ignoreDisabledForSearch?: boolean;
-    positionDropdown?: "top" | "bottom" | "left" | "right";
+    positionDropdown?: "top" | "bottom" | "left" | "right" | "leftBottom";
     scrollAfterNOptions?: number;
     dropdownAdd?: JSX.Element[];
     forceOverwriteOpen?: boolean;

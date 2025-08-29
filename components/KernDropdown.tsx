@@ -84,6 +84,7 @@ export default function KernDropdown(props: KernDropdownProps) {
             case "bottom": return "-translate-x-1/2 left-1/2 top-full";
             case "left": return "-translate-y-1/2 top-1/2 right-full";
             case "right": return "-translate-y-1/2 top-1/2 left-full";
+            case "leftBottom": return "top-3/4 right-full";
         }
     }, [props.positionDropdown]);
 

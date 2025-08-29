@@ -6,9 +6,9 @@ import useRefState from "../useRefState";
 // only works if the corresponding enum is translated in the i18n file with the lookupKey
 // example: cognition-ui> PATExpiresAt
 export default function useEnumStateTranslated<T>(enumObj: T, lookupKey: string, translationScope?: string): [
-    { name: string, value: T },
-    Dispatch<SetStateAction<{ name: string; value: T; }>>,
-    { name: string, value: T }[]
+    { name: string, value: T[keyof T] },
+    Dispatch<SetStateAction<{ name: string; value: T[keyof T]; }>>,
+    { name: string, value: T[keyof T] }[]
 ] {
     const _translationScope = translationScope || 'enums';
     const options = useEnumOptionsTranslated(enumObj, lookupKey, _translationScope);
