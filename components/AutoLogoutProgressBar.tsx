@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 type AutoLogoutProgressBarProps = {
     autoLogoutMinutes: number | null;
     className?: string;
+    preventLogout?: boolean;
 }
 
 function isReload() {
@@ -77,7 +78,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     }, []);
 
     useEffect(() => {
-        if (isReload()) return;
+        if (isReload() || props.preventLogout) return;
         const handleBeforeUnload = () => {
             const nowIso = new Date().toISOString();
             if (!localStorage.getItem("lastClosedAt") && !completeCalled) localStorage.setItem("lastClosedAt", nowIso);
@@ -91,7 +92,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, [completeCalled]);
+    }, [completeCalled, props.preventLogout]);
 
     return <>
         {showProgressBar && <ReverseProgressBar duration={remainingMinutes * 60} className={props.className} label={t("overview.remainingTime")} onComplete={onCompleteFunc} />}
