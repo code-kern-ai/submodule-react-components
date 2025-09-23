@@ -1,12 +1,10 @@
-import { selectTempValue, setTempVariable, TempStorageEnum } from "@/src/reduxStore/states/temps";
-import { selectUser } from "@/src/reduxStore/states/user";
-import { logout } from "@/src/services/auth";
+import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
 import { formatTime } from "@/submodules/javascript-functions/date-parser";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 
 type AutoLogoutProgressBarProps = {
+    autoLogoutMinutes: number | null;
     className?: string;
 }
 
@@ -21,11 +19,14 @@ function isReload() {
     return false;
 };
 
-export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps) {
-    const dispatch = useDispatch();
-    const { t } = useTranslation('projectOverview');
+const AUTH_BASE_URI = '/.ory/kratos/public/self-service/';
+function logout() {
+    const url = `${AUTH_BASE_URI}logout/browser`;
+    jsonFetchWrapper(url, FetchType.GET, (result) => { window.location.href = result.logout_url });
+}
 
-    const user = useSelector(selectUser);
+export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarProps, ref) => {
+    const { t } = useTranslation('projectOverview');
 
     const [showProgressBar, setShowProgressBar] = useState(false);
     const [remainingMinutes, setRemainingMinutes] = useState(0);
@@ -33,37 +34,22 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
 
     const lastInteractionRef = useRef(Date.now());
 
-    useEffect(() => {
-        const resetTimer = () => {
+    useImperativeHandle(ref, () => ({
+        resetTimer: () => {
             lastInteractionRef.current = Date.now();
-            dispatch(setTempVariable(TempStorageEnum.RESET_LOGOUT_TIMER, "X"));
+            localStorage.setItem("resetLogoutTimer", "X");
         }
-
-        const onKeyDownEvent = (e: KeyboardEvent) => {
-            const target = e.target as HTMLElement;
-            // used for the chat input (we want to trigger rest on typing)
-            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
-                resetTimer();
-            }
-        };
-
-        window.addEventListener("click", resetTimer);
-        window.addEventListener("keydown", onKeyDownEvent);
-        return () => {
-            window.removeEventListener("click", resetTimer);
-            window.removeEventListener("keydown", onKeyDownEvent);
-        };
-    }, []);
+    }));
 
     useEffect(() => {
-        const autoLogoutMinutes = user?.autoLogoutMinutes;
+        const autoLogoutMinutes = props?.autoLogoutMinutes;
         if (!autoLogoutMinutes) {
             setShowProgressBar(false);
             setRemainingMinutes(0);
             return;
         }
 
-        setRemainingMinutes(Math.ceil(autoLogoutMinutes));
+        setRemainingMinutes(autoLogoutMinutes <= 5 ? autoLogoutMinutes : 5);
 
         const checkInactivity = () => {
             const now = Date.now();
@@ -75,7 +61,7 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
         checkInactivity();
         const interval = setInterval(checkInactivity, 1000);
         return () => clearInterval(interval);
-    }, [user?.autoLogoutMinutes]);
+    }, [props?.autoLogoutMinutes]);
 
     const logoutUser = useCallback(() => {
         localStorage.removeItem("lastClosedAt");
@@ -110,7 +96,7 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
     return <>
         {showProgressBar && <ReverseProgressBar duration={remainingMinutes * 60} className={props.className} label={t("overview.remainingTime")} onComplete={onCompleteFunc} />}
     </>
-}
+});
 
 type ReverseProgressBarProps = {
     duration: number;
@@ -120,13 +106,12 @@ type ReverseProgressBarProps = {
 };
 
 function ReverseProgressBar(props: ReverseProgressBarProps) {
-    const dispatch = useDispatch();
-    const resetLogoutTimer = useSelector(selectTempValue(TempStorageEnum.RESET_LOGOUT_TIMER));
+    const resetLogoutTimer = localStorage.getItem("resetLogoutTimer");
     const [remaining, setRemaining] = useState<number>(props.duration);
 
     useEffect(() => {
         if (!resetLogoutTimer) return;
-        dispatch(setTempVariable(TempStorageEnum.RESET_LOGOUT_TIMER, null));
+        localStorage.setItem("resetLogoutTimer", null);
         setRemaining(props.duration);
     }, [resetLogoutTimer]);
 
