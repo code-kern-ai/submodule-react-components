@@ -99,7 +99,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, [completeCalled]);
+    }, [completeCalled, props.comesFromEntry]);
 
     return <>
         {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={props.label} onComplete={onCompleteFunc} />}
