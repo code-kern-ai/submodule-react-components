@@ -5,6 +5,7 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo
 type AutoLogoutProgressBarProps = {
     autoLogoutMinutes: number | null;
     label: string;
+    comesFromEntry?: boolean;
     className?: string;
     preventLogout?: boolean;
 }
@@ -81,7 +82,9 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     useEffect(() => {
         if (isReload()) return;
         if (localStorage.getItem("comesFromEntry") === "true" && props.autoLogoutMinutes) {
-            localStorage.setItem("comesFromEntry", "false");
+            if (!props.comesFromEntry) {
+                localStorage.setItem("comesFromEntry", "false");
+            }
             return;
         }
         const handleBeforeUnload = () => {
