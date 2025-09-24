@@ -71,7 +71,6 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
 
     const onCompleteFunc = useCallback(() => {
         setCompleteCalled(true);
-        console.log("called 1")
         logoutUser();
         setTimeout(() => {
             setCompleteCalled(false);
@@ -92,13 +91,12 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
         const stored = localStorage.getItem("lastClosedAt");
         if (stored && props.autoLogoutMinutes) {
             window.removeEventListener("beforeunload", handleBeforeUnload);
-            console.log("called 2")
             logoutUser();
         }
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, [completeCalled, props.preventLogout, props.autoLogoutMinutes]);
+    }, [completeCalled, props.preventLogout]);
 
     return <>
         {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={props.label} onComplete={onCompleteFunc} />}
