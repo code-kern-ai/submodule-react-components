@@ -81,6 +81,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     useEffect(() => {
         if (isReload()) return;
         if (localStorage.getItem("comesFromEntry") === "true" && props.autoLogoutMinutes) {
+            console.log("Setting comesFromEntry to false", props.comesFromEntry);
             if (!props.comesFromEntry) {
                 localStorage.setItem("comesFromEntry", "false");
             }
@@ -99,7 +100,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
-    }, [completeCalled, props.preventLogout]);
+    }, [completeCalled, props.preventLogout, props.comesFromEntry]);
 
     return <>
         {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={props.label} onComplete={onCompleteFunc} />}
