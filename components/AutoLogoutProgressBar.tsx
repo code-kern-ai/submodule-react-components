@@ -1,10 +1,10 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
 import { formatTime } from "@/submodules/javascript-functions/date-parser";
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 type AutoLogoutProgressBarProps = {
     autoLogoutMinutes: number | null;
+    label: string;
     className?: string;
     preventLogout?: boolean;
 }
@@ -27,8 +27,6 @@ function logout() {
 }
 
 export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarProps, ref) => {
-    const { t } = useTranslation('projectOverview');
-
     const [showProgressBar, setShowProgressBar] = useState(false);
     const [remainingMinutes, setRemainingMinutes] = useState(0);
     const [completeCalled, setCompleteCalled] = useState(false);
@@ -101,7 +99,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     }, [completeCalled, props.preventLogout]);
 
     return <>
-        {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={t("overview.remainingTime")} onComplete={onCompleteFunc} />}
+        {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={props.label} onComplete={onCompleteFunc} />}
     </>
 });
 
