@@ -32,12 +32,14 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     const [showProgressBar, setShowProgressBar] = useState(false);
     const [remainingMinutes, setRemainingMinutes] = useState(0);
     const [completeCalled, setCompleteCalled] = useState(false);
+    const [signal, setSignal] = useState(0);
 
     const lastInteractionRef = useRef(Date.now());
 
     useImperativeHandle(ref, () => ({
         resetTimer: () => {
             lastInteractionRef.current = Date.now();
+            setSignal(prev => prev + 1);
             localStorage.setItem("resetLogoutTimer", "X");
         }
     }));
@@ -78,7 +80,11 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     }, []);
 
     useEffect(() => {
-        if (isReload() || props.preventLogout) return;
+        if (isReload()) return;
+        if (localStorage.getItem("comesFromEntry") === "true") {
+            localStorage.setItem("comesFromEntry", "false");
+            return;
+        }
         const handleBeforeUnload = () => {
             const nowIso = new Date().toISOString();
             if (!localStorage.getItem("lastClosedAt") && !completeCalled) localStorage.setItem("lastClosedAt", nowIso);
@@ -95,7 +101,7 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     }, [completeCalled, props.preventLogout]);
 
     return <>
-        {showProgressBar && <ReverseProgressBar duration={remainingMinutes * 60} className={props.className} label={t("overview.remainingTime")} onComplete={onCompleteFunc} />}
+        {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={t("overview.remainingTime")} onComplete={onCompleteFunc} />}
     </>
 });
 
@@ -104,6 +110,7 @@ type ReverseProgressBarProps = {
     onComplete: () => void;
     label: string;
     className?: string;
+    signal: number; // To force re-render
 };
 
 function ReverseProgressBar(props: ReverseProgressBarProps) {
