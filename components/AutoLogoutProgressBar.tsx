@@ -122,18 +122,13 @@ function ReverseProgressBar(props: ReverseProgressBarProps) {
         if (!resetLogoutTimer) return;
         localStorage.setItem("resetLogoutTimer", null);
         setRemaining(props.duration);
-    }, [resetLogoutTimer, props.signal]);
+    }, [resetLogoutTimer, props.duration]);
 
     useEffect(() => {
         setRemaining(props.duration);
 
         const tick = () => {
             setRemaining(prev => {
-                if (prev - 1 <= 0) {
-                    if (props.onComplete) props.onComplete();
-                    clearInterval(interval);
-                    return 0;
-                }
                 return prev - 1;
             });
         };
@@ -142,7 +137,13 @@ function ReverseProgressBar(props: ReverseProgressBarProps) {
         return () => {
             clearInterval(interval);
         };
-    }, [props.duration, props.onComplete]);
+    }, [props.duration]);
+
+    useEffect(() => {
+        if (remaining === 1) {
+            props.onComplete();
+        }
+    }, [remaining]);
 
     const progressPercent = useMemo(() => {
         return Math.max(0, Math.min(100, (remaining / Math.max(1, props.duration)) * 100));
