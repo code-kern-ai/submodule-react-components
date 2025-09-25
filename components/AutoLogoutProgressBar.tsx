@@ -122,7 +122,7 @@ function ReverseProgressBar(props: ReverseProgressBarProps) {
         if (!resetLogoutTimer) return;
         localStorage.setItem("resetLogoutTimer", null);
         setRemaining(props.duration);
-    }, [resetLogoutTimer]);
+    }, [resetLogoutTimer, props.signal]);
 
     useEffect(() => {
         setRemaining(props.duration);
