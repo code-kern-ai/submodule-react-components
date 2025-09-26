@@ -69,7 +69,7 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
             const now = Date.now();
             const inactiveMinutes = (now - lastInteractionRef.current) / 1000 / 60;
             const minutesLeft = autoLogoutMinutes - inactiveMinutes;
-            setShowProgressBar(minutesLeft <= 5 && minutesLeft > 0);
+            setShowProgressBar(minutesLeft <= 5);
         };
 
         checkInactivity();
