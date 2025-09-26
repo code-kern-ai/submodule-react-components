@@ -1,6 +1,6 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
 import { formatTime } from "@/submodules/javascript-functions/date-parser";
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 type AutoLogoutProgressBarProps = {
     autoLogoutMinutes: number | null;
@@ -26,21 +26,34 @@ function logout() {
     jsonFetchWrapper(url, FetchType.GET, (result) => { window.location.href = result.logout_url });
 }
 
-export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarProps, ref) => {
+export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps) {
     const [showProgressBar, setShowProgressBar] = useState(false);
     const [remainingMinutes, setRemainingMinutes] = useState(0);
     const [completeCalled, setCompleteCalled] = useState(false);
-    const [signal, setSignal] = useState(0);
+    const progressBarRef = useRef(null);
 
     const lastInteractionRef = useRef(Date.now());
 
-    useImperativeHandle(ref, () => ({
-        resetTimer: () => {
+    useEffect(() => {
+        const resetTimer = () => {
             lastInteractionRef.current = Date.now();
-            setSignal(prev => prev + 1);
+            progressBarRef.current?.resetTimer();
             localStorage.setItem("resetLogoutTimer", "X");
         }
-    }));
+        const onKeyDownEvent = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement;
+            // used for the chat input (we want to trigger rest on typing)
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+                resetTimer();
+            }
+        };
+        window.addEventListener("click", resetTimer);
+        window.addEventListener("keydown", onKeyDownEvent)
+        return () => {
+            window.removeEventListener("click", resetTimer);
+            window.removeEventListener("keydown", onKeyDownEvent)
+        };
+    }, []);
 
     useEffect(() => {
         const autoLogoutMinutes = props?.autoLogoutMinutes;
@@ -102,16 +115,18 @@ export const AutoLogoutProgressBar = forwardRef((props: AutoLogoutProgressBarPro
     }, [completeCalled, props.comesFromEntry]);
 
     return <>
-        {showProgressBar && <ReverseProgressBar signal={signal} duration={remainingMinutes * 60} className={props.className} label={props.label} onComplete={onCompleteFunc} />}
+        {showProgressBar && <ReverseProgressBar ref={progressBarRef} duration={remainingMinutes * 60} className={props.className} label={props.label} onComplete={onCompleteFunc} />}
     </>
-});
+};
 
 type ReverseProgressBarProps = {
     duration: number;
     onComplete: () => void;
     label: string;
     className?: string;
-    signal: number; // To force re-render
+    ref?: React.Ref<{
+        resetTimer: () => void;
+    }>;
 };
 
 function ReverseProgressBar(props: ReverseProgressBarProps) {
@@ -124,26 +139,30 @@ function ReverseProgressBar(props: ReverseProgressBarProps) {
         setRemaining(props.duration);
     }, [resetLogoutTimer, props.duration]);
 
+    useImperativeHandle(props.ref, () => ({
+        resetTimer: () => {
+            setRemaining(props.duration);
+        }
+    }));
+
     useEffect(() => {
         setRemaining(props.duration);
 
         const tick = () => {
             setRemaining(prev => {
+                if (prev - 1 <= 0) {
+                    if (props.onComplete) props.onComplete();
+                    clearInterval(interval);
+                    return 0;
+                }
                 return prev - 1;
             });
         };
         const interval = setInterval(tick, 1000);
-
         return () => {
             clearInterval(interval);
         };
     }, [props.duration]);
-
-    useEffect(() => {
-        if (remaining === 1) {
-            props.onComplete();
-        }
-    }, [remaining]);
 
     const progressPercent = useMemo(() => {
         return Math.max(0, Math.min(100, (remaining / Math.max(1, props.duration)) * 100));
