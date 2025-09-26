@@ -1,6 +1,6 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
 import { formatTimeDigitalClock } from "@/submodules/javascript-functions/date-parser";
-import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 type AutoLogoutProgressBarProps = {
     autoLogoutMinutes: number | null;
@@ -38,8 +38,8 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
         const resetTimer = () => {
             lastInteractionRef.current = Date.now();
             progressBarRef.current?.resetTimer();
-            localStorage.setItem("resetLogoutTimer", "X");
         }
+
         const onKeyDownEvent = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
             // used for the chat input (we want to trigger rest on typing)
@@ -124,22 +124,16 @@ type ReverseProgressBarProps = {
     onComplete: () => void;
     label: string;
     className?: string;
-    ref?: React.Ref<{
-        resetTimer: () => void;
-    }>;
 };
 
-function ReverseProgressBar(props: ReverseProgressBarProps) {
-    const resetLogoutTimer = localStorage.getItem("resetLogoutTimer");
+const ReverseProgressBar = forwardRef((props: ReverseProgressBarProps, ref) => {
     const [remaining, setRemaining] = useState<number>(props.duration);
 
     useEffect(() => {
-        if (!resetLogoutTimer) return;
-        localStorage.setItem("resetLogoutTimer", null);
         setRemaining(props.duration);
-    }, [resetLogoutTimer, props.duration]);
+    }, [props.duration]);
 
-    useImperativeHandle(props.ref, () => ({
+    useImperativeHandle(ref, () => ({
         resetTimer: () => {
             setRemaining(props.duration);
         }
@@ -183,4 +177,4 @@ function ReverseProgressBar(props: ReverseProgressBarProps) {
             {props.label && <div className="mt-2 text-xs text-gray-500 italic text-center">{props.label}</div>}
         </div>
     );
-}
+});
