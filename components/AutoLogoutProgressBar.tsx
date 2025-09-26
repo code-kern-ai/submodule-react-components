@@ -1,5 +1,5 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
-import { formatTime } from "@/submodules/javascript-functions/date-parser";
+import { formatTimeDigitalClock } from "@/submodules/javascript-functions/date-parser";
 import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 type AutoLogoutProgressBarProps = {
@@ -177,7 +177,7 @@ function ReverseProgressBar(props: ReverseProgressBarProps) {
                     className="absolute top-0 bottom-0 right-0 bg-gray-200"
                 />
                 <div className="absolute inset-0 flex items-center justify-center text-sm font-medium tabular-nums">
-                    {formatTime(remaining)}
+                    {formatTimeDigitalClock(remaining)}
                 </div>
             </div>
             {props.label && <div className="mt-2 text-xs text-gray-500 italic text-center">{props.label}</div>}
