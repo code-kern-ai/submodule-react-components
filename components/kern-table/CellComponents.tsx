@@ -327,4 +327,17 @@ function ExpiredTokenCell({ value }) {
     </div>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell }
+function LinkCell({ value }) {
+    return <div className="flex justify-center gap-x-2">
+        <span>{value}</span>
+        <a href={value} target="_blank" rel="noopener noreferrer" className="h-4 w-4 m-auto block p-0">
+            <MemoIconExternalLink className="h-4 w-4 m-auto" />
+        </a>
+    </div>
+}
+
+function ConfigReleaseNotificationCell({ onClick }) {
+    return <KernButton text="View config" onClick={onClick} />;
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell }
