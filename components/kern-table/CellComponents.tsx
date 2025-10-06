@@ -338,7 +338,7 @@ function LinkCell({ value }) {
 
 function ConfigReleaseNotificationCell({ onClickView, onClickEdit }) {
     return <div className="flex justify-center gap-x-2 items-center">
-        <KernButton text="View config" onClick={onClickView} />
+        <KernButton text="View" onClick={onClickView} />
         <MemoIconEdit className="h-5 w-5 text-gray-700 cursor-pointer" onClick={onClickEdit} />
     </div>;
 }
