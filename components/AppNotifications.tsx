@@ -30,6 +30,7 @@ export default function AppNotifications(props: AppNotificationsProps) {
     const clickBell = useCallback(() => {
         if (justClickedOutsideRef.current) return; // if the user just clicked outside, don't show the notifications since the person is trying to close via bell icon
         setShowNotifications(true);
+        if (props.notifications.length === 0) return;
         setLastSeenNotification(props.notifications[props.notifications.length - 1].id);
     }, [props.notifications]);
 
@@ -74,6 +75,7 @@ export default function AppNotifications(props: AppNotificationsProps) {
                         >{t("notificationBell.link")}</Link>
                     </div>
                 ))}
+                {finalNotifications.length === 0 && <div className="py-4 px-3 text-sm text-gray-500">{t("notificationBell.noNotifications")}</div>}
             </div>
             {props.notifications.length > MIN_NOTIFICATIONS_SHOW && <div className="py-1 px-3 bg-gray-800/25 text-center">
                 <label className="text-xs text-gray-500 cursor-pointer" onClick={() => setShowMoreClicked(!showMoreClicked)}>{!showMoreClicked ? t("notificationBell.showMore") : t("notificationBell.showLess")}</label>
