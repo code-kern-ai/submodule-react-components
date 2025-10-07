@@ -21,11 +21,17 @@ const MAX_NOTIFICATIONS_SHOW = 7;
 export default function AppNotifications(props: AppNotificationsProps) {
     const { t } = useTranslation('projectOverview');
     const [lastSeenNotification, setLastSeenNotification] = useLocalStorage<number>('lastSeen', 'releaseNotification', undefined, -1);
+    const [idsSeenNotifications, setIdsSeenNotifications] = useLocalStorage<string[]>('idsSeenNotifications', 'releaseNotification', undefined, []);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showMoreClicked, setShowMoreClicked] = useState(false);
     const justClickedOutsideRef = useRef(false); // to prevent showing the notifications if the user just clicked outside
     const refNotificationBox = useRef(null);
-    useOnClickOutside(refNotificationBox, () => { setShowNotifications(false); justClickedOutsideRef.current = true; setTimeout(() => justClickedOutsideRef.current = false, 200); });
+    useOnClickOutside(refNotificationBox, () => {
+        setShowNotifications(false); justClickedOutsideRef.current = true;
+        setTimeout(() => justClickedOutsideRef.current = false, 200);
+        const newIdsSeen = props.notifications.map(n => n.id).filter(id => !idsSeenNotifications.includes(id));
+        if (newIdsSeen.length > 0) setIdsSeenNotifications([...idsSeenNotifications, ...newIdsSeen]);
+    });
 
     const clickBell = useCallback(() => {
         if (justClickedOutsideRef.current) return; // if the user just clicked outside, don't show the notifications since the person is trying to close via bell icon
@@ -62,17 +68,24 @@ export default function AppNotifications(props: AppNotificationsProps) {
         </button>
         {hasNewNotifications && <div className={combineClassNames("absolute w-2 h-2 bg-red-500 rounded-full pointer-events-none", props.forChatArea ? 'top-1 right-1' : 'top-2 right-2')}></div>}
         {showNotifications && <div className={combineClassNames("absolute overflow-hidden -translate-y-2 bottom-full left-0 w-72 rounded-lg bg-slate-50 shadow-lg z-10 text-gray-700", props.forChatArea ? '' : 'translate-x-2', props.forChatArea ? 'bg-[var(--background-color-menu)]' : '')} ref={refNotificationBox}>
-            <div className="flex flex-col">
+            <div className="flex flex-col max-h-[calc(100vh-300px)] overflow-y-auto">
                 <div className="bg-gray-800/25 text-gray-900"><div className="uppercase py-2 px-3">{t("notificationBell.header")}</div></div>
                 {finalNotifications.map((notification, idx) => (
                     <div key={notification.id} className={combineClassNames("py-4 px-3", idx == finalNotifications.length - 1 ? '' : 'border-b border-slate-400')}>
-                        <div className="font-semibold">{notification.config[props.user?.languageDisplay].headline}</div>
-                        <div className="text-xs line-clamp-3">{notification.config[props.user?.languageDisplay].description}</div>
-                        <Link
-                            href={notification.link}
-                            className={'text-xs mt-1' + (isLightDesign ? ' text-red-800' : ' text-red-600')}
-                            target="_blank"
-                        >{t("notificationBell.link")}</Link>
+                        <div className="flex items-center">
+                            <div>
+                                <div className="font-semibold">{notification.config[props.user?.languageDisplay].headline}</div>
+                                <div className="text-xs line-clamp-3">{notification.config[props.user?.languageDisplay].description}</div>
+                                <Link
+                                    href={notification.link}
+                                    className={'text-xs mt-1' + (isLightDesign ? ' text-red-800' : ' text-red-600')}
+                                    target="_blank"
+                                >{t("notificationBell.link")}</Link>
+                            </div>
+                            <div className="ml-auto flex">
+                                {!idsSeenNotifications.includes(notification.id) && <div className="w-2 h-2 bg-red-500 rounded-full ml-2 mt-1.5"></div>}
+                            </div>
+                        </div>
                     </div>
                 ))}
                 {finalNotifications.length === 0 && <div className="py-4 px-3 text-sm text-gray-500">{t("notificationBell.noNotifications")}</div>}
