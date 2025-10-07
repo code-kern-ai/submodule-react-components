@@ -37,13 +37,13 @@ export default function AppNotifications(props: AppNotificationsProps) {
         if (justClickedOutsideRef.current) return; // if the user just clicked outside, don't show the notifications since the person is trying to close via bell icon
         setShowNotifications(true);
         if (props.notifications.length === 0) return;
-        setLastSeenNotification(props.notifications[props.notifications.length - 1].id);
+        setLastSeenNotification(props.notifications[0].id);
     }, [props.notifications]);
 
     const finalNotifications = useMemo(() => {
         if (props.notifications.length <= MIN_NOTIFICATIONS_SHOW) return props.notifications;
-        if (!showMoreClicked) return props.notifications.slice(-MIN_NOTIFICATIONS_SHOW);
-        if (showMoreClicked) return props.notifications.slice(-MAX_NOTIFICATIONS_SHOW);
+        if (!showMoreClicked) return props.notifications.slice(0, MIN_NOTIFICATIONS_SHOW);
+        if (showMoreClicked) return props.notifications.slice(0, MAX_NOTIFICATIONS_SHOW);
     }, [props.notifications, showMoreClicked]);
 
     const hasNewNotifications = useMemo(() => {
