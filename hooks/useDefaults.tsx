@@ -12,6 +12,7 @@ type AnyProps = {
 // will cast the result to ensure type consistency
 // caution, since this is a new state common state issues will apply. 
 // E.g. access in destructor will not work without a ref (use ref version below instead)
+// Caution! If this is used with children this will cause a constant recreation of the children (e.g. textarea cursor jumps to the end)!
 export function useDefaults<T>(props: AnyProps, defaultValues: DefaultValues) {
     if (!defaultValues) throw new Error("useDefaults - defaultValues is required")
 
