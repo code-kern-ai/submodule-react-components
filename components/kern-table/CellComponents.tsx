@@ -9,7 +9,7 @@ import { AdminMessageLevel } from "../../types/admin-messages";
 import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
 import { EvaluationRunState } from "../../types/evaluationRun";
-import { MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCircleCheckFilled, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX } from "../kern-icons/icons";
+import { MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCircleCheckFilled, MemoIconEdit, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX } from "../kern-icons/icons";
 
 
 function OrganizationAndUsersCell({ organization }) {
@@ -327,4 +327,20 @@ function ExpiredTokenCell({ value }) {
     </div>
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell }
+function LinkCell({ value }) {
+    return <div className="flex justify-center gap-x-2">
+        <span>{value}</span>
+        <a href={value} target="_blank" rel="noopener noreferrer" className="h-4 w-4 m-auto block p-0">
+            <MemoIconExternalLink className="h-4 w-4 m-auto" />
+        </a>
+    </div>
+}
+
+function ConfigReleaseNotificationCell({ onClickView, onClickEdit }) {
+    return <div className="flex justify-center gap-x-2 items-center">
+        <KernButton text="View" onClick={onClickView} />
+        <MemoIconEdit className="h-5 w-5 text-gray-700 cursor-pointer" onClick={onClickEdit} />
+    </div>;
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell }
