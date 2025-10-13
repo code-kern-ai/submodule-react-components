@@ -76,11 +76,11 @@ export default function AppNotifications(props: AppNotificationsProps) {
                             <div>
                                 <div className="font-semibold">{notification.config[props.user?.languageDisplay].headline}</div>
                                 <div className="text-xs line-clamp-3">{notification.config[props.user?.languageDisplay].description}</div>
-                                <Link
+                                {notification.link && <Link
                                     href={notification.link}
                                     className={'text-xs mt-1' + (isLightDesign ? ' text-red-800' : ' text-red-600')}
                                     target="_blank"
-                                >{t("notificationBell.link")}</Link>
+                                >{t("notificationBell.link")}</Link>}
                             </div>
                             <div className="ml-auto flex">
                                 {!idsSeenNotifications.includes(notification.id) && <div className="w-2 h-2 bg-red-500 rounded-full ml-2 mt-1.5"></div>}
