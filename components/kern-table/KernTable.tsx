@@ -162,6 +162,8 @@ function ComponentMapper(cell: any) {
                     return <LinkCell  {...cell} />;
                 case 'ConfigReleaseNotificationCell':
                     return <ConfigReleaseNotificationCell  {...cell} />;
+                case '@provided@':
+                    return cell.jsx ?? <NotApplicableBadge />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
