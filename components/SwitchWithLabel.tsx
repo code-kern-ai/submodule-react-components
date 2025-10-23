@@ -22,7 +22,7 @@ export default function SwitchWithLabel(props: Props) {
     const finalColorInactive = props.colorInactive || 'bg-gray-200';
     const finalColorLabel = props.colorLabel || 'text-gray-700';
 
-    const tooltip = useMemo(() => props.tooltip ? <Tooltip content={props.tooltip} color="invert" placement="top"><MemoIconAlertTriangle className="w-6 h-6" /></Tooltip> : null, [props.tooltip])
+    const tooltip = useMemo(() => props.tooltip ? <Tooltip content={props.tooltip} color="invert" placement="top" className="cursor-default"><MemoIconAlertTriangle className="w-6 h-6" /></Tooltip> : null, [props.tooltip])
 
     return <Switch.Group as="div" className={combineClassNames("flex items-center justify-between disabled-within:opacity-50 disabled-within:cursor-not-allowed", props.addClassesGroup)}>
         <Switch.Description as="span" className={`font-medium ${finalColorLabel}`}>
