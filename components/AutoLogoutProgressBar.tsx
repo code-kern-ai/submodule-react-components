@@ -163,7 +163,7 @@ const ReverseProgressBar = forwardRef((props: ReverseProgressBarProps, ref) => {
     }, [remaining, props.duration]);
 
     return (
-        <div className={`w-full max-w-3xs ml-auto ${props.className}`}>
+        <div className={`w-full max-w-48 ml-auto ${props.className}`}>
             <div className="relative w-full h-5 bg-gray-200 rounded-md overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-yellow-400 to-green-500" />
                 <div
@@ -174,7 +174,7 @@ const ReverseProgressBar = forwardRef((props: ReverseProgressBarProps, ref) => {
                     {formatTimeDigitalClock(remaining)}
                 </div>
             </div>
-            {props.label && <div className="mt-2 text-xs text-gray-500 italic text-center">{props.label}</div>}
+            {props.label && <div className="mt-2 text-[10px] leading-[12px] text-gray-500 italic text-center">{props.label}</div>}
         </div>
     );
 });
