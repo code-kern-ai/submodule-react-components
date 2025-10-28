@@ -345,4 +345,28 @@ function ConfigReleaseNotificationCell({ onClickView, onClickEdit }) {
     </div>;
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell }
+function TruncateAndTooltipCell({ value, hasError = false }) {
+    return <div className="flex items-center">
+        {hasError && <MemoIconAlertTriangleFilled className="h-5 w-5 text-red-600 mr-2" />}
+        {value ? <Tooltip content={<span className="whitespace-pre-wrap">{value}</span>} color="invert" hideArrow={true} placement='bottom'>
+            <span className="block max-w-56 truncate">{value}</span>
+        </Tooltip> : <NotApplicableBadge />}
+    </div>;
+}
+
+function JumpToConversationAndAssignCell({ onClick }) {
+
+    const clickArrow = useCallback(() => {
+        console.log("JumpToConversationAndAssignCell clicked", onClick)
+        if (onClick) onClick();
+    }, [onClick]);
+
+    return <div className="flex justify-center">
+        <button onClick={clickArrow}
+            className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'>
+            <MemoIconArrowRight className='h-4 w-4' />
+        </button>
+    </div>
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell }
