@@ -355,17 +355,17 @@ function TruncateAndTooltipCell({ value, hasError = false }) {
 }
 
 function JumpToConversationAndAssignCell({ onClick }) {
-
     const clickArrow = useCallback(() => {
-        console.log("JumpToConversationAndAssignCell clicked", onClick)
         if (onClick) onClick();
     }, [onClick]);
 
     return <div className="flex justify-center">
-        <button onClick={clickArrow}
-            className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'>
-            <MemoIconArrowRight className='h-4 w-4' />
-        </button>
+        <Tooltip content="Assign user to the org and jump to conversation" color="invert" className="cursor-auto">
+            <button onClick={clickArrow}
+                className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'>
+                <MemoIconArrowRight className='h-4 w-4' />
+            </button>
+        </Tooltip>
     </div>
 }
 
