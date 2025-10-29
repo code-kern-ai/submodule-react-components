@@ -61,7 +61,7 @@ export default function KernDropdown(props: KernDropdownProps) {
             setDropdownCaptions(prepareOptions);
             setSearchIndexes(null);
         }
-    }, [props.options, searchText, selectedCheckboxes, props.hasSearchBar, props.hasCheckboxes, props.selectedCheckboxes, props.hasSelectAll, props.valuePropertyPath]);
+    }, [props.options, searchText, props.hasSearchBar, props.hasCheckboxes, props.valuePropertyPath, props.selectedCheckboxes, props.hasSelectAll]);
 
     useEffect(() => {
         if (!props.disabledOptions || !props.options) return;
@@ -94,8 +94,7 @@ export default function KernDropdown(props: KernDropdownProps) {
         return { "maxHeight": `${maxHeight}rem`, "overflowY": "auto" };
     }, [props.scrollAfterNOptions]);
 
-    function setOptionsWithCheckboxes(options: any[]) {
-        if (selectedCheckboxes.length > 0) return;
+    const setOptionsWithCheckboxes = useCallback((options: any[]) => {
         const newSelectedCheckboxes = options.map((option: any, index: number) => {
             return {
                 name: option,
@@ -110,7 +109,7 @@ export default function KernDropdown(props: KernDropdownProps) {
         }
         setSelectedCheckboxes(newSelectedCheckboxes);
         setDropdownCaptions(newSelectedCheckboxes.map((option: any) => option.name));
-    }
+    }, [props.hasSelectAll, props.selectedCheckboxes]);
 
     function toggleDropdown() {
         if (isDisabled && !props.hasCheckboxes) return; // if the dropdown has checkboxes, it shouldn't be disabled because the user can still select options
@@ -118,7 +117,7 @@ export default function KernDropdown(props: KernDropdownProps) {
         setIsOpen(!isOpen);
     }
 
-    function handleSelectedCheckboxes(option: string, index: number, e: any) {
+    const handleSelectedCheckboxes = useCallback((option: string, index: number, e: any) => {
         let newSelectedCheckboxes = [...selectedCheckboxes];
         if (option == SELECT_ALL) {
             newSelectedCheckboxes.forEach((checkbox) => {
@@ -136,7 +135,7 @@ export default function KernDropdown(props: KernDropdownProps) {
             newSelectedCheckboxes = newSelectedCheckboxes.filter((checkbox) => checkbox.name != SELECT_ALL);
         }
         props.selectedOption(newSelectedCheckboxes);
-    }
+    }, [selectedCheckboxes, props.hasSelectAll]);
 
     function handleSelectedCheckboxesThreeStates(index: number) {
         const optionSave = { ...props.options[index] };
@@ -161,8 +160,7 @@ export default function KernDropdown(props: KernDropdownProps) {
         setSavedIndex(index);
     }
 
-
-    function performActionOnClick(option: string, index: number) {
+    const performActionOnClick = useCallback((option: string, index: number) => {
         if (props.hasCheckboxes) {
             handleSelectedCheckboxes(option, index, { target: { checked: !selectedCheckboxes[index].checked } });
             return;
@@ -180,8 +178,9 @@ export default function KernDropdown(props: KernDropdownProps) {
                 props.selectedOption(props.options[index]);
             }
             setIsOpen(false);
+            setSelectedCheckboxes([]);
         }
-    }
+    }, [props, selectedCheckboxes, searchIndexes]);
 
     return (
         <Menu ref={dropdownRef} as="div" className={`relative inline-block text-left ${props.dropdownWidth ?? 'w-full'} ${props.dropdownClasses ?? ''} ${props.fontClass ?? ''}`}>
@@ -266,7 +265,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                                                         if (!props.optionsHaveHoverBox) return;
                                                         setHoverBoxPosition(null);
                                                     }}>
-                                                    {props.hasCheckboxes && <input checked={selectedCheckboxes[index].checked} name="option" type="checkbox" className="mr-3 cursor-pointer"
+                                                    {props.hasCheckboxes && <input checked={!!selectedCheckboxes[index]?.checked} name="option" type="checkbox" className="mr-3 cursor-pointer"
                                                         onChange={(e) => handleSelectedCheckboxes(option, index, e)} />}
                                                     {props.hasCheckboxesThreeStates && <div className="h-4 w-4 border-gray-300 mr-3 border rounded hover:bg-gray-200 min-w-4"
                                                         style={{ backgroundColor: getActiveNegateGroupColor(props.options[index]), borderColor: getActiveNegateGroupColor(props.options[index]) }}>
