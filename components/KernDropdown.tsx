@@ -212,7 +212,7 @@ export default function KernDropdown(props: KernDropdownProps) {
                     ) : (<Menu.Button onClick={toggleDropdown} className={`inline-flex w-full justify-between items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm  focus:outline-none focus:ring-2
             focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed ${props.buttonClasses ?? ''} ${props.buttonCaptionBgColor ?? 'bg-white hover:bg-gray-50'}`}
                         disabled={isDisabled && !props.hasCheckboxes}>
-                        <div className='flex items-center gap-x-1'>
+                        <div className={`flex items-center gap-x-1 ${props.truncateButtonName ? 'max-w-[300px] truncate' : ''}`}>
                             {props.buttonPrefixIcon}
                             {!props.hasCheckboxesThreeStates && props.buttonName}
                         </div>
