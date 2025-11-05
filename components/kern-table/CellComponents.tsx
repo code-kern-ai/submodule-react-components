@@ -354,13 +354,13 @@ function TruncateAndTooltipCell({ value, hasError = false }) {
     </div>;
 }
 
-function JumpToConversationAndAssignCell({ onClick }) {
+function JumpToConversationAndAssignCell({ onClick, jumpTo }) {
     const clickArrow = useCallback(() => {
         if (onClick) onClick();
     }, [onClick]);
 
     return <div className="flex justify-center">
-        <Tooltip content="Assign user to the org and jump to conversation" color="invert" className="cursor-auto">
+        <Tooltip content={`Assign user to the org and jump to ${jumpTo}`} color="invert" className="cursor-auto">
             <button onClick={clickArrow}
                 className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'>
                 <MemoIconArrowRight className='h-4 w-4' />
