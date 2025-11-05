@@ -104,7 +104,7 @@ export default function KernDropdown(props: KernDropdownProps) {
         if (props.hasSelectAll) {
             newSelectedCheckboxes.push({
                 name: SELECT_ALL,
-                checked: false
+                checked: newSelectedCheckboxes.every((checkbox) => checkbox.checked)
             });
         }
         setSelectedCheckboxes(newSelectedCheckboxes);
@@ -123,6 +123,8 @@ export default function KernDropdown(props: KernDropdownProps) {
             newSelectedCheckboxes.forEach((checkbox) => {
                 checkbox.checked = e.target.checked;
             });
+            const allSelected = newSelectedCheckboxes.every((checkbox) => checkbox.checked);
+            newSelectedCheckboxes[newSelectedCheckboxes.length - 1].checked = allSelected;
         } else {
             const lastIdx = newSelectedCheckboxes.length - 1;
             if (props.hasSelectAll && newSelectedCheckboxes[lastIdx].checked) {

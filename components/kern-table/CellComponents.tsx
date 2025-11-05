@@ -369,7 +369,7 @@ function JumpToConversationAndAssignCell({ onClick, jumpTo }) {
     </div>
 }
 
-function TaskStateCell({ value, color }) {
+function TaskStateCell({ value, color, tooltipValue }) {
     const className = useMemo(() => {
         return `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${color === 'green'
             ? 'bg-green-300'
@@ -377,12 +377,25 @@ function TaskStateCell({ value, color }) {
     }, [color]);
 
     return (
-        <span className={className}>
-            <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'}`} fill="currentColor" viewBox="0 0 8 8">
-                <circle cx="4" cy="4" r="3" />
-            </svg>
-            <span className={' text-' + color + '-800'}>{value}</span>
-        </span>
+        <>
+            {tooltipValue ? (
+                <Tooltip content={tooltipValue} color="invert" className="cursor-auto">
+                    <span className={className}>
+                        <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'}`} fill="currentColor" viewBox="0 0 8 8">
+                            <circle cx="4" cy="4" r="3" />
+                        </svg>
+                        <span className={' text-' + color + '-800'}>{value}</span>
+                    </span>
+                </Tooltip>
+            ) : (
+                <span className={className}>
+                    <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'}`} fill="currentColor" viewBox="0 0 8 8">
+                        <circle cx="4" cy="4" r="3" />
+                    </svg>
+                    <span className={' text-' + color + '-800'}>{value}</span>
+                </span>
+            )}
+        </>
     );
 }
 
