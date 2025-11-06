@@ -8,28 +8,31 @@ import { InfoButton } from "../components/InfoButton";
 import { useRouter } from "next/router";
 import { sendNewMail } from "./service-mail";
 import useRefState from "../hooks/useRefState";
+import KernDropdown from "../components/KernDropdown";
 
 type CreateNewMailModalProps = {
     open: boolean;
     setOpen: (open: boolean) => void;
-}
+};
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const router = useRouter();
     const { t } = useTranslation('projectOverview');
     const projectId = router.query.projectId as string;
     const chatId = router.query.chatId as string;
-    const { state: sendTo, setState: setSendTo, ref: sendToRef } = useRefState('');
+    const { state: sendTo, setState: setSendTo, ref: sendToRef } = useRefState([]);
     const { state: subject, setState: setSubject, ref: subjectRef } = useRefState('');
     const { state: content, setState: setContent, ref: contentRef } = useRefState('');
     const { state: includeProject, setState: setIncludeProject, ref: includeProjectRef } = useRefState(false);
     const { state: includeChat, setState: setIncludeChat, ref: includeChatRef } = useRefState(false);
     const { state: markAsImportant, setState: setMarkAsImportant, ref: markAsImportantRef } = useRefState(false);
+    const [availableEmails, setAvailableEmails] = useState<string[]>(['test@gmail.com', 'test1@gmail.com']);
+    const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
 
     const cancelButtonRef = useRef(null);
 
     const initModal = useCallback(() => {
-        setSendTo('');
+        setSendTo([]);
         setSubject('');
         setContent('');
         setIncludeProject(false);
@@ -40,7 +43,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const onTransitionComplete = useCallback(initModal, []);
 
     const disabledSend = useMemo(() => {
-        return sendTo.trim() === '' || subject.trim() === '' || content.trim() === '';
+        return sendTo.length === 0 || subject.trim() === '' || content.trim() === '';
     }, [sendTo, subject, content]);
 
     const handleCreateMail = useCallback(() => {
@@ -83,7 +86,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                         id="sendTo"
                                         className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                         value={sendTo}
-                                        onChange={(e) => setSendTo(e.target.value)}
+                                        onChange={(e) => setSendTo([e.target.value])}
                                     />
                                 </div>
                             </div>
