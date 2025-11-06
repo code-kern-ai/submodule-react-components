@@ -10,13 +10,11 @@ import SVGIcon from './SVGIcon';
 import { CSSProperties } from 'react';
 import useRefFor from '../hooks/useRefFor';
 import { MemoIconChevronDown, MemoIconDotsVertical, MemoIconExternalLink, MemoIconTrashXFilled } from './kern-icons/icons';
-import { useTranslation } from 'react-i18next';
 
 const DEFAULTS = { fontSizeClass: 'text-xs' };
 
 export default function KernDropdown(props: KernDropdownProps) {
     const isDisabled = props.disabled || (props.options && props.options.length == 0);
-    const { t } = useTranslation("chatSidebar");
 
     const [dropdownCaptions, setDropdownCaptions] = useState<any[]>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
@@ -198,7 +196,8 @@ export default function KernDropdown(props: KernDropdownProps) {
                         onFocus={(event) => event.target.select()}
                         className="h-9 w-full text-sm border-gray-300 rounded-md placeholder-italic border text-gray-900 pr-8 pl-4 truncate placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isDisabled && !props.ignoreDisabledForSearch}
-                        placeholder={t("actions.typeToSearch")} />
+                        placeholder={props.placeholder || "Type to search..."}
+                    />
                     <MemoIconChevronDown
                         className={`h-5 w-5 absolute right-0 mr-3 -mt-7 ${isDisabled && !props.ignoreDisabledForSearch ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${props.buttonIconClasses}`}
                         aria-hidden="true"
