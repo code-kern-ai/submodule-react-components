@@ -348,7 +348,7 @@ function ConfigReleaseNotificationCell({ onClickView, onClickEdit }) {
 function TruncateAndTooltipCell({ value, hasError = false }) {
     return <div className="flex items-center">
         {hasError && <MemoIconAlertTriangleFilled className="h-5 w-5 text-red-600 mr-2" />}
-        {value ? <Tooltip content={<span className="block max-w-[300px] break-words">{value}</span>} color="invert" hideArrow={true} placement='bottom'>
+        {value ? <Tooltip content={<span className="block max-w-[300px] break-words max-h-[500px] overflow-y-auto">{value}</span>} color="invert" hideArrow={true} placement='bottom'>
             <span className="block max-w-56 truncate">{value}</span>
         </Tooltip> : <NotApplicableBadge />}
     </div>;
