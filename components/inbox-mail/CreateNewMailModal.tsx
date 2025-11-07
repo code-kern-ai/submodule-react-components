@@ -2,13 +2,12 @@ import BaseModal from "@/src/components/Common/ModalComponents/Modal";
 import ModalCreateFooter from "@/src/components/Common/ModalComponents/ModalCreateFooter";
 import { Dialog } from "@headlessui/react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { MemoIconMail } from "../components/kern-icons/icons";
 import { useTranslation } from "react-i18next";
-import { InfoButton } from "../components/InfoButton";
 import { useRouter } from "next/router";
 import { sendNewMail } from "./service-mail";
-import useRefState from "../hooks/useRefState";
-import KernDropdown from "../components/KernDropdown";
+import useRefState from "../../hooks/useRefState";
+import { InfoButton } from "../InfoButton";
+import { MemoIconMail } from "../kern-icons/icons";
 
 type CreateNewMailModalProps = {
     open: boolean;

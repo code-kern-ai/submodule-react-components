@@ -1,10 +1,10 @@
 
 import { useEffect, useState } from "react";
-import KernButton from "../components/kern-button/KernButton";
-import { MemoIconPlus } from "../components/kern-icons/icons";
 import CreateNewMailModal from "./CreateNewMailModal";
 import { InboxMail } from "./types-mail";
 import { getInboxMessages } from "./service-mail";
+import KernButton from "../kern-button/KernButton";
+import { MemoIconPlus } from "../kern-icons/icons";
 
 export default function InboxMailView() {
     const [inboxMessages, setInboxMessages] = useState<InboxMail[]>([]);
@@ -57,7 +57,6 @@ export default function InboxMailView() {
                     </div>}
                 </div>
             </div>}
-
 
             <CreateNewMailModal open={openCreateMail} setOpen={setOpenCreateMail} />
         </div>

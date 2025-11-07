@@ -11,3 +11,8 @@ export function sendNewMail(sendTo: string[], subject: string, content: string, 
 export function getInboxMessages(onResult: (result: any) => void) {
     jsonFetchWrapper(url, FetchType.GET, onResult);
 }
+
+export function getAccessibleSendToEmails(onResult: (result: any) => void) {
+    const fetchUrl = `${url}/accessible-emails`;
+    jsonFetchWrapper(fetchUrl, FetchType.GET, onResult);
+}
