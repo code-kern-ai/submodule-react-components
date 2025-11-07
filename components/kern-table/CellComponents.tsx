@@ -348,20 +348,16 @@ function ConfigReleaseNotificationCell({ onClickView, onClickEdit }) {
 function TruncateAndTooltipCell({ value, hasError = false }) {
     return <div className="flex items-center">
         {hasError && <MemoIconAlertTriangleFilled className="h-5 w-5 text-red-600 mr-2" />}
-        {value ? <Tooltip content={<span className="whitespace-pre-wrap">{value}</span>} color="invert" hideArrow={true} placement='bottom'>
+        {value ? <Tooltip content={<span className="block max-w-[300px] break-words">{value}</span>} color="invert" hideArrow={true} placement='bottom'>
             <span className="block max-w-56 truncate">{value}</span>
         </Tooltip> : <NotApplicableBadge />}
     </div>;
 }
 
 function JumpToConversationAndAssignCell({ onClick, jumpTo }) {
-    const clickArrow = useCallback(() => {
-        if (onClick) onClick();
-    }, [onClick]);
-
     return <div className="flex justify-center">
         <Tooltip content={`Assign user to the org and jump to ${jumpTo}`} color="invert" className="cursor-auto">
-            <button onClick={clickArrow}
+            <button onClick={onClick}
                 className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'>
                 <MemoIconArrowRight className='h-4 w-4' />
             </button>
