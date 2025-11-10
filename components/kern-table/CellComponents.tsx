@@ -356,4 +356,54 @@ function ConfigReleaseNotificationCell({ onClickView, onClickEdit }) {
     </div>;
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell }
+function TruncateAndTooltipCell({ value, hasError = false }) {
+    return <div className="flex items-center">
+        {hasError && <MemoIconAlertTriangleFilled className="h-5 w-5 text-red-600 mr-2" />}
+        {value ? <Tooltip content={<span className="block max-w-[300px] break-words max-h-[500px] overflow-y-auto">{value}</span>} color="invert" hideArrow={true} placement='bottom'>
+            <span className="block max-w-56 truncate">{value}</span>
+        </Tooltip> : <NotApplicableBadge />}
+    </div>;
+}
+
+function JumpToConversationAndAssignCell({ onClick, jumpTo }) {
+    return <div className="flex justify-center">
+        <Tooltip content={`Assign user to the org and jump to ${jumpTo}`} color="invert" className="cursor-auto">
+            <button onClick={onClick}
+                className='inline-flex p-2 items-center justify-center rounded-lg hover:bg-gray-200'>
+                <MemoIconArrowRight className='h-4 w-4' />
+            </button>
+        </Tooltip>
+    </div>
+}
+
+function TaskStateCell({ value, color, tooltipValue }) {
+    const className = useMemo(() => {
+        return `inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${color === 'green'
+            ? 'bg-green-300'
+            : 'bg-' + color + '-100 text-' + color + '-800'}`;
+    }, [color]);
+
+    return (
+        <>
+            {tooltipValue ? (
+                <Tooltip content={tooltipValue} color="invert" className="cursor-auto">
+                    <span className={className}>
+                        <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'}`} fill="currentColor" viewBox="0 0 8 8">
+                            <circle cx="4" cy="4" r="3" />
+                        </svg>
+                        <span className={' text-' + color + '-800'}>{value}</span>
+                    </span>
+                </Tooltip>
+            ) : (
+                <span className={className}>
+                    <svg className={`mr-1.5 h-2 w-2 ${'text-' + color + '-400'}`} fill="currentColor" viewBox="0 0 8 8">
+                        <circle cx="4" cy="4" r="3" />
+                    </svg>
+                    <span className={' text-' + color + '-800'}>{value}</span>
+                </span>
+            )}
+        </>
+    );
+}
+
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell }
