@@ -95,6 +95,7 @@ export type KernDropdownProps = {
     dropdownAdd?: JSX.Element[];
     forceOverwriteOpen?: boolean;
     truncateButtonName?: boolean;
+    placeholder?: string;
 }
 
 export type AppSelectionDropdownProps = {
