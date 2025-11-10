@@ -93,6 +93,7 @@ export type KernDropdownProps = {
     scrollAfterNOptions?: number;
     dropdownAdd?: JSX.Element[];
     forceOverwriteOpen?: boolean;
+    placeholder?: string;
 }
 
 export type AppSelectionDropdownProps = {
