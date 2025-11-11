@@ -299,12 +299,23 @@ function EtlApiTokenCell({ organization }) {
 }
 
 function EmailCell({ user }) {
+    const tooltipContent = useMemo(() => {
+        let content = user.email;
+        if (user.sso_provider) content = "SSO User via " + user.sso_provider;
+        if (user.new_admin_role) content += " (admin)";
+        return content;
+    }, [user])
+
     return (
         <div className="flex flex-row items-center">
-            {user.sso_provider ? <Tooltip content={"SSO User via " + user.sso_provider} color="invert">
-                <span className="text-blue-700 truncate max-w-xs">{user.email}*</span></Tooltip> : <Tooltip content={user.email} color="invert" className="cursor-auto">
-                <span className="truncate max-w-xs">{user.email}</span>
-            </Tooltip>
+
+            {user.new_admin_role ? <Tooltip content={tooltipContent} color="invert">
+                <span className="text-orange-700 truncate max-w-xs">{user.email}*</span></Tooltip> :
+                user.sso_provider ? <Tooltip content={tooltipContent} color="invert">
+                    <span className="text-blue-700 truncate max-w-xs">{user.email}*</span></Tooltip> :
+                    <Tooltip content={tooltipContent} color="invert" className="cursor-auto">
+                        <span className="truncate max-w-xs">{user.email}</span>
+                    </Tooltip>
             }
         </div>
     )
