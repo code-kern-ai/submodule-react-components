@@ -44,6 +44,7 @@ import React from "react";
  * @positionDropdown {string} - The position of the dropdown
  * @dropdownAdd {JSX.Element} - array of JSX elements that will be added to the dropdown items
  * @forceOverwriteOpen {boolean} - forces the dropdown to stay open until set to false/undefined
+ * @truncateButtonName {boolean} - If the button name should be truncated when it exceeds the button width
 */
 export type KernDropdownProps = {
     buttonName?: string;
@@ -93,6 +94,8 @@ export type KernDropdownProps = {
     scrollAfterNOptions?: number;
     dropdownAdd?: JSX.Element[];
     forceOverwriteOpen?: boolean;
+    truncateButtonName?: boolean;
+    placeholder?: string;
 }
 
 export type AppSelectionDropdownProps = {
