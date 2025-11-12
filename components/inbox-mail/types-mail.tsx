@@ -1,7 +1,8 @@
 export type InboxMail = {
     id: string;
-    sendFrom: string;
-    sendTo: string[];
+    threadId: string;
+    senderId: string;
+    recipientId: string;
     subject: string;
     content: string;
     beingWorkedOn: boolean;
