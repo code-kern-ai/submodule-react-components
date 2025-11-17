@@ -2,15 +2,44 @@ export type InboxMail = {
     id: string;
     threadId: string;
     senderId: string;
-    recipientId: string;
-    subject: string;
     content: string;
-    beingWorkedOn: boolean;
-    childId: string;
-    parentId: string;
     createdAt: string;
     isSeen: boolean;
-    metaData: any;
+    senderName?: {
+        first: string;
+        last: string;
+    };
+    recipientNames?: {
+        first: string;
+        last: string;
+    }[];
+}
+
+export type InboxMailThread = {
+    id: string;
+    subject: string;
+    isImportant: boolean;
+    isAdminSupportThread: boolean;
+    participantIds: string[];
+    latestMail: InboxMail;
+    display?: {
+        displayName: string;
+        displayInitials: string;
+        background: string;
+        text: string;
+        recipientIds: string[];
+    }
+}
+
+export type User = {
+    id: string;
     organizationId: string;
-    markAsImportant: boolean;
+    firstName: string;
+    lastName: string;
+    mail: string;
+    role: string;
+    languageDisplay: string;
+    logoutUrl: string;
+    isAdmin: boolean;
+    autoLogoutMinutes: number;
 }

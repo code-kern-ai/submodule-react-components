@@ -4,20 +4,21 @@ import { Dialog } from "@headlessui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
-import { sendNewMail } from "./service-mail";
 import useRefState from "../../hooks/useRefState";
 import { InfoButton } from "../InfoButton";
 import { MemoIconMail } from "../kern-icons/icons";
-import { User } from "../inbox-mail/InboxMailView";
+import { User, InboxMailThread } from "./types-mail";
 
 
 interface CreateNewMailModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    refetchInboxMailOverview: () => void;
+    handleInboxMailCreation: (content: string, recipientIds?: string[], subject?: string, markAsImportant?: boolean, metaData?: { includeProject: boolean; includeChat: boolean }, threadId?: string) => void;
     users: User[];
-    threadId?: string;
+    currentUser: User;
+    thread?: InboxMailThread;
     isNewThread?: boolean;
+    isAdminSupportThread?: boolean;
 };
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
@@ -35,6 +36,15 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
 
     const cancelButtonRef = useRef(null);
 
+    useEffect(() => {
+        if (props.open && props.thread && !props.isNewThread && props.thread.latestMail && props.users) {
+
+            const currentThreadPeople = props.thread.participantIds;
+            setSelectedPeople(props.users.filter((user) => currentThreadPeople.includes(user.id) && user.id !== props.currentUser.id));
+            setSubject(props.thread.subject);
+        }
+    }, [props.open, props.thread, props.isNewThread, props.users]);
+
     const initModal = useCallback(() => {
         setSelectedPeople([]);
         setSubject('');
@@ -47,21 +57,17 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const onTransitionComplete = useCallback(initModal, []);
 
     const disabledSend = useMemo(() => {
-        return selectedPeople.length === 0 || subject.trim() === '' || content.trim() === '';
-    }, [selectedPeople, subject, content]);
+        return (props.isAdminSupportThread ? false : selectedPeople.length === 0) || subject.trim() === '' || content.trim() === '';
+    }, [selectedPeople, subject, content, props.isAdminSupportThread]);
 
     const handleCreateMail = useCallback(() => {
         const metaData = {
             includeProject: includeProjectRef.current,
             includeChat: includeChatRef.current
         };
-
-        sendNewMail(selectedPeopleRef.current.map((user) => user.id), subjectRef.current, contentRef.current, markAsImportantRef.current, metaData, (result) => {
-            props.setOpen(false);
-            initModal();
-            props.refetchInboxMailOverview();
-        }, props.isNewThread ? undefined : props.threadId);
-    }, [props.threadId, props.isNewThread]);
+        initModal();
+        props.handleInboxMailCreation(contentRef.current, selectedPeopleRef.current.map((user) => user.id), subjectRef.current, markAsImportantRef.current, metaData, props.isNewThread ? undefined : props.thread?.id);
+    }, [props.thread?.id, props.isNewThread]);
 
     return (
         <BaseModal
@@ -81,13 +87,17 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                             {t("inboxMail.modalTitle")}
                         </Dialog.Title>
                         <div className='mt-2 flex flex-col gap-y-2'>
-
-                            <UserSelector
-                                label={t("inboxMail.sendTo")}
-                                users={props.users}
-                                selectedUsers={selectedPeople}
-                                onChange={setSelectedPeople}
-                            />
+                            {props.isAdminSupportThread ?
+                                <KernAIReport />
+                                :
+                                <UserSelector
+                                    label={t("inboxMail.sendTo")}
+                                    users={props.users}
+                                    selectedUsers={selectedPeople}
+                                    onChange={setSelectedPeople}
+                                    disabled={!props.isNewThread}
+                                />
+                            }
                             <div>
                                 <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
                                     {t("inboxMail.subject")}:
@@ -100,6 +110,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                         className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                         value={subject}
                                         onChange={(e) => setSubject(e.target.value)}
+                                        disabled={!props.isNewThread}
                                     />
                                 </div>
                             </div>
@@ -179,6 +190,7 @@ interface UserSelectorProps {
     users: User[];
     selectedUsers: User[];
     onChange: (selected: User[]) => void;
+    disabled?: boolean;
     showAll?: boolean;
     label?: string;
 }
@@ -220,32 +232,33 @@ function UserSelector(props: UserSelectorProps) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const handleUserSelect = (user: any) => {
+    const handleUserSelect = useCallback((user: User) => {
         if (!props.selectedUsers.some((u) => u.id === user.id)) {
             props.onChange([...props.selectedUsers, user]);
         }
         setInputValue("");
         if (editableRef.current) editableRef.current.textContent = "";
         setIsOpen(false);
-    };
+    }, [props.selectedUsers, props.onChange]);
 
-    const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const handleInput = useCallback((e: React.FormEvent<HTMLDivElement>) => {
         const value = e.currentTarget.textContent || "";
         setInputValue(value);
-    };
+    }, []);
 
-    const handleRemove = (mail: string) => {
+    const handleRemove = useCallback((mail: string) => {
         props.onChange(props.selectedUsers.filter((p) => p.mail !== mail));
-    };
+    }, [props.selectedUsers, props.onChange]);
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === "Enter" && filteredUsers.length > 0) {
             e.preventDefault();
             handleUserSelect(filteredUsers[0]);
         } else if (e.key === "Backspace" && !inputValue && props.selectedUsers.length) {
             handleRemove(props.selectedUsers[props.selectedUsers.length - 1].mail);
         }
-    };
+    }, [filteredUsers, inputValue, props.selectedUsers, handleRemove, handleUserSelect]);
+
     return (
         <div className="relative" ref={containerRef}>
             {props.label && (
@@ -267,23 +280,25 @@ function UserSelector(props: UserSelectorProps) {
                 {props.selectedUsers.map((user) => (
                     <span
                         key={user.mail}
-                        className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-0.5 rounded-lg leading-none"
+                        className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none"
                     >
                         {`${user.firstName} ${user.lastName}`}
-                        <button
-                            type="button"
-                            onClick={() => handleRemove(user.mail)}
-                            className="ml-1 text-purple-500 hover:text-purple-700 focus:outline-none"
-                        >
-                            ✕
-                        </button>
+                        {props.disabled ? null : (
+                            <button
+                                type="button"
+                                onClick={() => handleRemove(user.mail)}
+                                className="ml-1 text-purple-500 hover:text-purple-700 focus:outline-none"
+                            >
+                                ✕
+                            </button>
+                        )}
                     </span>
                 ))}
 
                 <div
                     ref={editableRef}
                     id="people"
-                    contentEditable
+                    contentEditable={!props.disabled}
                     suppressContentEditableWarning
                     onInput={handleInput}
                     onFocus={() => setIsOpen(true)}
@@ -310,6 +325,29 @@ function UserSelector(props: UserSelectorProps) {
                     ))}
                 </ul>
             )}
+        </div>
+    );
+}
+
+
+function KernAIReport() {
+    return (
+        <div className="relative">
+            <label
+                htmlFor="kernai-team"
+                className="block text-sm font-medium text-gray-700 mb-1"
+            >
+                Sent to
+            </label>
+
+            <div
+                id="kernai-team"
+                className="w-full flex flex-wrap items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-gray-50 cursor-default"
+            >
+                <span className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none min-h-[1.5rem]">
+                    KernAI Team
+                </span>
+            </div>
         </div>
     );
 }

@@ -1,0 +1,199 @@
+import { InboxMailThread, User } from "./types-mail";
+
+export const MAIL_LIMIT_PER_PAGE = 10;
+
+export function prepareThreadDisplayData(
+    thread: InboxMailThread,
+    currentUser: User,
+    isAdmin: boolean
+): {
+    displayName: string;
+    displayInitials: string;
+    background: string;
+    text: string;
+    recipientIds: string[];
+} {
+    let background = "";
+    let text = "";
+    let displayName = "";
+    let displayInitials = "";
+
+    const recipientIds = thread.participantIds.filter(
+        id => id !== currentUser.id
+    );
+
+    const setInitials = (first: string, last: string) =>
+        `${first[0]}${last[0]}`.toUpperCase();
+
+    const setColor = (id: string) => {
+        const [bg, font] = uuidToPastelColorWithMatchingFont(id);
+        background = bg;
+        text = font;
+    };
+
+    if (!thread.isAdminSupportThread) {
+        if (thread.latestMail.senderId === currentUser.id) {
+            displayName = thread.latestMail.recipientNames.map(r => `${r.first} ${r.last}`).join(", ");
+            const r = thread.latestMail.recipientNames[0];
+            displayInitials = setInitials(r.first, r.last);
+            setColor(recipientIds[0]);
+        } else {
+            const s = thread.latestMail.senderName;
+            displayName = `${s.first} ${s.last}`;
+            displayInitials = setInitials(s.first, s.last);
+            setColor(thread.latestMail.senderId);
+        }
+    } else if (thread.isAdminSupportThread && isAdmin && thread.latestMail.senderId === currentUser.id) {
+        displayName = `${thread.latestMail.senderName.first} ${thread.latestMail.senderName.last}`;
+        displayInitials = setInitials(thread.latestMail.senderName.first, thread.latestMail.senderName.last);
+        setColor(thread.latestMail.senderId);
+
+    } else if (thread.isAdminSupportThread && isAdmin) {
+        if (thread.latestMail.senderId === currentUser.id && thread.latestMail.recipientNames.length === 0) {
+            displayName = `${thread.latestMail.senderName.first} ${thread.latestMail.senderName.last}`;
+        } else if (thread.latestMail.senderId === currentUser.id) {
+            displayName = thread.latestMail.recipientNames.map(r => `${r.first} ${r.last}`).join(", ");
+            const r = thread.latestMail.recipientNames[0];
+            displayInitials = setInitials(r.first, r.last);
+            setColor(recipientIds[0]);
+        } else {
+            const s = thread.latestMail.senderName;
+            displayName = `${s.first} ${s.last}`;
+            displayInitials = setInitials(s.first, s.last);
+            setColor(thread.latestMail.senderId);
+        }
+    } else {
+        if (thread.latestMail.senderId === currentUser.id) {
+            displayName = `${thread.latestMail.senderName.first} ${thread.latestMail.senderName.last}`;
+        } else {
+            displayName = thread.latestMail.recipientNames.map(r => `${r.first} ${r.last}`).join(", ");
+        }
+    }
+
+    return {
+        displayName,
+        displayInitials,
+        background,
+        text,
+        recipientIds: recipientIds,
+    };
+}
+
+export function formatDisplayTimestamp(createdAt: string): string {
+    const date = parseUTCToLocal(createdAt);
+    const now = new Date();
+
+    const isSameDay = (d1: Date, d2: Date) =>
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
+
+    if (isSameDay(date, now)) {
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        return `${hours}:${minutes}`;
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+    if (isSameDay(date, yesterday)) {
+        return "Yesterday";
+    }
+
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const weekday = weekdays[date.getDay()];
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+
+    return `${weekday}, ${day}.${month}.${year}`;
+}
+
+export function parseUTCToLocal(dateString: string): Date {
+    const d = new Date(dateString);
+
+    if (!/[zZ]|[+-]\d{2}:?\d{2}$/.test(dateString)) {
+        const parts = dateString.split(/[-T: ]/).map(Number);
+        return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], parts[3], parts[4] || 0, parts[5] || 0));
+    }
+
+    return d;
+}
+
+export function formatDisplayTimestampFull(createdAt: string): string {
+    const date = parseUTCToLocal(createdAt);
+    const now = new Date();
+
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const weekday = weekdays[date.getDay()];
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().padStart(4, "0");
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+
+    let relative = "";
+    if (diffMinutes < 1) {
+        relative = "(just now)";
+    } else if (diffMinutes < 60) {
+        relative = `(${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} ago)`;
+    } else if (diffHours < 24) {
+        relative = `(${diffHours} hour${diffHours !== 1 ? "s" : ""} ago)`;
+    } else if (diffDays === 1) {
+        relative = `(yesterday)`;
+    } else {
+        relative = `(${diffDays} day${diffDays !== 1 ? "s" : ""} ago)`;
+    }
+
+    return `${weekday}, ${day}.${month}.${year} ${hours}:${minutes} ${relative}`;
+}
+
+export function isSameDay(d1: Date, d2: Date): boolean {
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    );
+}
+
+export function uuidToPastelColorWithMatchingFont(uuid: string): [string, string] {
+    let hash = 0;
+    for (let i = 0; i < uuid.length; i++) {
+        hash = (hash * 31 + uuid.charCodeAt(i)) >>> 0;
+    }
+
+    const hue = hash % 360;
+    const saturation = 40 + (hash % 15); // 40–55%
+    const lightness = 70 + (hash % 10);  // 70–80%
+    const background = hslToHex(hue, saturation, lightness);
+
+    const textLightness = lightness - 40;
+    const text = hslToHex(hue, saturation, clamp(textLightness, 20, 90));
+    return [background, text];
+}
+
+export function hslToHex(h: number, s: number, l: number): string {
+    s /= 100;
+    l /= 100;
+
+    const k = (n: number) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n: number) =>
+        l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+
+    const toHex = (x: number) =>
+        Math.round(255 * x)
+            .toString(16)
+            .padStart(2, "0");
+
+    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+}
+
+export function clamp(num: number, min: number, max: number): number {
+    return Math.min(Math.max(num, min), max);
+}
