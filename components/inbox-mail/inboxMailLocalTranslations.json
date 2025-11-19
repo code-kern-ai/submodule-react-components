@@ -1,0 +1,14 @@
+{
+    "inboxMail": {
+        "modalTitle": "Send New Inbox Mail",
+        "sendTo": "Send To",
+        "subject": "Subject",
+        "content": "Content",
+        "markAsImportant": "Mark as Important",
+        "markAsImportantInfo": "Use this option to highlight messages that require immediate attention.",
+        "includeProjectInfo": "Include project information in the email",
+        "includeChatInfo": "Include chat information in the email",
+        "sendButton": "Send",
+        "cancelButton": "Cancel"
+    }
+}

@@ -8,14 +8,24 @@ import { MemoIconPlus } from "../kern-icons/icons";
 import { IconUser, IconTrash, IconAlertTriangle, IconHelpCircle, IconProgressCheck, IconRefresh, IconCircleCheck } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
 import useRefState from "../../hooks/useRefState";
-import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull } from "./helper";
+import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull, useLocalTranslation } from "./helper";
 import KernDropdown from "../KernDropdown";
 import useEnumOptionsTranslated from "../../hooks/enums/useEnumOptionsTranslated";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { useTranslation } from "react-i18next";
+import inboxMailLocalTranslation from "./inboxMailLocalTranslations.json";
+import { getUsers, getUserInfoExtended, getIsAdmin, getAllOrganizations } from "./service-mail";
 
 
-export default function InboxMailView(props: { currentUser, orgUsers, InboxMailHeader }) {
+export default function InboxMailView(props: { InboxMailHeader, useLocalTranslation?: boolean }) {
+
+
+    const local = useLocalTranslation(inboxMailLocalTranslation);
+    const i18n = useTranslation('projectOverview');
+
+    const t = props.useLocalTranslation ? local.t : i18n.t;
+
     const [inboxMailThreads, setInboxMailThreads] = useState<InboxMailThread[]>([]);
     const [openCreateMail, setOpenCreateMail] = useState(false);
     const [isNewThread, setIsNewThread] = useState(false);
@@ -26,10 +36,47 @@ export default function InboxMailView(props: { currentUser, orgUsers, InboxMailH
     const { state: isAdminSupportThread, setState: setIsAdminSupportThread, ref: isAdminSupportThreadRef } = useRefState(false);
     const progressStateOptions = useEnumOptionsTranslated(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", "enums");
 
+    const [currentUser, setCurrentUser] = useState(null);
+    const [users, setUsers] = useState<User[]>([]);
+    const [organizations, setOrganizations] = useState([]);
+    const [selectedOrganization, setSelectedOrganization] = useState(null);
+    const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
 
-    const isAdmin = useMemo(() => {
-        return props.currentUser?.isAdmin
-    }, [props.currentUser]);
+    useEffect(() => {
+        getUserInfoExtended(res => {
+            setCurrentUser(res);
+        });
+        getIsAdmin((isAdmin) => setIsAdmin(isAdmin));
+    }, []);
+
+    useEffect(() => {
+        if (!isAdmin) return;
+        getAllOrganizations((res) => {
+            setOrganizations(res);
+        });
+    }, [isAdmin]);
+
+    useEffect(() => {
+
+    }, [selectedOrganization]);
+    useEffect(() => {
+        if (isAdmin === undefined) return;
+
+        if (isAdmin) {
+            getUsers(
+                (res) => setUsers(res),
+                false,
+                false,
+                selectedOrganization?.id
+            );
+        } else {
+            getUsers(
+                (res) => setUsers(res),
+                false,
+                true
+            );
+        }
+    }, [isAdmin, selectedOrganization]);
 
     useEffect(() => {
         refetchInboxMailOverview();
@@ -93,9 +140,9 @@ export default function InboxMailView(props: { currentUser, orgUsers, InboxMailH
     const preparedThreads = useMemo(
         () => inboxMailThreads.map(t => ({
             ...t,
-            display: prepareThreadDisplayData(t, props.currentUser, isAdmin)
+            display: prepareThreadDisplayData(t, currentUser, isAdmin)
         })),
-        [inboxMailThreads, props.currentUser, isAdmin]
+        [inboxMailThreads, currentUser, isAdmin]
     )
 
     const refreshIconFn = useCallback(
@@ -107,7 +154,7 @@ export default function InboxMailView(props: { currentUser, orgUsers, InboxMailH
         [refreshing]
     );
 
-    if (!props.currentUser) return;
+    if (!currentUser) return;
 
     return (
         <div className='flex flex-col h-screen overflow-hidden'>
@@ -188,7 +235,7 @@ export default function InboxMailView(props: { currentUser, orgUsers, InboxMailH
                                 <ThreadMailItem
                                     key={mail.id}
                                     mail={mail}
-                                    currentUser={props.currentUser}
+                                    currentUser={currentUser}
                                     onDelete={() => deleteInboxMailById(mail.id, () => {
                                         if (threadMails.length === 1) {
                                             setSelectedThread(null);
@@ -218,7 +265,7 @@ export default function InboxMailView(props: { currentUser, orgUsers, InboxMailH
                 </div>
             </div>
             }
-            <CreateNewMailModal isAdminSupportThread={isAdminSupportThread} open={openCreateMail} setOpen={setOpenCreateMail} thread={selectedThread} isNewThread={isNewThread} handleInboxMailCreation={handleInboxMailCreation} users={props.orgUsers} currentUser={props.currentUser} />
+            <CreateNewMailModal isAdmin={isAdmin} isAdminSupportThread={isAdminSupportThread} open={openCreateMail} setOpen={setOpenCreateMail} thread={selectedThread} isNewThread={isNewThread} handleInboxMailCreation={handleInboxMailCreation} users={users} currentUser={currentUser} useLocalTranslation={props.useLocalTranslation} organizations={organizations} selectedOrganization={selectedOrganization} setSelectedOrganization={setSelectedOrganization} />
         </div >
 
     )

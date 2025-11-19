@@ -222,3 +222,20 @@ export function hslToHex(h: number, s: number, l: number): string {
 export function clamp(num: number, min: number, max: number): number {
     return Math.min(Math.max(num, min), max);
 }
+
+
+export function useLocalTranslation(translations: Record<string, any>) {
+    const t = (key: string) => {
+        const parts = key.split(".");
+        let current: any = translations;
+
+        for (const p of parts) {
+            if (current[p] === undefined) return key;
+            current = current[p];
+        }
+
+        return current;
+    };
+
+    return { t };
+}

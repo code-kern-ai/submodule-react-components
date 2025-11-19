@@ -8,21 +8,32 @@ import { MemoIconMail } from "../kern-icons/icons";
 import { User, InboxMailThread } from "./types-mail";
 import { Fragment } from 'react'
 import KernButton from "../kern-button/KernButton";
-
+import { useLocalTranslation } from "./helper";
+import inboxMailLocalTranslation from "./inboxMailLocalTranslations.json";
+import KernDropdown from "../KernDropdown";
 interface CreateNewMailModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     handleInboxMailCreation: (content: string, recipientIds?: string[], subject?: string, markAsImportant?: boolean, metaData?: { includeProject: boolean; includeChat: boolean }, threadId?: string) => void;
     users: User[];
     currentUser: User;
+    isAdmin: boolean;
+    selectedOrganization?: any;
+    setSelectedOrganization?: (org: any) => void;
+    organizations?: any[];
     thread?: InboxMailThread;
     isNewThread?: boolean;
     isAdminSupportThread?: boolean;
+    useLocalTranslation?: boolean;
 };
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const router = useRouter();
-    const { t } = useTranslation('projectOverview');
+    const local = useLocalTranslation(inboxMailLocalTranslation);
+    const i18n = useTranslation('projectOverview');
+
+    const t = props.useLocalTranslation ? local.t : i18n.t;
+
     const projectId = router.query.projectId as string;
     const chatId = router.query.chatId as string;
     const { state: subject, setState: setSubject, ref: subjectRef } = useRefState('');
@@ -108,6 +119,12 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                         {t("inboxMail.modalTitle")}
                                                     </Dialog.Title>
                                                     <div className='mt-2 flex flex-col gap-y-2'>
+                                                        {props.isAdmin &&
+                                                            <div className="text-sm text-gray-500 my-4 text-left">
+                                                                <div className="text-sm text-gray-700">Select organization</div>
+                                                                <KernDropdown options={props.organizations} buttonName={props.selectedOrganization?.name || 'Select organization'} selectedOption={props.setSelectedOrganization} />
+                                                            </div>
+                                                        }
                                                         {props.isAdminSupportThread ?
                                                             <KernAIReport />
                                                             :
@@ -204,7 +221,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                     onClick={handleCreateMail}
                                                 />
                                                 <KernButton
-                                                    text={t("general.cancel")}
+                                                    text={t("inboxMail.cancelButton")}
                                                     innerRef={cancelButtonRef}
                                                     onClick={() => props.setOpen(false)}
                                                 />
