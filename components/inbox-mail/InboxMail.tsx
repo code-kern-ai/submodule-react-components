@@ -1,7 +1,9 @@
 import { MemoIconMail } from "@/submodules/react-components/components/kern-icons/icons";
 import { useRouter } from "next/router";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import tinycolor from 'tinycolor2'
+import { getNewInboxMailsInfo } from "./service-mail";
+import { combineClassNames } from "@/submodules/javascript-functions/general";
 
 type InboxMailProps = {
     project: { customerColorPrimary: string; id: string; };
@@ -11,6 +13,22 @@ type InboxMailProps = {
 
 export default function InboxMail(props: InboxMailProps) {
     const router = useRouter();
+    const [newMailCount, setNewMailCount] = useState<number>(0);
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        function checkNewInboxMails() {
+            getNewInboxMailsInfo((result: any) => {
+                const count = result?.totalNewInboxMails ?? 0;
+                setNewMailCount(count);
+            });
+        }
+
+        checkNewInboxMails();
+        interval = setInterval(checkNewInboxMails, 60000); // run every 60s
+        return () => clearInterval(interval);
+    }, []);
+
     const navigateToMailPage = useCallback(() => {
         const chatIdParam = props.chatId ? `?chatId=${props.chatId}` : '';
         const projectIdParam = props.project ? props.chatId ? `&projectId=${props.project.id}` : `?projectId=${props.project.id}` : '';
@@ -31,6 +49,14 @@ export default function InboxMail(props: InboxMailProps) {
     return <div className="relative">
         <button className={buttonClasses} onClick={navigateToMailPage}>
             <MemoIconMail />
+            {newMailCount > 0 && (
+                <div className={combineClassNames(
+                    "absolute flex items-center justify-center w-3 h-3 bg-red-500 rounded-full text-white text-[0.625rem] font-bold pointer-events-none",
+                    props.forChatArea ? 'top-0 right-0' : 'top-1 right-1'
+                )}>
+                    {newMailCount}
+                </div>
+            )}
         </button>
     </div>
 }

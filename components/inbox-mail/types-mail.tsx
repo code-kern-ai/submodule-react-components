@@ -22,12 +22,18 @@ export type InboxMailThread = {
     isAdminSupportThread: boolean;
     participantIds: string[];
     latestMail: InboxMail;
+    createdBy: string;
+    progressState?: string;
+    supportOwnerId?: string;
+    metaData?: any;
+    unreadMailCount?: number;
     display?: {
         displayName: string;
         displayInitials: string;
         background: string;
         text: string;
         recipientIds: string[];
+        DisplayIcon?: React.FC;
     }
 }
 
@@ -42,4 +48,11 @@ export type User = {
     logoutUrl: string;
     isAdmin: boolean;
     autoLogoutMinutes: number;
+}
+
+
+export enum InboxMailThreadSupportProgressState {
+    PENDING = "PENDING",
+    IN_PROGRESS = "IN_PROGRESS",
+    RESOLVED = "RESOLVED"
 }

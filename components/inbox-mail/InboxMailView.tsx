@@ -1,14 +1,18 @@
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CreateNewMailModal from "./CreateNewMailModal";
-import { InboxMail, InboxMailThread, User } from "./types-mail";
-import { getInboxMailOverviewByThreadsPaginated, getInboxMailsByThread, createInboxMailByThread } from "./service-mail";
+import { InboxMail, InboxMailThread, User, InboxMailThreadSupportProgressState } from "./types-mail";
+import { getInboxMailOverviewByThreadsPaginated, getInboxMailsByThread, createInboxMailByThread, updateInboxMailThreadProgress, deleteInboxMailById } from "./service-mail";
 import KernButton from "../kern-button/KernButton";
 import { MemoIconPlus } from "../kern-icons/icons";
-import { IconUser, IconTrash, IconAlertTriangle, IconHelpCircle } from "@tabler/icons-react";
+import { IconUser, IconTrash, IconAlertTriangle, IconHelpCircle, IconProgressCheck, IconRefresh, IconCircleCheck } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
 import useRefState from "../../hooks/useRefState";
 import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull, uuidToPastelColorWithMatchingFont } from "./helper";
+import BaseModal from "@/src/components/Common/ModalComponents/Modal";
+import { Dialog } from "@headlessui/react";
+import KernDropdown from "../KernDropdown";
+import useEnumOptionsTranslated from "../../hooks/enums/useEnumOptionsTranslated";
 
 
 
@@ -19,7 +23,10 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedThread, setSelectedThread] = useState<InboxMailThread>(null);
     const [threadMails, setThreadMails] = useState<InboxMail[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
     const { state: isAdminSupportThread, setState: setIsAdminSupportThread, ref: isAdminSupportThreadRef } = useRefState(false);
+    const progressStateOptions = useEnumOptionsTranslated(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", "enums");
+
 
     const isAdmin = useMemo(() => {
         return props.currentUser?.isAdmin
@@ -56,9 +63,33 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
         }, recipientIds, subject, markAsImportant, metaData, isNewThread ? undefined : selectedThread?.id, isAdminSupportThreadRef.current);
     }, [isNewThread, refetchSelectedThreadMails, selectedThread, currentPage]);
 
-    useEffect(() => {
-        refetchSelectedThreadMails();
+    const handleInboxMailProgressChange = useCallback((progressState: InboxMailThreadSupportProgressState) => {
+        if (!selectedThread) return;
+        updateInboxMailThreadProgress(selectedThread.id, progressState, () => {
+            setSelectedThread({
+                ...selectedThread,
+                progressState: progressState
+            });
+            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, progressState: progressState } : t));
+        });
     }, [selectedThread]);
+
+    useEffect(() => {
+        if (!selectedThread?.id) return
+        refetchSelectedThreadMails();
+        if (selectedThread.unreadMailCount > 0) {
+            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, unreadMailCount: 0 } : t));
+        }
+        if (selectedThread.isAdminSupportThread && isAdmin && selectedThread.metaData?.unreadMailCountAdmin > 0) {
+            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? {
+                ...t,
+                metaData: {
+                    ...t.metaData,
+                    unreadMailCountAdmin: 0
+                }
+            } : t));
+        }
+    }, [selectedThread?.id]);
 
     const preparedThreads = useMemo(
         () => inboxMailThreads.map(t => ({
@@ -67,6 +98,15 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
         })),
         [inboxMailThreads, props.currentUser, isAdmin]
     )
+
+    const refreshIconFn = useCallback(
+        () => (
+            <IconRefresh
+                className={refreshing ? "animate-spin [animation-iteration-count:1]" : ""}
+            />
+        ),
+        [refreshing]
+    );
 
     if (!props.currentUser) return;
 
@@ -85,6 +125,16 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
                 </div>
                 <div className="flex items-center gap-x-2">
                     <KernButton
+                        className="text-gray-700"
+                        icon={refreshIconFn}
+                        onClick={() => {
+                            setRefreshing(true);
+                            refetchInboxMailOverview();
+                            setTimeout(() => setRefreshing(false), 1000);
+                        }}
+                        disabled={refreshing}
+                    />
+                    <KernButton
                         text="New issue"
                         icon={IconHelpCircle}
                         iconColor="red"
@@ -102,7 +152,6 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
                             setOpenCreateMail(true);
                             setIsAdminSupportThread(false);
                         }} />
-
                 </div>
             </div>
 
@@ -128,14 +177,41 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
                 <div className="col-span-2 overflow-y-auto pr-2 pb-12 ">
                     {selectedThread && threadMails && threadMails.length > 0 ? (
                         <>
+                            <div className="flex items-center  gap-x-2">
+                                {isAdmin && selectedThread.isAdminSupportThread && (
+                                    <div className="flex items-center gap-x-1 mb-2 mt-1 overflow-y-visible z-10">
+                                        <span className="text-sm font-medium mr-2">Progress:</span>
+                                        <KernDropdown
+                                            dropdownWidth="w-40"
+                                            buttonName={progressStateOptions.find(option => option.value === (selectedThread.progressState))?.name || "Set progress"}
+                                            options={progressStateOptions}
+                                            selectedOption={(option: { label: string; value: InboxMailThreadSupportProgressState }) => handleInboxMailProgressChange(option.value)}
+                                        />
+                                    </div>
+                                )}
+                                {isAdmin && selectedThread.isAdminSupportThread && selectedThread.progressState !== InboxMailThreadSupportProgressState.PENDING && selectedThread.metaData?.supportOwnerName && (
+                                    <div className="bg-orange-400 text-white rounded-full px-2 py-0.5 text-xs flex items-center gap-x-2 ml-2">
+                                        <IconProgressCheck
+                                            className="w-5 h-5" /> {selectedThread.metaData?.supportOwnerName?.first} {selectedThread.metaData?.supportOwnerName?.last}
+                                    </div>
+                                )}
+                            </div>
                             {threadMails.map((mail: InboxMail) => (
                                 <ThreadMailItem
                                     key={mail.id}
                                     mail={mail}
-                                    onDelete={() => { }}
+                                    currentUser={props.currentUser}
+                                    onDelete={() => deleteInboxMailById(mail.id, () => {
+                                        if (threadMails.length === 1) {
+                                            setSelectedThread(null);
+                                            refetchInboxMailOverview();
+                                            return;
+                                        }
+                                        refetchSelectedThreadMails();
+                                    })}
                                 />
                             ))}
-                            <div>
+                            <div className="flex items-center">
                                 <KernButton
                                     className="ml-auto"
                                     text="Reply"
@@ -172,8 +248,18 @@ function ThreadOverview(props: ThreadProps) {
         displayInitials,
         background,
         text,
-        recipientIds
+        recipientIds,
+        DisplayIcon
     } = props.thread.display;
+
+    const unreadMailCount = useMemo(() => {
+        if (props.isAdmin && props.thread.isAdminSupportThread) {
+            return props.thread.metaData.unreadMailCountAdmin
+        }
+        else {
+            return props.thread.unreadMailCount
+        }
+    }, [props.thread, props.isAdmin]);
 
     return (
         <div
@@ -189,7 +275,7 @@ function ThreadOverview(props: ThreadProps) {
                         style={{ backgroundColor: background, color: text }}
                         className="self-start shrink-0 mt-1 flex items-center justify-center w-10 h-10 border rounded-md p-2 text-sm font-semibold relative"
                     >
-                        {displayInitials ?? <IconUser />}
+                        {displayInitials || <DisplayIcon /> || <IconUser />}
                         {recipientIds?.length > 1 && (
                             <div className="absolute -bottom-0.5 -right-0.5 bg-gray-600 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
                                 {recipientIds.length}
@@ -203,28 +289,46 @@ function ThreadOverview(props: ThreadProps) {
                 )}
 
                 <div className="grow min-w-0">
-                    <div className="flex items-center justify-between gap-x-2 flex-nowrap">
-                        <div className="text-gray-800 font-medium truncate">
-                            {displayName ?? "<Unknown User>"}
+                    <div className="flex items-start justify-between gap-x-2 flex-nowrap">
+                        <div className="flex items-center">
+                            <div className="text-gray-800 font-medium truncate mt-0.5">
+                                {displayName ?? "<Unknown User>"}
+                            </div>
+                            {unreadMailCount > 0 && (
+                                <span className="ml-2 inline-flex items-center justify-center bg-slate-400 text-white text-[0.625rem] font-semibold rounded-full h-4 min-w-4 px-1.5 whitespace-nowrap">
+                                    {unreadMailCount} new
+                                </span>
+                            )}
                         </div>
-
-                        <div className="flex ml-auto items-center gap-x-1">
-                            {props.thread.isAdminSupportThread && (
-                                <Tooltip
-                                    content={props.isAdmin ? "This mail is a support request from a user" : "This mail is between you and the KernAI support"}
-                                    placement="top"
-                                    color="invert"
-                                >
-                                    <IconHelpCircle className="h-[1.125rem] w-auto text-red-600 mb-0.5" />
-                                </Tooltip>
-                            )}
-                            {props.thread.isImportant && (
-                                <Tooltip content="This mail is marked as important" placement="top" color="invert">
-                                    <IconAlertTriangle className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
-                                </Tooltip>
-                            )}
-                            <div className="text-xs text-gray-400 whitespace-nowrap ml-2">
-                                {formatDisplayTimestamp(props.thread.latestMail.createdAt)}
+                        <div className="flex ml-auto items-center gap-x-2 flex-wrap gap-y-2 justify-end">
+                            <div className={` ${(props.thread.isAdminSupportThread || props.thread.isImportant || props.thread.progressState === InboxMailThreadSupportProgressState.IN_PROGRESS) ? "flex" : "hidden"} items-center gap-x-2 bg-slate-100/70 py-1 px-2 rounded-full`}>
+                                {props.thread.isAdminSupportThread && (
+                                    <Tooltip
+                                        content={"Support request"}
+                                        placement="top"
+                                        color="invert"
+                                    >
+                                        <IconHelpCircle className="h-[1.125rem] w-auto text-red-600 mb-0.5" />
+                                    </Tooltip>
+                                )}
+                                {props.thread.isImportant && (
+                                    <Tooltip content="High priority" placement="top" color="invert">
+                                        <IconAlertTriangle className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
+                                    </Tooltip>
+                                )}
+                                {props.thread.progressState === InboxMailThreadSupportProgressState.IN_PROGRESS && (
+                                    <Tooltip content="In progress" placement="top" color="invert">
+                                        <IconProgressCheck className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
+                                    </Tooltip>
+                                )}
+                                {props.thread.progressState === InboxMailThreadSupportProgressState.RESOLVED && (
+                                    <Tooltip content="Resolved" placement="top" color="invert">
+                                        <IconCircleCheck className="h-[1.125rem] w-auto text-green-600 mb-0.5" />
+                                    </Tooltip>
+                                )}
+                            </div>
+                            <div className="text-xs text-gray-400 whitespace-nowrap ml-2 shrink-0">
+                                {formatDisplayTimestamp(props.thread.latestMail?.createdAt)}
                             </div>
                         </div>
                     </div>
@@ -234,7 +338,7 @@ function ThreadOverview(props: ThreadProps) {
                     </div>
 
                     <div className="text-gray-500 truncate">
-                        {props.thread.latestMail.content}
+                        {props.thread.latestMail?.content}
                     </div>
                 </div>
             </div>
@@ -244,40 +348,125 @@ function ThreadOverview(props: ThreadProps) {
 
 interface ThreadMailItemProps {
     mail: InboxMail;
+    currentUser: User;
     onDelete?: (id: string) => void;
 }
 
 function ThreadMailItem(props: ThreadMailItemProps) {
-    return (
-        <div className="py-3 px-4 mb-2 border border-gray-300 rounded-lg shadow-sm bg-white">
-            <div className="flex items-center justify-between text-sm">
-                <div className="grow min-w-0">
-                    <div className="flex items-center justify-between gap-x-2 flex-nowrap">
-                        <span className="font-medium text-gray-700">
-                            {props.mail.senderName?.first} {props.mail.senderName?.last}
-                        </span>
+    const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 
-                        <span className="ml-auto text-xs text-gray-400 whitespace-nowrap">
-                            {formatDisplayTimestampFull(props.mail.createdAt)}
+    const handleConfirmDelete = useCallback(() => {
+        if (props.onDelete) {
+            props.onDelete(props.mail.id);
+        }
+    }, [props.mail.id, props.onDelete]);
+
+    return (
+        <>
+            <div className="py-3 px-4 mb-2 border border-gray-300 rounded-lg shadow-sm bg-white">
+                <div className="flex items-center justify-between text-sm">
+                    <div className="grow min-w-0">
+                        <div className="flex items-center justify-between gap-x-2 flex-nowrap">
+                            <span className="font-medium text-gray-700">
+                                {props.mail.senderName?.first} {props.mail.senderName?.last}
+                            </span>
+
+                            <span className="ml-auto text-xs text-gray-400 whitespace-nowrap">
+                                {formatDisplayTimestampFull(props.mail.createdAt)}
+                            </span>
+                        </div>
+
+                        <span className="text-sm text-gray-500">
+                            To: {props.mail.recipientNames.map((name) => `${name.first} ${name.last}`).join(", ")}
                         </span>
                     </div>
+                </div>
 
-                    <span className="text-sm text-gray-500">
-                        To: {props.mail.recipientNames.map((name) => `${name.first} ${name.last}`).join(", ")}
-                    </span>
+                <div className="border-t border-gray-200 mt-2 pt-2 text-gray-700 whitespace-pre-line break-words">
+                    {props.mail.content}
+                </div>
+
+                <div className="mt-2 flex items-center justify-end space-x-3">
+                    {props.currentUser.id === props.mail.senderId && (
+                        <KernButton
+                            icon={IconTrash}
+                            size="small"
+                            className="text-gray-700 hover:text-red-700"
+                            onClick={() => setOpenDeleteConfirm(true)}
+                        />
+                    )}
                 </div>
             </div>
 
-            <div className="border-t border-gray-200 mt-2 pt-2 text-gray-700 whitespace-pre-line break-words">
-                {props.mail.content}
-            </div>
+            <ConfirmDeleteModal
+                open={openDeleteConfirm}
+                setOpen={setOpenDeleteConfirm}
+                onConfirm={handleConfirmDelete}
+            />
+        </>
+    );
+}
+interface ConfirmDeleteModalProps {
+    open: boolean;
+    setOpen: (open: boolean) => void;
+    onConfirm: () => void;
+}
 
-            <div className="mt-2 flex items-center justify-end space-x-3">
-                <KernButton
-                    icon={IconTrash}
-                    onClick={() => props.onDelete?.(props.mail.id)}
-                />
+
+function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
+
+    const cancelRef = useRef(null);
+
+    return (
+        <BaseModal
+            open={props.open}
+            setOpen={props.setOpen}
+            initialFocus={cancelRef}
+            maxWidth="md"
+        >
+            <div className="p-6">
+                <div className="sm:flex sm:items-start">
+                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center 
+                          rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <IconAlertTriangle className="h-6 w-6 text-red-600" />
+                    </div>
+
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <Dialog.Title
+                            as="h3"
+                            className="text-lg font-medium leading-6 text-gray-900"
+                        >
+                            Delete Message
+                        </Dialog.Title>
+
+                        <p className="mt-2 text-sm text-gray-600">Are you sure you want to delete this mail for all? This action cannot be undone.</p>
+                    </div>
+                </div>
+
+                <div className="mt-6 sm:flex sm:flex-row-reverse gap-3">
+                    <button
+                        onClick={() => {
+                            props.onConfirm();
+                            props.setOpen(false);
+                        }}
+                        className="inline-flex w-full justify-center rounded-md border border-transparent 
+                       bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm 
+                       hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
+                    >
+                        Delete
+                    </button>
+
+                    <button
+                        ref={cancelRef}
+                        onClick={() => props.setOpen(false)}
+                        className="inline-flex w-full justify-center rounded-md border border-gray-300 
+                       bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm 
+                       hover:bg-gray-50 sm:w-auto sm:text-sm"
+                    >
+                        Cancel
+                    </button>
+                </div>
             </div>
-        </div>
+        </BaseModal>
     );
 }
