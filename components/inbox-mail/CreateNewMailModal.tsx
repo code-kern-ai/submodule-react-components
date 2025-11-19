@@ -1,6 +1,4 @@
-import BaseModal from "@/src/components/Common/ModalComponents/Modal";
-import ModalCreateFooter from "@/src/components/Common/ModalComponents/ModalCreateFooter";
-import { Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
@@ -8,7 +6,8 @@ import useRefState from "../../hooks/useRefState";
 import { InfoButton } from "../InfoButton";
 import { MemoIconMail } from "../kern-icons/icons";
 import { User, InboxMailThread } from "./types-mail";
-
+import { Fragment } from 'react'
+import KernButton from "../kern-button/KernButton";
 
 interface CreateNewMailModalProps {
     open: boolean;
@@ -70,117 +69,155 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     }, [props.thread?.id, props.isNewThread]);
 
     return (
-        <BaseModal
-            open={props.open}
-            setOpen={props.setOpen}
-            onTransitionComplete={onTransitionComplete}
-            maxWidth="2xl"
-            initialFocus={cancelButtonRef}
-        >
-            <div className="p-6">
-                <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <MemoIconMail className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                            {t("inboxMail.modalTitle")}
-                        </Dialog.Title>
-                        <div className='mt-2 flex flex-col gap-y-2'>
-                            {props.isAdminSupportThread ?
-                                <KernAIReport />
-                                :
-                                <UserSelector
-                                    label={t("inboxMail.sendTo")}
-                                    users={props.users}
-                                    selectedUsers={selectedPeople}
-                                    onChange={setSelectedPeople}
-                                    disabled={!props.isNewThread}
-                                />
-                            }
-                            <div>
-                                <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                                    {t("inboxMail.subject")}:
-                                </label>
-                                <div className="mt-1">
-                                    <input
-                                        type="text"
-                                        name="subject"
-                                        id="subject"
-                                        className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                        value={subject}
-                                        onChange={(e) => setSubject(e.target.value)}
-                                        disabled={!props.isNewThread}
-                                    />
+        <Transition.Root show={props.open} as={Fragment} afterLeave={onTransitionComplete}>
+            <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={props.setOpen ? props.setOpen : () => null}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                </Transition.Child>
+
+                <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full justify-center p-4 items-center">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        >
+                            <div className={`flex justify-center w-full`}>
+                                <div className={`w-full max-w-2xl`}>
+                                    <Dialog.Panel className="relative rounded-lg bg-white shadow-xl sm:my-8">
+
+                                        <div className="p-6">
+                                            <div className="sm:flex sm:items-start">
+                                                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                    <MemoIconMail className="h-6 w-6 text-green-600" />
+                                                </div>
+                                                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                                                        {t("inboxMail.modalTitle")}
+                                                    </Dialog.Title>
+                                                    <div className='mt-2 flex flex-col gap-y-2'>
+                                                        {props.isAdminSupportThread ?
+                                                            <KernAIReport />
+                                                            :
+                                                            <UserSelector
+                                                                label={t("inboxMail.sendTo")}
+                                                                users={props.users}
+                                                                selectedUsers={selectedPeople}
+                                                                onChange={setSelectedPeople}
+                                                                disabled={!props.isNewThread}
+                                                            />
+                                                        }
+                                                        <div>
+                                                            <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
+                                                                {t("inboxMail.subject")}:
+                                                            </label>
+                                                            <div className="mt-1">
+                                                                <input
+                                                                    type="text"
+                                                                    name="subject"
+                                                                    id="subject"
+                                                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                                    value={subject}
+                                                                    onChange={(e) => setSubject(e.target.value)}
+                                                                    disabled={!props.isNewThread}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+                                                                {t("inboxMail.content")}:
+                                                            </label>
+                                                            <div className="mt-1">
+                                                                <textarea
+                                                                    name="content"
+                                                                    id="content"
+                                                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                                    value={content}
+                                                                    onChange={(e) => setContent(e.target.value)}
+                                                                    rows={8}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-x-2">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="markAsImportant"
+                                                                id="markAsImportant"
+                                                                checked={markAsImportant}
+                                                                onChange={(e) => setMarkAsImportant(e.target.checked)}
+                                                                className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                            />
+                                                            <label htmlFor="markAsImportant" className="block text-sm font-medium text-gray-700 cursor-pointer">
+                                                                {t("inboxMail.markAsImportant")}
+                                                            </label>
+                                                            <InfoButton content={t("inboxMail.markAsImportantInfo")} infoButtonSize="sm" />
+                                                        </div>
+                                                        {projectId && <div className="flex items-center gap-x-2">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="includeProject"
+                                                                id="includeProject"
+                                                                checked={includeProject}
+                                                                onChange={(e) => setIncludeProject(e.target.checked)}
+                                                                className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                            />
+                                                            <label htmlFor="includeProject" className="block text-sm font-medium text-gray-700 cursor-pointer">
+                                                                {t("inboxMail.includeProjectInfo")}
+                                                            </label>
+                                                        </div>}
+                                                        {chatId && <div className="flex items-center gap-x-2">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="includeChat"
+                                                                id="includeChat"
+                                                                checked={includeChat}
+                                                                onChange={(e) => setIncludeChat(e.target.checked)}
+                                                                className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                            />
+                                                            <label htmlFor="includeChat" className="block text-sm font-medium text-gray-700 cursor-pointer">
+                                                                {t("inboxMail.includeChatInfo")}
+                                                            </label>
+                                                        </div>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mt-5 flex gap-x-2 flex-row-reverse">
+                                                <KernButton
+                                                    text={t("inboxMail.sendButton")}
+                                                    disabled={disabledSend}
+                                                    buttonColor="green"
+                                                    solidTheme={true}
+                                                    textColor="white"
+                                                    size="solid-large"
+                                                    onClick={handleCreateMail}
+                                                />
+                                                <KernButton
+                                                    text={t("general.cancel")}
+                                                    innerRef={cancelButtonRef}
+                                                    onClick={() => props.setOpen(false)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Dialog.Panel>
                                 </div>
                             </div>
-                            <div>
-                                <label htmlFor="content" className="block text-sm font-medium text-gray-700">
-                                    {t("inboxMail.content")}:
-                                </label>
-                                <div className="mt-1">
-                                    <textarea
-                                        name="content"
-                                        id="content"
-                                        className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        rows={8}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-x-2">
-                                <input
-                                    type="checkbox"
-                                    name="markAsImportant"
-                                    id="markAsImportant"
-                                    checked={markAsImportant}
-                                    onChange={(e) => setMarkAsImportant(e.target.checked)}
-                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                />
-                                <label htmlFor="markAsImportant" className="block text-sm font-medium text-gray-700 cursor-pointer">
-                                    {t("inboxMail.markAsImportant")}
-                                </label>
-                                <InfoButton content={t("inboxMail.markAsImportantInfo")} infoButtonSize="sm" />
-                            </div>
-                            {projectId && <div className="flex items-center gap-x-2">
-                                <input
-                                    type="checkbox"
-                                    name="includeProject"
-                                    id="includeProject"
-                                    checked={includeProject}
-                                    onChange={(e) => setIncludeProject(e.target.checked)}
-                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                />
-                                <label htmlFor="includeProject" className="block text-sm font-medium text-gray-700 cursor-pointer">
-                                    {t("inboxMail.includeProjectInfo")}
-                                </label>
-                            </div>}
-                            {chatId && <div className="flex items-center gap-x-2">
-                                <input
-                                    type="checkbox"
-                                    name="includeChat"
-                                    id="includeChat"
-                                    checked={includeChat}
-                                    onChange={(e) => setIncludeChat(e.target.checked)}
-                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                />
-                                <label htmlFor="includeChat" className="block text-sm font-medium text-gray-700 cursor-pointer">
-                                    {t("inboxMail.includeChatInfo")}
-                                </label>
-                            </div>}
-                        </div>
+                        </Transition.Child>
                     </div>
                 </div>
-                <ModalCreateFooter
-                    handleCreate={handleCreateMail}
-                    closeDialog={() => props.setOpen(false)}
-                    cancelButtonRef={cancelButtonRef}
-                    createButtonName={t("inboxMail.sendButton")}
-                    disabledButton={disabledSend}
-                />
-            </div>
-        </BaseModal>
+            </Dialog>
+        </Transition.Root>
     )
 }
 

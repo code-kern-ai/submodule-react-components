@@ -1,8 +1,7 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
-import { REFINERY_BASE_URI } from "@/src/services/_settings";
 import { InboxMailThreadSupportProgressState } from "./types-mail";
 
-const url = `${REFINERY_BASE_URI}/api/v1/inbox-mail`;
+const url = `/refinery-gateway/api/v1/inbox-mail`;
 
 export function createInboxMailByThread(content: string, onResult: (result: any) => void, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any, threadId?: string, isAdminSupportThread?: boolean) {
     const body = JSON.stringify({ recipientIds, threadId, subject, content, isImportant, metaData, isAdminSupportThread });

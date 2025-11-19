@@ -8,15 +8,14 @@ import { MemoIconPlus } from "../kern-icons/icons";
 import { IconUser, IconTrash, IconAlertTriangle, IconHelpCircle, IconProgressCheck, IconRefresh, IconCircleCheck } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
 import useRefState from "../../hooks/useRefState";
-import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull, uuidToPastelColorWithMatchingFont } from "./helper";
-import BaseModal from "@/src/components/Common/ModalComponents/Modal";
-import { Dialog } from "@headlessui/react";
+import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull } from "./helper";
 import KernDropdown from "../KernDropdown";
 import useEnumOptionsTranslated from "../../hooks/enums/useEnumOptionsTranslated";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 
 
-
-export default function InboxMailView(props: { currentUser, orgUsers }) {
+export default function InboxMailView(props: { currentUser, orgUsers, InboxMailHeader }) {
     const [inboxMailThreads, setInboxMailThreads] = useState<InboxMailThread[]>([]);
     const [openCreateMail, setOpenCreateMail] = useState(false);
     const [isNewThread, setIsNewThread] = useState(false);
@@ -111,18 +110,8 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
     if (!props.currentUser) return;
 
     return (
-        <div className='flex flex-col pt-16 h-screen overflow-hidden'>
-            <div className="flex items-center w-full justify-between mb-2 px-4 py-2 border border-gray-200">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h2 className="font-semibold">
-                            Inbox Mail
-                        </h2>
-                        <p>
-                            Manage your inbox messages.
-                        </p>
-                    </div>
-                </div>
+        <div className='flex flex-col h-screen overflow-hidden'>
+            <props.InboxMailHeader >
                 <div className="flex items-center gap-x-2">
                     <KernButton
                         className="text-gray-700"
@@ -153,8 +142,7 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
                             setIsAdminSupportThread(false);
                         }} />
                 </div>
-            </div>
-
+            </ props.InboxMailHeader >
             {inboxMailThreads?.length === 0 ? (
                 <div className="flex flex-col items-center justify-center mt-20">
                     <div className="text-2xl font-semibold mb-4">No Inbox Mails</div>
@@ -228,7 +216,8 @@ export default function InboxMailView(props: { currentUser, orgUsers }) {
                             <div className="text-gray-500 mb-6">Select mail to see the details</div>
                         </div>}
                 </div>
-            </div>}
+            </div>
+            }
             <CreateNewMailModal isAdminSupportThread={isAdminSupportThread} open={openCreateMail} setOpen={setOpenCreateMail} thread={selectedThread} isNewThread={isNewThread} handleInboxMailCreation={handleInboxMailCreation} users={props.orgUsers} currentUser={props.currentUser} />
         </div >
 
@@ -418,55 +407,84 @@ function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
     const cancelRef = useRef(null);
 
     return (
-        <BaseModal
-            open={props.open}
-            setOpen={props.setOpen}
-            initialFocus={cancelRef}
-            maxWidth="md"
-        >
-            <div className="p-6">
-                <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center 
-                          rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <IconAlertTriangle className="h-6 w-6 text-red-600" />
-                    </div>
+        <Transition.Root show={props.open} as={Fragment}>
+            <Dialog as="div" className="relative z-50" initialFocus={cancelRef} onClose={props.setOpen ? props.setOpen : () => null}>
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                </Transition.Child>
 
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                        <Dialog.Title
-                            as="h3"
-                            className="text-lg font-medium leading-6 text-gray-900"
+                <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full justify-center p-4 items-center">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            Delete Message
-                        </Dialog.Title>
+                            <div className={`flex justify-center w-full`}>
+                                <div className={`w-full max-w-md`}>
+                                    <Dialog.Panel className="relative rounded-lg bg-white shadow-xl sm:my-8">
+                                        <div className="p-6">
+                                            <div className="sm:flex sm:items-start">
+                                                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center 
+                          rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                    <IconAlertTriangle className="h-6 w-6 text-red-600" />
+                                                </div>
 
-                        <p className="mt-2 text-sm text-gray-600">Are you sure you want to delete this mail for all? This action cannot be undone.</p>
-                    </div>
-                </div>
+                                                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                                    <Dialog.Title
+                                                        as="h3"
+                                                        className="text-lg font-medium leading-6 text-gray-900"
+                                                    >
+                                                        Delete Message
+                                                    </Dialog.Title>
 
-                <div className="mt-6 sm:flex sm:flex-row-reverse gap-3">
-                    <button
-                        onClick={() => {
-                            props.onConfirm();
-                            props.setOpen(false);
-                        }}
-                        className="inline-flex w-full justify-center rounded-md border border-transparent 
+                                                    <p className="mt-2 text-sm text-gray-600">Are you sure you want to delete this mail for all? This action cannot be undone.</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-6 sm:flex sm:flex-row-reverse gap-3">
+                                                <button
+                                                    onClick={() => {
+                                                        props.onConfirm();
+                                                        props.setOpen(false);
+                                                    }}
+                                                    className="inline-flex w-full justify-center rounded-md border border-transparent 
                        bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm 
                        hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-                    >
-                        Delete
-                    </button>
+                                                >
+                                                    Delete
+                                                </button>
 
-                    <button
-                        ref={cancelRef}
-                        onClick={() => props.setOpen(false)}
-                        className="inline-flex w-full justify-center rounded-md border border-gray-300 
+                                                <button
+                                                    ref={cancelRef}
+                                                    onClick={() => props.setOpen(false)}
+                                                    className="inline-flex w-full justify-center rounded-md border border-gray-300 
                        bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm 
                        hover:bg-gray-50 sm:w-auto sm:text-sm"
-                    >
-                        Cancel
-                    </button>
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </Dialog.Panel>
+                                </div>
+                            </div>
+                        </Transition.Child>
+                    </div>
                 </div>
-            </div>
-        </BaseModal>
+            </Dialog>
+        </Transition.Root>
     );
 }
