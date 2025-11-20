@@ -8,13 +8,13 @@ import { MemoIconPlus } from "../kern-icons/icons";
 import { IconUser, IconTrash, IconAlertTriangle, IconHelpCircle, IconProgressCheck, IconRefresh, IconCircleCheck } from "@tabler/icons-react";
 import { Tooltip } from "@nextui-org/react";
 import useRefState from "../../hooks/useRefState";
-import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull, useLocalTranslation } from "./helper";
-import KernDropdown from "../KernDropdown";
+import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull } from "./helper";
 import useEnumOptionsTranslated, { getEnumOptionsForLanguage } from "../../hooks/enums/useEnumOptionsTranslated";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { getUsers, getUserInfoExtended, getIsAdmin, getAllOrganizations } from "./service-mail";
 import Pagination from "../pagination/Pagination";
+import InboxMailAdminPanel from "../InboxMailAdminPanel";
 
 export default function InboxMailView(props: { InboxMailHeader, translatorScope }) {
 
@@ -212,25 +212,13 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
                 <div className="col-span-2 overflow-y-auto pr-2 pb-12 h-0 min-h-full">
                     {selectedThread && threadMails && threadMails.length > 0 ? (
                         <>
-                            <div className="flex items-center  gap-x-2">
-                                {isAdmin && selectedThread.isAdminSupportThread && (
-                                    <div className="flex items-center gap-x-1 mb-2 mt-1 overflow-y-visible z-10">
-                                        <span className="text-sm font-medium mr-2">Progress:</span>
-                                        <KernDropdown
-                                            dropdownWidth="w-40"
-                                            buttonName={progressStateOptions.find(option => option.value === (selectedThread.progressState))?.name || "Set progress"}
-                                            options={progressStateOptions}
-                                            selectedOption={(option: { label: string; value: InboxMailThreadSupportProgressState }) => handleInboxMailProgressChange(option.value)}
-                                        />
-                                    </div>
-                                )}
-                                {isAdmin && selectedThread.isAdminSupportThread && selectedThread.progressState !== InboxMailThreadSupportProgressState.PENDING && selectedThread.metaData?.supportOwnerName && (
-                                    <div className="bg-orange-400 text-white rounded-full px-2 py-0.5 text-xs flex items-center gap-x-2 ml-2">
-                                        <IconProgressCheck
-                                            className="w-5 h-5" /> {selectedThread.metaData?.supportOwnerName?.first} {selectedThread.metaData?.supportOwnerName?.last}
-                                    </div>
-                                )}
-                            </div>
+                            {isAdmin && selectedThread.isAdminSupportThread &&
+                                <InboxMailAdminPanel
+                                    selectedThread={selectedThread}
+                                    progressStateOptions={progressStateOptions}
+                                    handleInboxMailProgressChange={handleInboxMailProgressChange}
+                                />
+                            }
                             {threadMails.map((mail: InboxMail) => (
                                 <ThreadMailItem
                                     key={mail.id}

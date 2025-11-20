@@ -27,6 +27,8 @@ export type InboxMailThread = {
     supportOwnerId?: string;
     metaData?: any;
     unreadMailCount?: number;
+    projectName?: string;
+    conversationHeader?: string;
     display?: {
         displayName: string;
         displayInitials: string;
