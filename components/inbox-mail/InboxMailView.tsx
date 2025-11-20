@@ -169,7 +169,7 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
                         disabled={refreshing}
                     />
                     <KernButton
-                        text="New issue"
+                        text="Get support"
                         icon={IconHelpCircle}
                         iconColor="red"
                         onClick={() => {

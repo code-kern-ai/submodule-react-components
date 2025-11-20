@@ -1,6 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import useRefState from "../../hooks/useRefState";
 import { InfoButton } from "../InfoButton";
@@ -12,7 +11,7 @@ import KernDropdown from "../KernDropdown";
 interface CreateNewMailModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    handleInboxMailCreation: (content: string, recipientIds?: string[], subject?: string, markAsImportant?: boolean, metaData?: { includeProject: boolean; includeChat: boolean }, threadId?: string) => void;
+    handleInboxMailCreation: (content: string, recipientIds?: string[], subject?: string, markAsImportant?: boolean, metaData?: any, threadId?: string) => void;
     users: User[];
     currentUser: User;
     isAdmin: boolean;
