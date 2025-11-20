@@ -4,13 +4,13 @@ import { useCallback, useMemo } from "react";
 import tinycolor from 'tinycolor2'
 import { useNewMailCount } from "./helper";
 
-type InboxMailProps = {
-    project: { customerColorPrimary: string; id: string; };
+type InboxMailNavigatorProps = {
     forChatArea?: boolean;
+    project?: { customerColorPrimary: string; id: string; };
     chatId?: string;
 }
 
-export default function InboxMailNavigator(props: InboxMailProps) {
+export default function InboxMailNavigator(props: InboxMailNavigatorProps) {
     const router = useRouter();
 
     const navigateToMailPage = useCallback(() => {
@@ -63,7 +63,7 @@ export function InboxMailBadge(props: NewMailBadgeProps) {
 
 export function InboxMailTitleBadge() {
     return (
-        <div className="relative inline-flex items-center">
+        <div className="relative inline-flex items-center pr-5">
             <span >Inbox Mail</span>
             <InboxMailBadge forChatArea={false} refreshInterval={60000} />
         </div>

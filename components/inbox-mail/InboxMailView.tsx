@@ -18,8 +18,7 @@ import Pagination from "../pagination/Pagination";
 
 export default function InboxMailView(props: { InboxMailHeader, translatorScope }) {
 
-    const t = useMemo(() => props.translatorScope?.translator.t, [props.translatorScope.translator]);
-
+    const t = props.translatorScope?.translator;
     const [inboxMailThreads, setInboxMailThreads] = useState<InboxMailThread[]>([]);
     const [openCreateMail, setOpenCreateMail] = useState(false);
     const [isNewThread, setIsNewThread] = useState(false);
@@ -29,7 +28,7 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
     const [threadMails, setThreadMails] = useState<InboxMail[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const { state: isAdminSupportThread, setState: setIsAdminSupportThread, ref: isAdminSupportThreadRef } = useRefState(false);
-    const progressStateOptions = useMemo(() =>
+    const progressStateOptions =
         props.translatorScope?.type === "local"
             ? getEnumOptionsForLanguage(
                 InboxMailThreadSupportProgressState,
@@ -37,13 +36,11 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
                 t,
                 "en"
             )
-            : useEnumOptionsTranslated(
+            : props.translatorScope?.type === "i18n" ? useEnumOptionsTranslated(
                 InboxMailThreadSupportProgressState,
                 "InboxMailThreadSupportProgressState",
                 "enums"
-            ),
-        [props.translatorScope, t]
-    );
+            ) : [];
 
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState<User[]>([]);
