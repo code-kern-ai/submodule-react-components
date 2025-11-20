@@ -2,7 +2,7 @@ import { red } from "@nextui-org/react";
 import { InboxMailThread, User } from "./types-mail";
 import { IconBug, IconUserOff } from "@tabler/icons-react";
 
-export const MAIL_LIMIT_PER_PAGE = 10;
+export const MAIL_LIMIT_PER_PAGE = 8;
 
 export function prepareThreadDisplayData(
     thread: InboxMailThread,
@@ -21,6 +21,8 @@ export function prepareThreadDisplayData(
     let displayName = "";
     let displayInitials = "";
     let DisplayIcon: React.FC = null;
+
+    if (!currentUser || !thread) return
 
     const recipientIds = thread.participantIds.filter(
         id => id !== currentUser.id

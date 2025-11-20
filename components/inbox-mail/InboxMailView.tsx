@@ -10,17 +10,15 @@ import { Tooltip } from "@nextui-org/react";
 import useRefState from "../../hooks/useRefState";
 import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull, useLocalTranslation } from "./helper";
 import KernDropdown from "../KernDropdown";
-import useEnumOptionsTranslated from "../../hooks/enums/useEnumOptionsTranslated";
+import useEnumOptionsTranslated, { getEnumOptionsForLanguage } from "../../hooks/enums/useEnumOptionsTranslated";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import inboxMailLocalTranslation from "./inboxMailLocalTranslations.json";
 import { getUsers, getUserInfoExtended, getIsAdmin, getAllOrganizations } from "./service-mail";
-
+import Pagination from "../pagination/Pagination";
 
 export default function InboxMailView(props: { InboxMailHeader, useLocalTranslation?: boolean }) {
-
-
     const local = useLocalTranslation(inboxMailLocalTranslation);
     const i18n = useTranslation('projectOverview');
 
@@ -30,12 +28,12 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
     const [openCreateMail, setOpenCreateMail] = useState(false);
     const [isNewThread, setIsNewThread] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [fullCount, setFullCount] = useState(0);
     const [selectedThread, setSelectedThread] = useState<InboxMailThread>(null);
     const [threadMails, setThreadMails] = useState<InboxMail[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const { state: isAdminSupportThread, setState: setIsAdminSupportThread, ref: isAdminSupportThreadRef } = useRefState(false);
-    const progressStateOptions = useEnumOptionsTranslated(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", "enums");
-
+    const progressStateOptions = props.useLocalTranslation ? getEnumOptionsForLanguage(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", local.t, "en") : useEnumOptionsTranslated(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", "enums");
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState<User[]>([]);
     const [organizations, setOrganizations] = useState([]);
@@ -57,34 +55,40 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
     }, [isAdmin]);
 
     useEffect(() => {
-
-    }, [selectedOrganization]);
-    useEffect(() => {
         if (isAdmin === undefined) return;
-
         if (isAdmin) {
-            getUsers(
-                (res) => setUsers(res),
-                false,
-                false,
-                selectedOrganization?.id
-            );
+            getUsers((res) => setUsers(res), false, false, selectedOrganization?.id);
         } else {
-            getUsers(
-                (res) => setUsers(res),
-                false,
-                true
-            );
+            getUsers((res) => setUsers(res), false, true);
         }
     }, [isAdmin, selectedOrganization]);
 
     useEffect(() => {
         refetchInboxMailOverview();
-    }, []);
+    }, [currentPage]);
+
+    useEffect(() => {
+        if (!selectedThread?.id) return
+        refetchSelectedThreadMails();
+        if (selectedThread.unreadMailCount > 0) {
+            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, unreadMailCount: 0 } : t));
+        }
+        if (selectedThread.isAdminSupportThread && isAdmin && selectedThread.metaData?.unreadMailCountAdmin > 0) {
+            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? {
+                ...t,
+                metaData: {
+                    ...t.metaData,
+                    unreadMailCountAdmin: 0
+                }
+            } : t));
+        }
+    }, [selectedThread?.id]);
 
     const refetchInboxMailOverview = useCallback(() => {
-        getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) =>
-            setInboxMailThreads(res.threads));
+        getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
+            setInboxMailThreads(res.threads);
+            setFullCount(res?.totalThreads);
+        });
     }, [currentPage]);
 
     const refetchSelectedThreadMails = useCallback(() => {
@@ -120,31 +124,6 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
         });
     }, [selectedThread]);
 
-    useEffect(() => {
-        if (!selectedThread?.id) return
-        refetchSelectedThreadMails();
-        if (selectedThread.unreadMailCount > 0) {
-            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, unreadMailCount: 0 } : t));
-        }
-        if (selectedThread.isAdminSupportThread && isAdmin && selectedThread.metaData?.unreadMailCountAdmin > 0) {
-            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? {
-                ...t,
-                metaData: {
-                    ...t.metaData,
-                    unreadMailCountAdmin: 0
-                }
-            } : t));
-        }
-    }, [selectedThread?.id]);
-
-    const preparedThreads = useMemo(
-        () => inboxMailThreads.map(t => ({
-            ...t,
-            display: prepareThreadDisplayData(t, currentUser, isAdmin)
-        })),
-        [inboxMailThreads, currentUser, isAdmin]
-    )
-
     const refreshIconFn = useCallback(
         () => (
             <IconRefresh
@@ -154,10 +133,21 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
         [refreshing]
     );
 
+    const setOffset = useCallback((offset: number) => setCurrentPage(~~(offset / MAIL_LIMIT_PER_PAGE + 1)), [])
+
+    const preparedThreads = useMemo(
+
+        () => inboxMailThreads.map(t => ({
+            ...t,
+            display: prepareThreadDisplayData(t, currentUser, isAdmin)
+        })),
+        [inboxMailThreads, currentUser, isAdmin]
+    )
+
     if (!currentUser) return;
 
     return (
-        <div className='flex flex-col h-screen overflow-hidden'>
+        <div className='flex flex-col h-full overflow-hidden'>
             <props.InboxMailHeader >
                 <div className="flex items-center gap-x-2">
                     <KernButton
@@ -197,7 +187,7 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
                 </div>
             ) : <div className="grid grid-cols-3 gap-x-4 p-3 overflow-hidden">
                 <div className="col-span-1">
-                    <div className="border border-gray-300 rounded-lg ">
+                    <div className="border border-gray-300 rounded-lg mb-2">
                         {preparedThreads.map((threadOverview: InboxMailThread) => (
                             <ThreadOverview
                                 key={threadOverview.id}
@@ -208,6 +198,8 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
                             />
                         ))}
                     </div>
+                    <Pagination offset={(currentPage - 1) * MAIL_LIMIT_PER_PAGE} setOffset={setOffset} fullCount={fullCount} limit={MAIL_LIMIT_PER_PAGE} previousLabel={t("inboxMail.previous")} nextLabel={t("inboxMail.next")} />
+
                 </div>
                 <div className="col-span-2 overflow-y-auto pr-2 pb-12 ">
                     {selectedThread && threadMails && threadMails.length > 0 ? (
@@ -363,17 +355,16 @@ function ThreadOverview(props: ThreadProps) {
                                     </Tooltip>
                                 )}
                             </div>
-                            <div className="text-xs text-gray-400 whitespace-nowrap ml-2 shrink-0">
+                            <div className="text-xs text-gray-400 whitespace-nowrap ml-2 shrink-0 py-1.5">
                                 {formatDisplayTimestamp(props.thread.latestMail?.createdAt)}
                             </div>
                         </div>
                     </div>
 
-                    <div className="text-gray-800 font-medium truncate">
+                    <div className="text-gray-800 font-medium truncate min-h-[1.5rem]">
                         {props.thread.subject}
                     </div>
-
-                    <div className="text-gray-500 truncate">
+                    <div className="text-gray-500 truncate min-h-[1.5rem]">
                         {props.thread.latestMail?.content}
                     </div>
                 </div>

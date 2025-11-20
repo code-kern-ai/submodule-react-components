@@ -9,6 +9,13 @@
         "includeProjectInfo": "Include project information in the email",
         "includeChatInfo": "Include chat information in the email",
         "sendButton": "Send",
-        "cancelButton": "Cancel"
+        "cancelButton": "Cancel",
+        "previous": "Previous",
+        "next": "Next"
+    },
+    "InboxMailThreadSupportProgressState": {
+        "PENDING": "Pending",
+        "IN_PROGRESS": "In progress",
+        "RESOLVED": "Resolved"
     }
 }
