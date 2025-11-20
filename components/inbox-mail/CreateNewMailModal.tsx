@@ -114,7 +114,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                         {t("inboxMail.modalTitle")}
                                                     </Dialog.Title>
                                                     <div className='mt-2 flex flex-col gap-y-2'>
-                                                        {props.isAdmin &&
+                                                        {props.isAdmin && props.isNewThread && !props.isAdminSupportThread &&
                                                             <div className="text-sm text-gray-500 my-4 text-left">
                                                                 <div className="text-sm text-gray-700">Select organization</div>
                                                                 <KernDropdown options={props.organizations} buttonName={props.selectedOrganization?.name || 'Select organization'} selectedOption={props.setSelectedOrganization} />
