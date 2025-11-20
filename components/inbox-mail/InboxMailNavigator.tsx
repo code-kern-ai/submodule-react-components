@@ -1,9 +1,7 @@
 import { MemoIconMail } from "@/submodules/react-components/components/kern-icons/icons";
 import { useRouter } from "next/router";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo } from "react";
 import tinycolor from 'tinycolor2'
-import { getNewInboxMailsInfo } from "./service-mail";
-import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { useNewMailCount } from "./helper";
 
 type InboxMailProps = {
@@ -14,7 +12,6 @@ type InboxMailProps = {
 
 export default function InboxMailNavigator(props: InboxMailProps) {
     const router = useRouter();
-    const newMailCount = useNewMailCount(60000);
 
     const navigateToMailPage = useCallback(() => {
         const chatIdParam = props.chatId ? `?chatId=${props.chatId}` : '';
@@ -36,14 +33,39 @@ export default function InboxMailNavigator(props: InboxMailProps) {
     return <div className="relative">
         <button className={buttonClasses} onClick={navigateToMailPage}>
             <MemoIconMail />
-            {newMailCount > 0 && (
-                <div className={combineClassNames(
-                    "absolute flex items-center justify-center w-3 h-3 bg-red-500 rounded-full text-white text-[0.625rem] font-bold pointer-events-none",
-                    props.forChatArea ? 'top-0 right-0' : 'top-1 right-1'
-                )}>
-                    {newMailCount}
-                </div>
-            )}
+            <InboxMailBadge forChatArea={props.forChatArea} />
         </button>
     </div>
+}
+
+
+
+interface NewMailBadgeProps {
+    forChatArea?: boolean;
+    refreshInterval?: number; // optional, default to 60000ms
+}
+
+export function InboxMailBadge(props: NewMailBadgeProps) {
+    const newMailCount = useNewMailCount(props.refreshInterval);
+
+    if (newMailCount === 0) return;
+
+    const badgeClasses = props.forChatArea
+        ? 'top-0 right-0'
+        : 'top-1 right-1';
+
+    return (
+        <div className={`absolute flex items-center justify-center w-3 h-3 bg-red-500 rounded-full text-white text-[0.625rem] font-bold pointer-events-none ${badgeClasses}`}>
+            {newMailCount}
+        </div>
+    );
+}
+
+export function InboxMailTitleBadge() {
+    return (
+        <div className="relative inline-flex items-center">
+            <span >Inbox Mail</span>
+            <InboxMailBadge forChatArea={false} refreshInterval={60000} />
+        </div>
+    );
 }
