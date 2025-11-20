@@ -185,7 +185,7 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
                     <div className="text-2xl font-semibold mb-4">No Inbox Mails</div>
                     <div className="text-gray-500 mb-6">You have no mails in your inbox</div>
                 </div>
-            ) : <div className="grid grid-cols-3 gap-x-4 p-3 overflow-hidden">
+            ) : <div className="grid grid-cols-3 gap-x-4 p-3 overflow-hidden flex-1 ">
                 <div className="col-span-1">
                     <div className="border border-gray-300 rounded-lg mb-2">
                         {preparedThreads.map((threadOverview: InboxMailThread) => (
@@ -201,7 +201,7 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
                     <Pagination offset={(currentPage - 1) * MAIL_LIMIT_PER_PAGE} setOffset={setOffset} fullCount={fullCount} limit={MAIL_LIMIT_PER_PAGE} previousLabel={t("inboxMail.previous")} nextLabel={t("inboxMail.next")} />
 
                 </div>
-                <div className="col-span-2 overflow-y-auto pr-2 pb-12 ">
+                <div className="col-span-2 overflow-y-auto pr-2 pb-12 h-0 min-h-full">
                     {selectedThread && threadMails && threadMails.length > 0 ? (
                         <>
                             <div className="flex items-center  gap-x-2">
