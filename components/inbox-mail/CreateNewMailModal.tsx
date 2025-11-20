@@ -8,8 +8,6 @@ import { MemoIconMail } from "../kern-icons/icons";
 import { User, InboxMailThread } from "./types-mail";
 import { Fragment } from 'react'
 import KernButton from "../kern-button/KernButton";
-import { useLocalTranslation } from "./helper";
-import inboxMailLocalTranslation from "./inboxMailLocalTranslations.json";
 import KernDropdown from "../KernDropdown";
 interface CreateNewMailModalProps {
     open: boolean;
@@ -24,15 +22,12 @@ interface CreateNewMailModalProps {
     thread?: InboxMailThread;
     isNewThread?: boolean;
     isAdminSupportThread?: boolean;
-    useLocalTranslation?: boolean;
+    translationScope?: { type: "local" | "i18n", translator: any }
 };
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const router = useRouter();
-    const local = useLocalTranslation(inboxMailLocalTranslation);
-    const i18n = useTranslation('projectOverview');
-
-    const t = props.useLocalTranslation ? local.t : i18n.t;
+    const t = useMemo(() => props.translationScope?.translator.t, [props.translationScope.translator]);
 
     const projectId = router.query.projectId as string;
     const chatId = router.query.chatId as string;

@@ -13,16 +13,12 @@ import KernDropdown from "../KernDropdown";
 import useEnumOptionsTranslated, { getEnumOptionsForLanguage } from "../../hooks/enums/useEnumOptionsTranslated";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { useTranslation } from "react-i18next";
-import inboxMailLocalTranslation from "./inboxMailLocalTranslations.json";
 import { getUsers, getUserInfoExtended, getIsAdmin, getAllOrganizations } from "./service-mail";
 import Pagination from "../pagination/Pagination";
 
-export default function InboxMailView(props: { InboxMailHeader, useLocalTranslation?: boolean }) {
-    const local = useLocalTranslation(inboxMailLocalTranslation);
-    const i18n = useTranslation('projectOverview');
+export default function InboxMailView(props: { InboxMailHeader, translatorScope }) {
 
-    const t = props.useLocalTranslation ? local.t : i18n.t;
+    const t = useMemo(() => props.translatorScope?.translator.t, [props.translatorScope.translator]);
 
     const [inboxMailThreads, setInboxMailThreads] = useState<InboxMailThread[]>([]);
     const [openCreateMail, setOpenCreateMail] = useState(false);
@@ -33,7 +29,22 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
     const [threadMails, setThreadMails] = useState<InboxMail[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const { state: isAdminSupportThread, setState: setIsAdminSupportThread, ref: isAdminSupportThreadRef } = useRefState(false);
-    const progressStateOptions = props.useLocalTranslation ? getEnumOptionsForLanguage(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", local.t, "en") : useEnumOptionsTranslated(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", "enums");
+    const progressStateOptions = useMemo(() =>
+        props.translatorScope?.type === "local"
+            ? getEnumOptionsForLanguage(
+                InboxMailThreadSupportProgressState,
+                "InboxMailThreadSupportProgressState",
+                t,
+                "en"
+            )
+            : useEnumOptionsTranslated(
+                InboxMailThreadSupportProgressState,
+                "InboxMailThreadSupportProgressState",
+                "enums"
+            ),
+        [props.translatorScope, t]
+    );
+
     const [currentUser, setCurrentUser] = useState(null);
     const [users, setUsers] = useState<User[]>([]);
     const [organizations, setOrganizations] = useState([]);
@@ -257,7 +268,7 @@ export default function InboxMailView(props: { InboxMailHeader, useLocalTranslat
                 </div>
             </div>
             }
-            <CreateNewMailModal isAdmin={isAdmin} isAdminSupportThread={isAdminSupportThread} open={openCreateMail} setOpen={setOpenCreateMail} thread={selectedThread} isNewThread={isNewThread} handleInboxMailCreation={handleInboxMailCreation} users={users} currentUser={currentUser} useLocalTranslation={props.useLocalTranslation} organizations={organizations} selectedOrganization={selectedOrganization} setSelectedOrganization={setSelectedOrganization} />
+            <CreateNewMailModal isAdmin={isAdmin} isAdminSupportThread={isAdminSupportThread} open={openCreateMail} setOpen={setOpenCreateMail} thread={selectedThread} isNewThread={isNewThread} handleInboxMailCreation={handleInboxMailCreation} users={users} currentUser={currentUser} translationScope={props.translatorScope} organizations={organizations} selectedOrganization={selectedOrganization} setSelectedOrganization={setSelectedOrganization} />
         </div >
 
     )
