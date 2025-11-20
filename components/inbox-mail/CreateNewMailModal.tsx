@@ -27,7 +27,7 @@ interface CreateNewMailModalProps {
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const router = useRouter();
-    const t = useMemo(() => props.translationScope?.translator.t, [props.translationScope.translator]);
+    const t = useMemo(() => props.translationScope?.translator, [props.translationScope.translator]);
 
     const projectId = router.query.projectId as string;
     const chatId = router.query.chatId as string;
@@ -56,8 +56,13 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
         setContent('');
         setIncludeProject(false);
         setIncludeChat(false);
-        setMarkAsImportant(false);
     }, []);
+
+    const clearRouterParams = useCallback(() => {
+        if (projectId || chatId) {
+            router.replace('/inbox-mail');
+        }
+    }, [projectId, chatId]);
 
     const onTransitionComplete = useCallback(initModal, []);
 
@@ -67,11 +72,12 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
 
     const handleCreateMail = useCallback(() => {
         const metaData = {
-            includeProject: includeProjectRef.current,
-            includeChat: includeChatRef.current
+            ...(projectId && includeProjectRef.current && { projectId }),
+            ...(chatId && includeChatRef.current && { conversationId: chatId })
         };
-        initModal();
         props.handleInboxMailCreation(contentRef.current, selectedPeopleRef.current.map((user) => user.id), subjectRef.current, markAsImportantRef.current, metaData, props.isNewThread ? undefined : props.thread?.id);
+        initModal();
+        clearRouterParams();
     }, [props.thread?.id, props.isNewThread]);
 
     return (
@@ -176,7 +182,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                             </label>
                                                             <InfoButton content={t("inboxMail.markAsImportantInfo")} infoButtonSize="sm" />
                                                         </div>
-                                                        {projectId && <div className="flex items-center gap-x-2">
+                                                        {props.isAdminSupportThread && projectId && <div className="flex items-center gap-x-2">
                                                             <input
                                                                 type="checkbox"
                                                                 name="includeProject"
@@ -189,7 +195,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                                 {t("inboxMail.includeProjectInfo")}
                                                             </label>
                                                         </div>}
-                                                        {chatId && <div className="flex items-center gap-x-2">
+                                                        {props.isAdminSupportThread && projectId && chatId && <div className="flex items-center gap-x-2">
                                                             <input
                                                                 type="checkbox"
                                                                 name="includeChat"
