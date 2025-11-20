@@ -1,6 +1,8 @@
 import { red } from "@nextui-org/react";
 import { InboxMailThread, User } from "./types-mail";
 import { IconBug, IconUserOff } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { getNewInboxMailsInfo } from "./service-mail";
 
 export const MAIL_LIMIT_PER_PAGE = 8;
 
@@ -240,4 +242,26 @@ export function useLocalTranslation(translations: Record<string, any>) {
     };
 
     return { t };
+}
+
+export function useNewMailCount(interval: number = 60000) {
+    const [newMailCount, setNewMailCount] = useState(0);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+
+        function fetchNewMailCount() {
+            getNewInboxMailsInfo((result: any) => {
+                const count = result?.totalNewInboxMails ?? 0;
+                setNewMailCount(count);
+            });
+        }
+
+        fetchNewMailCount();
+        timer = setInterval(fetchNewMailCount, interval);
+
+        return () => clearInterval(timer);
+    }, [interval]);
+
+    return newMailCount;
 }

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import tinycolor from 'tinycolor2'
 import { getNewInboxMailsInfo } from "./service-mail";
 import { combineClassNames } from "@/submodules/javascript-functions/general";
+import { useNewMailCount } from "./helper";
 
 type InboxMailProps = {
     project: { customerColorPrimary: string; id: string; };
@@ -11,23 +12,9 @@ type InboxMailProps = {
     chatId?: string;
 }
 
-export default function InboxMail(props: InboxMailProps) {
+export default function InboxMailNavigator(props: InboxMailProps) {
     const router = useRouter();
-    const [newMailCount, setNewMailCount] = useState<number>(0);
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-
-        function checkNewInboxMails() {
-            getNewInboxMailsInfo((result: any) => {
-                const count = result?.totalNewInboxMails ?? 0;
-                setNewMailCount(count);
-            });
-        }
-
-        checkNewInboxMails();
-        interval = setInterval(checkNewInboxMails, 60000); // run every 60s
-        return () => clearInterval(interval);
-    }, []);
+    const newMailCount = useNewMailCount(60000);
 
     const navigateToMailPage = useCallback(() => {
         const chatIdParam = props.chatId ? `?chatId=${props.chatId}` : '';
