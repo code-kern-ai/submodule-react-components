@@ -1,13 +1,14 @@
 import { MemoIconMail } from "@/submodules/react-components/components/kern-icons/icons";
 import { useRouter } from "next/router";
-import { useCallback, useMemo } from "react";
 import tinycolor from 'tinycolor2'
 import { useNewMailCount } from "./helper";
+import { useCallback, useMemo } from "react";
 
 type InboxMailNavigatorProps = {
     forChatArea?: boolean;
     project?: { customerColorPrimary: string; id: string; };
     chatId?: string;
+    refreshToken?: any;
 }
 
 export default function InboxMailNavigator(props: InboxMailNavigatorProps) {
@@ -33,7 +34,7 @@ export default function InboxMailNavigator(props: InboxMailNavigatorProps) {
     return <div className="relative">
         <button className={buttonClasses} onClick={navigateToMailPage}>
             <MemoIconMail />
-            <InboxMailBadge forChatArea={props.forChatArea} />
+            <InboxMailBadge forChatArea={props.forChatArea} refreshToken={props.refreshToken} />
         </button>
     </div>
 }
@@ -43,10 +44,11 @@ export default function InboxMailNavigator(props: InboxMailNavigatorProps) {
 interface NewMailBadgeProps {
     forChatArea?: boolean;
     refreshInterval?: number; // optional, default to 60000ms
+    refreshToken?: any; // optional, to trigger refresh when changed
 }
 
 export function InboxMailBadge(props: NewMailBadgeProps) {
-    const newMailCount = useNewMailCount(props.refreshInterval);
+    const newMailCount = useNewMailCount(props.refreshInterval, props.refreshToken);
 
     if (newMailCount === 0) return;
 
@@ -61,11 +63,11 @@ export function InboxMailBadge(props: NewMailBadgeProps) {
     );
 }
 
-export function InboxMailTitleBadge() {
+export function InboxMailTitleBadge(props: { newMailCount?: number, refreshToken?: any }) {
     return (
         <div className="relative inline-flex items-center pr-5">
             <span >Inbox Mail</span>
-            <InboxMailBadge forChatArea={false} refreshInterval={60000} />
+            <InboxMailBadge forChatArea={false} refreshInterval={60000} refreshToken={props.refreshToken} />
         </div>
     );
 }

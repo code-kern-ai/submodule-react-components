@@ -15,8 +15,15 @@ import { Fragment } from "react";
 import { getUsers, getUserInfoExtended, getIsAdmin, getAllOrganizations } from "./service-mail";
 import Pagination from "../pagination/Pagination";
 import InboxMailAdminPanel from "../InboxMailAdminPanel";
+import { UserRole } from "@/submodules/javascript-functions/enums/enums";
 
-export default function InboxMailView(props: { InboxMailHeader, translatorScope }) {
+
+interface InboxMailViewProps {
+    InboxMailHeader: (props: { children: React.ReactNode }) => JSX.Element;
+    translatorScope: { type: "i18n" | "local"; translator: (key: string) => string };
+    handleInboxMailRefreshToken: (token: any) => void;
+}
+export default function InboxMailView(props: InboxMailViewProps) {
 
     const t = props.translatorScope?.translator;
     const [inboxMailThreads, setInboxMailThreads] = useState<InboxMailThread[]>([]);
@@ -63,13 +70,23 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
     }, [isAdmin]);
 
     useEffect(() => {
-        if (isAdmin === undefined) return;
-        if (isAdmin) {
-            getUsers((res) => setUsers(res), false, false, selectedOrganization?.id);
-        } else {
-            getUsers((res) => setUsers(res), false, true);
+        if (isAdmin === undefined || !currentUser) return;
+
+        function filterOutCurrentUser(users: User[]) {
+            return users.filter(u => u.id !== currentUser.id);
         }
-    }, [isAdmin, selectedOrganization]);
+
+        if (isAdmin && selectedOrganization) {
+            getUsers((res) => setUsers(filterOutCurrentUser(res)), true, false, false, selectedOrganization?.id);
+        }
+        else if (
+            currentUser?.role == UserRole.ENGINEER || isAdmin) {
+            getUsers((res) => setUsers(filterOutCurrentUser(res)), true, false, false);
+        }
+        else {
+            getUsers((res) => setUsers(filterOutCurrentUser(res)), true, true, true);
+        }
+    }, [isAdmin, selectedOrganization, currentUser]);
 
     useEffect(() => {
         refetchInboxMailOverview();
@@ -96,6 +113,7 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
         getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
             setInboxMailThreads(res.threads);
             setFullCount(res?.totalThreads);
+            props.handleInboxMailRefreshToken(Date.now());
         });
     }, [currentPage]);
 
@@ -103,10 +121,11 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
         if (!selectedThread) return;
         getInboxMailsByThread(selectedThread.id, (res) => {
             setThreadMails(res);
+            props.handleInboxMailRefreshToken(Date.now());
         });
-    }, [selectedThread]);
+    }, [selectedThread, props.handleInboxMailRefreshToken]);
 
-    const handleInboxMailCreation = useCallback((content: string, recipientIds?: string[], subject?: string, markAsImportant?: boolean, metaData?: any) => {
+    const handleInboxMailCreation = useCallback((content: string, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any) => {
         createInboxMailByThread(content, (result) => {
             setOpenCreateMail(false);
             getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
@@ -118,19 +137,32 @@ export default function InboxMailView(props: { InboxMailHeader, translatorScope 
             if (selectedThread && !isNewThread) {
                 refetchSelectedThreadMails();
             }
-        }, recipientIds, subject, markAsImportant, metaData, isNewThread ? undefined : selectedThread?.id, isAdminSupportThreadRef.current);
+        }, recipientIds, subject, isImportant, metaData, isNewThread ? undefined : selectedThread?.id, isAdminSupportThreadRef.current);
     }, [isNewThread, refetchSelectedThreadMails, selectedThread, currentPage]);
 
     const handleInboxMailProgressChange = useCallback((progressState: InboxMailThreadSupportProgressState) => {
         if (!selectedThread) return;
         updateInboxMailThreadProgress(selectedThread.id, progressState, () => {
+            let supportOwnerName = selectedThread.metaData?.supportOwnerName || "";
+            if (progressState === InboxMailThreadSupportProgressState.IN_PROGRESS) {
+                supportOwnerName = currentUser ? { "first": currentUser.firstName, "last": currentUser.lastName } : null;
+            } else if (progressState === InboxMailThreadSupportProgressState.PENDING) {
+                supportOwnerName = null;
+            }
             setSelectedThread({
                 ...selectedThread,
-                progressState: progressState
+                progressState: progressState,
+                metaData: { ...selectedThread.metaData, supportOwnerName }
             });
-            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, progressState: progressState } : t));
+            setInboxMailThreads(prevThreads =>
+                prevThreads.map(t =>
+                    t.id === selectedThread.id
+                        ? { ...t, progressState: progressState, metaData: { ...t.metaData, supportOwnerName } }
+                        : t
+                )
+            );
         });
-    }, [selectedThread]);
+    }, [selectedThread, currentUser]);
 
     const refreshIconFn = useCallback(
         () => (

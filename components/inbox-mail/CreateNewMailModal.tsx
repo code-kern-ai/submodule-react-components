@@ -11,7 +11,7 @@ import KernDropdown from "../KernDropdown";
 interface CreateNewMailModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    handleInboxMailCreation: (content: string, recipientIds?: string[], subject?: string, markAsImportant?: boolean, metaData?: any, threadId?: string) => void;
+    handleInboxMailCreation: (content: string, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any, threadId?: string) => void;
     users: User[];
     currentUser: User;
     isAdmin: boolean;
@@ -34,7 +34,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const { state: content, setState: setContent, ref: contentRef } = useRefState('');
     const { state: includeProject, setState: setIncludeProject, ref: includeProjectRef } = useRefState(false);
     const { state: includeChat, setState: setIncludeChat, ref: includeChatRef } = useRefState(false);
-    const { state: markAsImportant, setState: setMarkAsImportant, ref: markAsImportantRef } = useRefState(false);
+    const { state: isImportant, setState: setIsImportant, ref: isImportantRef } = useRefState(false);
     const { state: selectedPeople, setState: setSelectedPeople, ref: selectedPeopleRef } = useRefState<User[]>([]);
 
 
@@ -49,12 +49,21 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
         }
     }, [props.open, props.thread, props.isNewThread, props.users]);
 
+    useEffect(() => {
+        if (projectId) {
+            setIncludeProject(true);
+        }
+        if (chatId) {
+            setIncludeChat(true);
+        }
+    }, [projectId, chatId]);
+
     const initModal = useCallback(() => {
         setSelectedPeople([]);
         setSubject('');
         setContent('');
-        setIncludeProject(false);
-        setIncludeChat(false);
+        props.setSelectedOrganization?.(null);
+        setIsImportant(false);
     }, []);
 
     const clearRouterParams = useCallback(() => {
@@ -74,7 +83,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
             ...(projectId && includeProjectRef.current && { projectId }),
             ...(chatId && includeChatRef.current && { conversationId: chatId })
         };
-        props.handleInboxMailCreation(contentRef.current, selectedPeopleRef.current.map((user) => user.id), subjectRef.current, markAsImportantRef.current, metaData, props.isNewThread ? undefined : props.thread?.id);
+        props.handleInboxMailCreation(contentRef.current, selectedPeopleRef.current.map((user) => user.id), subjectRef.current, isImportantRef.current, metaData, props.isNewThread ? undefined : props.thread?.id);
         initModal();
         clearRouterParams();
     }, [props.thread?.id, props.isNewThread]);
@@ -170,16 +179,16 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                         <div className="flex items-center gap-x-2">
                                                             <input
                                                                 type="checkbox"
-                                                                name="markAsImportant"
-                                                                id="markAsImportant"
-                                                                checked={markAsImportant}
-                                                                onChange={(e) => setMarkAsImportant(e.target.checked)}
+                                                                name="isImportant"
+                                                                id="isImportant"
+                                                                checked={isImportant}
+                                                                onChange={(e) => setIsImportant(e.target.checked)}
                                                                 className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
                                                             />
-                                                            <label htmlFor="markAsImportant" className="block text-sm font-medium text-gray-700 cursor-pointer">
-                                                                {t("inboxMail.markAsImportant")}
+                                                            <label htmlFor="isImportant" className="block text-sm font-medium text-gray-700 cursor-pointer">
+                                                                {t("inboxMail.isImportant")}
                                                             </label>
-                                                            <InfoButton content={t("inboxMail.markAsImportantInfo")} infoButtonSize="sm" />
+                                                            <InfoButton content={t("inboxMail.isImportantInfo")} infoButtonSize="sm" />
                                                         </div>
                                                         {props.isAdminSupportThread && projectId && <div className="flex items-center gap-x-2">
                                                             <input

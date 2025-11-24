@@ -41,12 +41,14 @@ export function getNewInboxMailsInfo(onResult: (result: any) => void) {
 
 export function getUsers(
     onResult: (result: any) => void,
-    includeAdminSupport?: boolean,
+    includeAdmins?: boolean,
+    includeEngineers?: boolean,
     limitedTeams?: boolean,
     orgId?: string
 ) {
     const searchParams = new URLSearchParams();
-    if (includeAdminSupport) searchParams.append("include_admin_support", "true");
+    if (includeAdmins) searchParams.append("include_admins", "true");
+    if (includeEngineers) searchParams.append("include_engineers", "true");
     if (limitedTeams) searchParams.append("limited_teams", "true");
     if (orgId) searchParams.append("org_id", orgId);
 

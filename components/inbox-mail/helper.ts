@@ -244,7 +244,7 @@ export function useLocalTranslation(translations: Record<string, any>) {
     return { t };
 }
 
-export function useNewMailCount(interval: number = 60000) {
+export function useNewMailCount(interval: number = 60000, refreshToken?: any) {
     const [newMailCount, setNewMailCount] = useState(0);
 
     useEffect(() => {
@@ -261,7 +261,7 @@ export function useNewMailCount(interval: number = 60000) {
         timer = setInterval(fetchNewMailCount, interval);
 
         return () => clearInterval(timer);
-    }, [interval]);
+    }, [interval, refreshToken]);
 
     return newMailCount;
 }
