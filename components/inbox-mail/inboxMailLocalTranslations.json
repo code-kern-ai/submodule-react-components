@@ -32,7 +32,8 @@
         "deleteButton": "Delete",
         "cancelButton": "Cancel",
         "previous": "Previous",
-        "next": "Next"
+        "next": "Next",
+        "to": "To"
     },
     "InboxMailThreadSupportProgressState": {
         "PENDING": "Pending",

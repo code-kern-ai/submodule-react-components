@@ -3,7 +3,7 @@ import KernButton from "../kern-button/KernButton";
 import DeleteInboxMailModal from "./DeleteInboxMailModal";
 import { formatDisplayTimestampFull } from "./helper";
 import { InboxMail, User } from "./types-mail";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface ThreadMailItemProps {
     mail: InboxMail;
@@ -13,8 +13,9 @@ interface ThreadMailItemProps {
 }
 
 export default function ThreadMailItem(props: ThreadMailItemProps) {
-    const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 
+    const t = useMemo(() => props.translator, [props.translator]);
+    const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
     const handleConfirmDelete = useCallback(() => {
         if (props.onDelete) {
             props.onDelete(props.mail.id);
@@ -37,7 +38,7 @@ export default function ThreadMailItem(props: ThreadMailItemProps) {
                         </div>
 
                         <span className="text-sm text-gray-500">
-                            To: {props.mail.recipientNames.map((name) => `${name.first} ${name.last}`).join(", ")}
+                            {t("inboxMail.to")}: {props.mail.recipientNames.map((name) => `${name.first} ${name.last}`).join(", ")}
                         </span>
                     </div>
                 </div>
