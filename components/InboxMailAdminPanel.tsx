@@ -1,16 +1,8 @@
-import React from "react";
-import { InboxMailThread, InboxMailThreadSupportProgressState } from "./inbox-mail/types-mail";
+import React, { useCallback } from "react";
+import { InboxMailThread, InboxMailThreadSupportProgressState, User } from "./inbox-mail/types-mail";
 import { IconExternalLink, IconProgressCheck } from "@tabler/icons-react";
 import KernDropdown from "./KernDropdown";
-
-
-interface MetaData {
-    supportOwnerName?: { first: string; last: string };
-    projectId?: string;
-    projectName?: string;
-    conversationId?: string;
-    conversationHeader?: string;
-}
+import { addUserToOrganization, removeUserFromOrganization } from "./inbox-mail/service-mail";
 
 interface ProgressOption {
     name: string;
@@ -21,9 +13,40 @@ interface InboxMailAdminPanelProps {
     selectedThread: InboxMailThread;
     progressStateOptions: ProgressOption[];
     handleInboxMailProgressChange: (value: InboxMailThreadSupportProgressState) => void;
+    currentUser: User;
 }
 
 function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
+
+    const assignAndJump = useCallback((toConversation: boolean) => {
+        if (!props.currentUser) return;
+        const currentOrganizationId = props.currentUser?.organizationId;
+        if (!currentOrganizationId) {
+            addUserToOrganization(props.currentUser.mail, props.selectedThread.organizationName, (res) => {
+                jumptoConversationOrProject(toConversation);
+
+            });
+        } else if (currentOrganizationId === props.selectedThread.organizationId) {
+            jumptoConversationOrProject(toConversation);
+
+        } else {
+            removeUserFromOrganization(props.currentUser.mail, (res) => {
+                addUserToOrganization(props.currentUser.mail, props.selectedThread.organizationName, (res) => {
+                    jumptoConversationOrProject(toConversation);
+                });
+            });
+        }
+    }, [props.currentUser, props.selectedThread]);
+
+    const jumptoConversationOrProject = useCallback((toConversation: boolean) => {
+        if (toConversation) {
+            window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/ui/${props.selectedThread.metaData?.conversationId}`, '_blank');
+        }
+        else {
+            window.open(`/cognition/projects/${props.selectedThread.metaData.projectId}/pipeline`, '_blank');
+        }
+    }, [props.selectedThread.metaData]);
+
     return (
         <div>
             <div className="flex items-center gap-x-2">
@@ -67,44 +90,39 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
                     <button
                         className="flex items-center gap-1.5 text-xs bg-slate-400 px-2 py-0.5 rounded-md"
                         onClick={() =>
-                            window.open(
-                                `/cognition/projects/${props.selectedThread.metaData.projectId}/pipeline`,
-                                "_blank"
-                            )
+                            assignAndJump(false)
                         }
                     >
                         <IconExternalLink className="w-4 h-4" />
                     </button>
                 </div>
-            )}
+            )
+            }
 
-            {props.selectedThread.metaData?.conversationId && (
-                <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-gray-400/60 text-white w-fit">
-                    <div className="flex items-center gap-1.5 text-xs">
-                        <span className="font-semibold">Conversation</span>
-                    </div>
+            {
+                props.selectedThread.metaData?.conversationId && (
+                    <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-gray-400/60 text-white w-fit">
+                        <div className="flex items-center gap-1.5 text-xs">
+                            <span className="font-semibold">Conversation</span>
+                        </div>
 
-                    <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
-                        <span>ID:</span>
-                        <span>{props.selectedThread.metaData.conversationId}</span>
+                        <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
+                            <span>ID:</span>
+                            <span>{props.selectedThread.metaData.conversationId}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
+                            <span>{props.selectedThread.metaData.conversationHeader || "N/A"}</span>
+                        </div>
+                        <button
+                            className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md"
+                            onClick={() => assignAndJump(true)}
+                        >
+                            <IconExternalLink className="w-4 h-4" />
+                        </button>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
-                        <span>{props.selectedThread.metaData.conversationHeader || "N/A"}</span>
-                    </div>
-                    <button
-                        className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md"
-                        onClick={() =>
-                            window.open(
-                                `/cognition/projects/${props.selectedThread.metaData.projectId}/ui/${props.selectedThread.metaData.conversationId}`,
-                                "_blank"
-                            )
-                        }
-                    >
-                        <IconExternalLink className="w-4 h-4" />
-                    </button>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

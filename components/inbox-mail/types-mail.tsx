@@ -17,12 +17,14 @@ export type InboxMail = {
 
 export type InboxMailThread = {
     id: string;
+    createdBy: string;
+    organizationId: string;
     subject: string;
     isImportant: boolean;
     isAdminSupportThread: boolean;
     participantIds: string[];
     latestMail: InboxMail;
-    createdBy: string;
+    organizationName: string;
     progressState?: string;
     supportOwnerId?: string;
     metaData?: any;

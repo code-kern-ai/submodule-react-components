@@ -1,5 +1,6 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
 import { InboxMailThreadSupportProgressState } from "./types-mail";
+import { convertCamelToSnakeCase } from "@/submodules/javascript-functions/case-types-parser";
 
 const url = `/refinery-gateway/api/v1`;
 
@@ -72,4 +73,16 @@ export function getIsAdmin(onResult: (result: any) => void) {
 export function getAllOrganizations(onResult: (result: any) => void) {
     const finalUrl = `${url}/organization/all-organizations`;
     jsonFetchWrapper(finalUrl, FetchType.GET, onResult);
+}
+
+export function addUserToOrganization(userMail: string, organizationName: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/organization/add-user-to-organization`;
+    const body = { userMail, organizationName };
+    jsonFetchWrapper(finalUrl, FetchType.POST, onResult, JSON.stringify(convertCamelToSnakeCase(body)));
+}
+
+
+export function removeUserFromOrganization(userMail: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/organization/remove-user-from-organization`;
+    jsonFetchWrapper(finalUrl, FetchType.POST, onResult, JSON.stringify({ "user_mail": userMail }));
 }

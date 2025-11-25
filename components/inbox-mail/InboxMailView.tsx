@@ -249,6 +249,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                                     selectedThread={selectedThread}
                                     progressStateOptions={progressStateOptions}
                                     handleInboxMailProgressChange={handleInboxMailProgressChange}
+                                    currentUser={currentUser}
                                 />
                             }
                             {threadMails.map((mail: InboxMail) => (
