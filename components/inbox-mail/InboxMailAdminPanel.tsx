@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import { InboxMailThread, InboxMailThreadSupportProgressState, User } from "./inbox-mail/types-mail";
+import { InboxMailThread, InboxMailThreadSupportProgressState, User } from "./types-mail";
 import { IconExternalLink, IconProgressCheck } from "@tabler/icons-react";
-import KernDropdown from "./KernDropdown";
-import { addUserToOrganization, removeUserFromOrganization } from "./inbox-mail/service-mail";
+import KernDropdown from "../KernDropdown";
+import { addUserToOrganization, removeUserFromOrganization } from "./service-mail";
 
 interface ProgressOption {
     name: string;
@@ -17,7 +17,7 @@ interface InboxMailAdminPanelProps {
 }
 
 function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
-
+    // No translations needed, admin only
     const assignAndJump = useCallback((toConversation: boolean) => {
         if (!props.currentUser) return;
         const currentOrganizationId = props.currentUser?.organizationId;

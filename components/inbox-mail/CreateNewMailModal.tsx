@@ -21,12 +21,12 @@ interface CreateNewMailModalProps {
     thread?: InboxMailThread;
     isNewThread?: boolean;
     isAdminSupportThread?: boolean;
-    translationScope?: { type: "local" | "i18n", translator: any }
+    translator
 };
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const router = useRouter();
-    const t = useMemo(() => props.translationScope?.translator, [props.translationScope.translator]);
+    const t = useMemo(() => props.translator, [props.translator]);
 
     const projectId = router.query.projectId as string;
     const chatId = router.query.chatId as string;
@@ -130,12 +130,12 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                     <div className='mt-2 flex flex-col gap-y-2'>
                                                         {props.isAdmin && props.isNewThread && !props.isAdminSupportThread &&
                                                             <div className="text-sm text-gray-500 my-4 text-left">
-                                                                <div className="text-sm text-gray-700">Select organization</div>
-                                                                <KernDropdown options={props.organizations} buttonName={props.selectedOrganization?.name || 'Select organization'} selectedOption={props.setSelectedOrganization} />
+                                                                <div className="text-sm text-gray-700">{t("inboxMail.organization")}</div>
+                                                                <KernDropdown options={props.organizations} buttonName={props.selectedOrganization?.name || t("inboxMail.orgSelectionPlaceholder")} selectedOption={props.setSelectedOrganization} />
                                                             </div>
                                                         }
                                                         {props.isAdminSupportThread ?
-                                                            <KernAIReport />
+                                                            <KernAIReport translator={t} />
                                                             :
                                                             <UserSelector
                                                                 label={t("inboxMail.sendTo")}
@@ -143,6 +143,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                                 selectedUsers={selectedPeople}
                                                                 onChange={setSelectedPeople}
                                                                 disabled={!props.isNewThread}
+                                                                translator={t}
                                                             />
                                                         }
                                                         <div>
@@ -176,20 +177,22 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-x-2">
-                                                            <input
-                                                                type="checkbox"
-                                                                name="isImportant"
-                                                                id="isImportant"
-                                                                checked={isImportant}
-                                                                onChange={(e) => setIsImportant(e.target.checked)}
-                                                                className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                            />
-                                                            <label htmlFor="isImportant" className="block text-sm font-medium text-gray-700 cursor-pointer">
-                                                                {t("inboxMail.isImportant")}
-                                                            </label>
-                                                            <InfoButton content={t("inboxMail.isImportantInfo")} infoButtonSize="sm" />
-                                                        </div>
+                                                        {props.isNewThread &&
+                                                            <div className="flex items-center gap-x-2">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    name="isImportant"
+                                                                    id="isImportant"
+                                                                    checked={isImportant}
+                                                                    onChange={(e) => setIsImportant(e.target.checked)}
+                                                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                                />
+                                                                <label htmlFor="isImportant" className="block text-sm font-medium text-gray-700 cursor-pointer">
+                                                                    {t("inboxMail.isImportant")}
+                                                                </label>
+                                                                <InfoButton content={t("inboxMail.isImportantInfo")} infoButtonSize="sm" />
+                                                            </div>
+                                                        }
                                                         {props.isAdminSupportThread && projectId && <div className="flex items-center gap-x-2">
                                                             <input
                                                                 type="checkbox"
@@ -241,9 +244,9 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                             </div>
                         </Transition.Child>
                     </div>
-                </div>
-            </Dialog>
-        </Transition.Root>
+                </div >
+            </Dialog >
+        </Transition.Root >
     )
 }
 
@@ -253,6 +256,7 @@ interface UserSelectorProps {
     users: User[];
     selectedUsers: User[];
     onChange: (selected: User[]) => void;
+    translator: any;
     disabled?: boolean;
     showAll?: boolean;
     label?: string;
@@ -264,7 +268,7 @@ function UserSelector(props: UserSelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const editableRef = useRef<HTMLDivElement | null>(null);
-
+    const t = useMemo(() => props.translator, [props.translator]);
 
     useEffect(() => {
         if (inputValue.trim() === "") {
@@ -366,12 +370,17 @@ function UserSelector(props: UserSelectorProps) {
                     onInput={handleInput}
                     onFocus={() => setIsOpen(true)}
                     onKeyDown={handleKeyDown}
-                    className="flex-grow border-none sm:text-sm outline-none focus:ring-0 focus:border-transparent min-w-[100px]"
-                    data-placeholder={
-                        props.selectedUsers.length ? "" : "Type a name or email..."
-                    }
+                    className="flex-grow border-none sm:text-sm outline-none focus:ring-0 focus:border-transparent min-w-[100px] relative"
                     style={{ minHeight: "1.5rem" }}
                 />
+                {props.selectedUsers.length === 0 && !inputValue && (
+                    <span
+                        className="absolute left-4 bottom-2 text-gray-400 pointer-events-none select-none"
+                        style={{ minHeight: "1.5rem" }}
+                    >
+                        {t("inboxMail.searchPlaceholder")}
+                    </span>
+                )}
             </div>
 
             {isOpen && filteredUsers.length > 0 && (
@@ -392,15 +401,19 @@ function UserSelector(props: UserSelectorProps) {
     );
 }
 
+interface KernAIReportProps {
+    translator: any;
+}
 
-function KernAIReport() {
+function KernAIReport(props: KernAIReportProps) {
+    const t = useMemo(() => props.translator, [props.translator]);
     return (
         <div className="relative">
             <label
                 htmlFor="kernai-team"
                 className="block text-sm font-medium text-gray-700 mb-1"
             >
-                Sent to
+                {t("inboxMail.sendTo")}:
             </label>
 
             <div
@@ -408,7 +421,7 @@ function KernAIReport() {
                 className="w-full flex flex-wrap items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-gray-50 cursor-default"
             >
                 <span className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none min-h-[1.5rem]">
-                    KernAI Team
+                    {t("inboxMail.kernAITeam")}
                 </span>
             </div>
         </div>

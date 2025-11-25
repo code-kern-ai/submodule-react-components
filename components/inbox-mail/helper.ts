@@ -1,4 +1,3 @@
-import { red } from "@nextui-org/react";
 import { InboxMailThread, User } from "./types-mail";
 import { IconBug, IconUserOff } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -244,7 +243,7 @@ export function useLocalTranslation(translations: Record<string, any>) {
     return { t };
 }
 
-export function useNewMailCount(interval: number = 60000, refreshToken?: any) {
+export function useNewMailCount(interval: number = 60000, refreshToken?: any): number {
     const [newMailCount, setNewMailCount] = useState(0);
 
     useEffect(() => {
