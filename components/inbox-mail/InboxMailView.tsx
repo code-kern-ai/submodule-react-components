@@ -20,7 +20,7 @@ import ThreadMailItem from "./InboxMailItem";
 interface InboxMailViewProps {
     InboxMailHeader: (props: { children: React.ReactNode }) => JSX.Element;
     translatorScope: { type: "i18n" | "local"; translator: (key: string) => string };
-    handleInboxMailRefreshToken: (token: any) => void;
+    handleInboxMailRefreshToken?: (token: any) => void;
 }
 export default function InboxMailView(props: InboxMailViewProps) {
 
@@ -89,7 +89,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
         getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
             setInboxMailThreads(res.threads);
             setFullCount(res?.totalThreads);
-            props.handleInboxMailRefreshToken(Date.now());
+            props.handleInboxMailRefreshToken?.(Date.now());
         });
     }, [currentPage]);
 
