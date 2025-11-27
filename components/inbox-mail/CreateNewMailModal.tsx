@@ -41,12 +41,11 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     const cancelButtonRef = useRef(null);
 
     useEffect(() => {
-        if (props.open && props.thread && !props.isNewThread && props.thread.latestMail && props.users) {
+        if (!(props.open && props.thread && !props.isNewThread && props.thread.latestMail && props.users)) return;
 
-            const currentThreadPeople = props.thread.participantIds;
-            setSelectedPeople(props.users.filter((user) => currentThreadPeople.includes(user.id) && user.id !== props.currentUser.id));
-            setSubject(props.thread.subject);
-        }
+        const currentThreadPeople = props.thread.participantIds;
+        setSelectedPeople(props.users.filter((user) => currentThreadPeople.includes(user.id) && user.id !== props.currentUser.id));
+        setSubject(props.thread.subject);
     }, [props.open, props.thread, props.isNewThread, props.users]);
 
     useEffect(() => {
@@ -67,9 +66,8 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     }, []);
 
     const clearRouterParams = useCallback(() => {
-        if (projectId || chatId) {
-            router.replace('/inbox-mail');
-        }
+        if (!(projectId || chatId)) return;
+        router.replace('/inbox-mail');
     }, [projectId, chatId]);
 
     const onTransitionComplete = useCallback(initModal, []);
@@ -114,8 +112,8 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <div className={`flex justify-center w-full`}>
-                                <div className={`w-full max-w-2xl`}>
+                            <div className="flex justify-center w-full">
+                                <div className="w-full max-w-2xl">
                                     <Dialog.Panel className="relative rounded-lg bg-white shadow-xl sm:my-8">
 
                                         <div className="p-6">
@@ -274,10 +272,7 @@ function UserSelector(props: UserSelectorProps) {
 
     useEffect(() => {
         if (inputValue.trim() === "") {
-            if (props.showAll)
-                setFilteredUsers(props.users);
-            else
-                setFilteredUsers([]);
+            setFilteredUsers(props.showAll ? props.users : []);
         } else {
             const lower = inputValue.toLowerCase();
             setFilteredUsers(
@@ -372,13 +367,11 @@ function UserSelector(props: UserSelectorProps) {
                     onInput={handleInput}
                     onFocus={() => setIsOpen(true)}
                     onKeyDown={handleKeyDown}
-                    className="flex-grow border-none text-sm outline-none focus:ring-0 focus:border-transparent min-w-[100px] relative"
-                    style={{ minHeight: "1.5rem" }}
+                    className="flex-grow border-none text-sm outline-none focus:ring-0 focus:border-transparent min-w-[100px] min-h-[1.5rem] relative"
                 />
                 {props.selectedUsers.length === 0 && !inputValue && (
                     <span
-                        className="absolute left-4 bottom-2 text-gray-400 pointer-events-none select-none text-sm italic"
-                        style={{ minHeight: "1.5rem" }}
+                        className="absolute left-4 bottom-2 text-gray-400 pointer-events-none select-none text-sm italic min-h-[1.5rem] "
                     >
                         {t("inboxMail.searchPlaceholder")}
                     </span>

@@ -5,8 +5,9 @@ import { convertCamelToSnakeCase } from "@/submodules/javascript-functions/case-
 const url = `/refinery-gateway/api/v1`;
 
 export function createInboxMailByThread(content: string, onResult: (result: any) => void, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any, threadId?: string, isAdminSupportThread?: boolean) {
+    const fetchUrl = `${url}/inbox-mail`;
     const body = JSON.stringify({ recipientIds, threadId, subject, content, isImportant, metaData, isAdminSupportThread });
-    jsonFetchWrapper(`${url}/inbox-mail`, FetchType.POST, onResult, body);
+    jsonFetchWrapper(fetchUrl, FetchType.POST, onResult, body);
 }
 
 

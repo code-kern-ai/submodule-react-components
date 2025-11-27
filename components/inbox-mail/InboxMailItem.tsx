@@ -1,9 +1,9 @@
 import { IconTrash } from "@tabler/icons-react";
 import KernButton from "../kern-button/KernButton";
 import DeleteInboxMailModal from "./DeleteInboxMailModal";
-import { formatDisplayTimestampFull } from "./helper";
 import { InboxMail, User } from "./types-mail";
 import { useCallback, useMemo, useState } from "react";
+import { formatDisplayTimestampFull } from "@/submodules/javascript-functions/date-parser";
 
 interface ThreadMailItemProps {
     mail: InboxMail;

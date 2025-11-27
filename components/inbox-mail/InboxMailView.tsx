@@ -4,10 +4,9 @@ import CreateNewMailModal from "./CreateNewMailModal";
 import { InboxMail, InboxMailThread, User, InboxMailThreadSupportProgressState } from "./types-mail";
 import { getInboxMailOverviewByThreadsPaginated, getInboxMailsByThread, createInboxMailByThread, updateInboxMailThreadProgress, deleteInboxMailById } from "./service-mail";
 import KernButton from "../kern-button/KernButton";
-import { MemoIconPlus } from "../kern-icons/icons";
-import { IconHelpCircle, IconRefresh } from "@tabler/icons-react";
+import { MemoIconPlus, MemoIconRefresh, MemoIconHelpCircle } from "../kern-icons/icons";
 import useRefState from "../../hooks/useRefState";
-import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData, formatDisplayTimestamp, formatDisplayTimestampFull } from "./helper";
+import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData } from "./helper";
 import useEnumOptionsTranslated, { getEnumOptionsForLanguage } from "../../hooks/enums/useEnumOptionsTranslated";
 import { getUsers, getUserInfoExtended, getIsAdmin, getAllOrganizations } from "./service-mail";
 import Pagination from "../pagination/Pagination";
@@ -91,14 +90,14 @@ export default function InboxMailView(props: InboxMailViewProps) {
             setFullCount(res?.totalThreads);
             props.handleInboxMailRefreshToken?.(Date.now());
         });
-    }, [currentPage]);
+    }, [currentPage, props.handleInboxMailRefreshToken]);
 
     const refetchSelectedThreadMails = useCallback(() => {
         if (!selectedThread) return;
         getInboxMailsByThread(selectedThread.id, (res) => {
             setThreadMails(res);
         });
-    }, [selectedThread, props.handleInboxMailRefreshToken]);
+    }, [selectedThread]);
 
     const handleInboxMailCreation = useCallback((content: string, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any) => {
         createInboxMailByThread(content, (result) => {
@@ -141,7 +140,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
 
     const refreshIconFn = useCallback(
         () => (
-            <IconRefresh
+            <MemoIconRefresh
                 className={refreshing ? "animate-spin [animation-iteration-count:1]" : ""}
             />
         ),
@@ -179,7 +178,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                     />
                     <KernButton
                         text={t("inboxMail.getSupport")}
-                        icon={IconHelpCircle}
+                        icon={MemoIconHelpCircle}
                         iconColor="red"
                         onClick={() => {
                             setIsNewThread(true);

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { InboxMailThread, InboxMailThreadSupportProgressState } from "./types-mail";
-import { IconAlertTriangle, IconCircleCheck, IconHelpCircle, IconProgressCheck, IconUser } from "@tabler/icons-react";
-import { formatDisplayTimestamp } from "./helper";
 import { Tooltip } from "@nextui-org/react";
+import { MemoIconAlertTriangle, MemoIconCircleCheck, MemoIconHelpCircle, MemoIconProgressCheck, MemoIconUser } from "../kern-icons/icons";
+import { formatDisplayTimestamp } from "@/submodules/javascript-functions/date-parser";
 
 interface InboxMailThreadOverviewProps {
     thread: InboxMailThread;
@@ -46,7 +46,7 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
                         style={{ backgroundColor: background, color: text }}
                         className="self-start shrink-0 mt-1 flex items-center justify-center w-10 h-10 border rounded-md p-2 text-sm font-semibold relative"
                     >
-                        {displayInitials || <DisplayIcon /> || <IconUser />}
+                        {displayInitials || <DisplayIcon /> || <MemoIconUser />}
                         {recipientIds?.length > 1 && (
                             <div className="absolute -bottom-0.5 -right-0.5 bg-gray-600 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
                                 {recipientIds.length}
@@ -80,22 +80,22 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
                                         color="invert"
                                         className="cursor-help"
                                     >
-                                        <IconHelpCircle className="h-[1.125rem] w-auto text-red-600 mb-0.5" />
+                                        <MemoIconHelpCircle className="h-[1.125rem] w-auto text-red-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                                 {props.thread.isImportant && (
                                     <Tooltip content={t("inboxMail.highPriority")} placement="top" color="invert" className="cursor-help">
-                                        <IconAlertTriangle className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
+                                        <MemoIconAlertTriangle className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                                 {props.thread.progressState === InboxMailThreadSupportProgressState.IN_PROGRESS && (
                                     <Tooltip content={t("inboxMail.inProgress")} placement="top" color="invert" className="cursor-help">
-                                        <IconProgressCheck className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
+                                        <MemoIconProgressCheck className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                                 {props.thread.progressState === InboxMailThreadSupportProgressState.RESOLVED && (
                                     <Tooltip content={t("inboxMail.resolved")} placement="top" color="invert" className="cursor-help">
-                                        <IconCircleCheck className="h-[1.125rem] w-auto text-green-600 mb-0.5" />
+                                        <MemoIconCircleCheck className="h-[1.125rem] w-auto text-green-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                             </div>
