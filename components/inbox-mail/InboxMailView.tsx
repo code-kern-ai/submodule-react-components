@@ -70,19 +70,8 @@ export default function InboxMailView(props: InboxMailViewProps) {
     useEffect(() => {
         if (!selectedThread?.id) return
         refetchSelectedThreadMails();
-        if (selectedThread.unreadMailCount > 0) {
-            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, unreadMailCount: 0 } : t));
-        }
-        if (selectedThread.isAdminSupportThread && isAdmin && selectedThread.metaData?.unreadMailCountAdmin > 0) {
-            setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? {
-                ...t,
-                metaData: {
-                    ...t.metaData,
-                    unreadMailCountAdmin: 0
-                }
-            } : t));
-        }
-    }, [selectedThread?.id]);
+
+    }, [selectedThread?.id, props.handleInboxMailRefreshToken, isAdmin]);
 
     const refetchInboxMailOverview = useCallback(() => {
         getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
@@ -92,24 +81,41 @@ export default function InboxMailView(props: InboxMailViewProps) {
         });
     }, [currentPage, props.handleInboxMailRefreshToken]);
 
-    const refetchSelectedThreadMails = useCallback(() => {
+    const refetchSelectedThreadMails = useCallback((resetRefreshToken: boolean = true) => {
         if (!selectedThread) return;
         getInboxMailsByThread(selectedThread.id, (res) => {
             setThreadMails(res);
+            if (selectedThread.unreadMailCount > 0) {
+                setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, unreadMailCount: 0 } : t));
+                if (resetRefreshToken) props.handleInboxMailRefreshToken?.(Date.now());
+            }
+            if (selectedThread.isAdminSupportThread && isAdmin && selectedThread.metaData?.unreadMailCountAdmin > 0) {
+                setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? {
+                    ...t,
+                    metaData: {
+                        ...t.metaData,
+                        unreadMailCountAdmin: 0
+                    }
+                } : t));
+                if (resetRefreshToken) props.handleInboxMailRefreshToken?.(Date.now());
+            }
         });
-    }, [selectedThread]);
+    }, [selectedThread, isAdmin, props.handleInboxMailRefreshToken]);
 
     const handleInboxMailCreation = useCallback((content: string, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any) => {
         createInboxMailByThread(content, (result) => {
             setOpenCreateMail(false);
-            getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
-                if (isNewThread && res.threads.length > 0) {
-                    setSelectedThread(res.threads.find((thread) => thread.id === result.threadId));
+            if (isNewThread) {
+                getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
+                    if (isNewThread && res.threads.length > 0) {
+                        setSelectedThread(res.threads.find((thread) => thread.id === result.threadId));
+                    }
+                    setInboxMailThreads(res.threads);
+                });
+            } else {
+                if (selectedThread && !isNewThread) {
+                    refetchSelectedThreadMails();
                 }
-                setInboxMailThreads(res.threads);
-            });
-            if (selectedThread && !isNewThread) {
-                refetchSelectedThreadMails();
             }
         }, recipientIds, subject, isImportant, metaData, isNewThread ? undefined : selectedThread?.id, isAdminSupportThreadRef.current);
     }, [isNewThread, refetchSelectedThreadMails, selectedThread, currentPage]);
@@ -160,7 +166,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
     const refretchAll = useCallback(() => {
         setRefreshing(true);
         refetchInboxMailOverview();
-        refetchSelectedThreadMails();
+        refetchSelectedThreadMails(false);
         setTimeout(() => setRefreshing(false), 1000);
     }, [refetchInboxMailOverview, refetchSelectedThreadMails]);
 
@@ -239,7 +245,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                                             refetchInboxMailOverview();
                                             return;
                                         }
-                                        refetchSelectedThreadMails();
+                                        refetchSelectedThreadMails(false);
                                     })}
                                     translator={t}
                                 />

@@ -153,7 +153,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                                     type="text"
                                                                     name="subject"
                                                                     id="subject"
-                                                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                                    className="shadow-sm focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:cursor-not-allowed disabled:bg-slate-50"
                                                                     value={subject}
                                                                     onChange={(e) => setSubject(e.target.value)}
                                                                     disabled={!props.isNewThread}
@@ -335,7 +335,7 @@ function UserSelector(props: UserSelectorProps) {
             )}
 
             <div
-                className="w-full flex flex-wrap items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 focus-within:ring-2 focus-within:ring-purple-500"
+                className={`w-full flex flex-wrap items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 focus-within:ring-2 focus-within:ring-purple-500 ${props.disabled ? 'bg-slate-50 cursor-not-allowed' : 'bg-white cursor-text'} min-h-[40px] relative`}
                 onClick={() => {
                     setIsOpen(true);
                     editableRef.current?.focus();
@@ -344,7 +344,7 @@ function UserSelector(props: UserSelectorProps) {
                 {props.selectedUsers.map((user) => (
                     <span
                         key={user.mail}
-                        className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none"
+                        className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none min-h-[1.5rem]"
                     >
                         {`${user.firstName} ${user.lastName}`}
                         {props.disabled ? null : (
@@ -413,9 +413,9 @@ function KernAIReport(props: KernAIReportProps) {
 
             <div
                 id="kernai-team"
-                className="w-full flex flex-wrap items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-gray-50 cursor-default"
+                className="w-full flex flex-wrap items-center gap-1 border border-gray-300 rounded-md shadow-sm px-3 py-2 bg-slate-50"
             >
-                <span className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none min-h-[1.5rem]">
+                <span className="flex items-center bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded-lg leading-none min-h-[1.5rem] cursor-not-allowed">
                     {t("inboxMail.kernAITeam")}
                 </span>
             </div>
