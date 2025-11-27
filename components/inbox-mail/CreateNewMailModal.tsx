@@ -125,13 +125,13 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                 </div>
                                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                                     <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                                                        {t("inboxMail.modalTitle")}
+                                                        {props.isNewThread ? t("inboxMail.modalTitle") : t("inboxMail.replyModalTitle")}
                                                     </Dialog.Title>
-                                                    <div className='mt-2 flex flex-col gap-y-2'>
+                                                    <div className='mt-3 flex flex-col gap-y-2'>
                                                         {props.isAdmin && props.isNewThread && !props.isAdminSupportThread &&
-                                                            <div className="text-sm text-gray-500 my-4 text-left">
-                                                                <div className="text-sm text-gray-700">{t("inboxMail.organization")}</div>
-                                                                <KernDropdown options={props.organizations} buttonName={props.selectedOrganization?.name || t("inboxMail.orgSelectionPlaceholder")} selectedOption={props.setSelectedOrganization} />
+                                                            <div className="text-sm text-gray-500 text-left">
+                                                                <label className="block text-sm font-medium text-gray-700 mb-1">{t("inboxMail.organization")}</label>
+                                                                <KernDropdown options={props.organizations} buttonName={props.selectedOrganization?.name || t("inboxMail.orgSelectionPlaceholder")} selectedOption={props.setSelectedOrganization} scrollAfterNOptions={5} />
                                                             </div>
                                                         }
                                                         {props.isAdminSupportThread ?
@@ -159,6 +159,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                                     value={subject}
                                                                     onChange={(e) => setSubject(e.target.value)}
                                                                     disabled={!props.isNewThread}
+                                                                    placeholder={t("inboxMail.subjectPlaceholder")}
                                                                 />
                                                             </div>
                                                         </div>
@@ -174,6 +175,7 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
                                                                     value={content}
                                                                     onChange={(e) => setContent(e.target.value)}
                                                                     rows={8}
+                                                                    placeholder={t("inboxMail.contentPlaceholder")}
                                                                 />
                                                             </div>
                                                         </div>
@@ -370,12 +372,12 @@ function UserSelector(props: UserSelectorProps) {
                     onInput={handleInput}
                     onFocus={() => setIsOpen(true)}
                     onKeyDown={handleKeyDown}
-                    className="flex-grow border-none sm:text-sm outline-none focus:ring-0 focus:border-transparent min-w-[100px] relative"
+                    className="flex-grow border-none text-sm outline-none focus:ring-0 focus:border-transparent min-w-[100px] relative"
                     style={{ minHeight: "1.5rem" }}
                 />
                 {props.selectedUsers.length === 0 && !inputValue && (
                     <span
-                        className="absolute left-4 bottom-2 text-gray-400 pointer-events-none select-none"
+                        className="absolute left-4 bottom-2 text-gray-400 pointer-events-none select-none text-sm italic"
                         style={{ minHeight: "1.5rem" }}
                     >
                         {t("inboxMail.searchPlaceholder")}

@@ -78,22 +78,23 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
                                         content={t("inboxMail.supportRequest")}
                                         placement="top"
                                         color="invert"
+                                        className="cursor-help"
                                     >
                                         <IconHelpCircle className="h-[1.125rem] w-auto text-red-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                                 {props.thread.isImportant && (
-                                    <Tooltip content={t("inboxMail.highPriority")} placement="top" color="invert">
+                                    <Tooltip content={t("inboxMail.highPriority")} placement="top" color="invert" className="cursor-help">
                                         <IconAlertTriangle className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                                 {props.thread.progressState === InboxMailThreadSupportProgressState.IN_PROGRESS && (
-                                    <Tooltip content={t("inboxMail.inProgress")} placement="top" color="invert">
+                                    <Tooltip content={t("inboxMail.inProgress")} placement="top" color="invert" className="cursor-help">
                                         <IconProgressCheck className="h-[1.125rem] w-auto text-orange-600 mb-0.5" />
                                     </Tooltip>
                                 )}
                                 {props.thread.progressState === InboxMailThreadSupportProgressState.RESOLVED && (
-                                    <Tooltip content={t("inboxMail.resolved")} placement="top" color="invert">
+                                    <Tooltip content={t("inboxMail.resolved")} placement="top" color="invert" className="cursor-help">
                                         <IconCircleCheck className="h-[1.125rem] w-auto text-green-600 mb-0.5" />
                                     </Tooltip>
                                 )}
