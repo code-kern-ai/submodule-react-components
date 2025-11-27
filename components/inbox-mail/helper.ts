@@ -88,9 +88,9 @@ export function prepareThreadDisplayData(
         }
     } else {
         if (thread.latestMail.senderId === currentUser.id) {
-            displayName = `${thread.latestMail.senderName.first} ${thread.latestMail.senderName.last}`;
-        } else {
             displayName = thread.latestMail.recipientNames.map(r => `${r.first} ${r.last}`).join(", ");
+        } else {
+            displayName = `${thread.latestMail.senderName.first} ${thread.latestMail.senderName.last}`;
         }
     }
 
