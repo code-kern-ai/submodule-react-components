@@ -6,7 +6,7 @@ interface ConfirmDeleteModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     onConfirm: () => void;
-    translator: any;
+    translator: (key: string) => string;
 }
 
 

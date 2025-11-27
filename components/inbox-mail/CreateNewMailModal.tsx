@@ -15,13 +15,13 @@ interface CreateNewMailModalProps {
     users: User[];
     currentUser: User;
     isAdmin: boolean;
+    translator: (key: string) => string;
     selectedOrganization?: any;
     setSelectedOrganization?: (org: any) => void;
     organizations?: any[];
     thread?: InboxMailThread;
     isNewThread?: boolean;
     isAdminSupportThread?: boolean;
-    translator
 };
 
 export default function CreateNewMailModal(props: CreateNewMailModalProps) {
@@ -256,7 +256,7 @@ interface UserSelectorProps {
     users: User[];
     selectedUsers: User[];
     onChange: (selected: User[]) => void;
-    translator: any;
+    translator: (key: string) => string;
     disabled?: boolean;
     showAll?: boolean;
     label?: string;
@@ -397,7 +397,7 @@ function UserSelector(props: UserSelectorProps) {
 }
 
 interface KernAIReportProps {
-    translator: any;
+    translator: (key: string) => string;
 }
 
 function KernAIReport(props: KernAIReportProps) {

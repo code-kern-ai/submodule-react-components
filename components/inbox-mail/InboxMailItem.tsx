@@ -8,8 +8,8 @@ import { formatDisplayTimestampFull } from "@/submodules/javascript-functions/da
 interface ThreadMailItemProps {
     mail: InboxMail;
     currentUser: User;
+    translator: (key: string) => string;
     onDelete?: (id: string) => void;
-    translator: any;
 }
 
 export default function ThreadMailItem(props: ThreadMailItemProps) {

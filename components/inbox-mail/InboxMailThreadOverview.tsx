@@ -9,7 +9,7 @@ interface InboxMailThreadOverviewProps {
     isAdmin: boolean;
     selectedThread: InboxMailThread | null;
     setSelectedThread: (t: InboxMailThread) => void;
-    translator: any;
+    translator: (key: string) => string;
 };
 
 export default function InboxMailThreadOverview(props: InboxMailThreadOverviewProps) {
