@@ -68,7 +68,7 @@ export function InboxMailTitleBadge(props: { newMailCount?: number, refreshToken
     return (
         <div className="relative inline-flex items-center pr-5">
             <span >Inbox Mail</span>
-            <InboxMailBadge forChatArea={false} refreshInterval={60000} refreshToken={props.refreshToken} />
+            <InboxMailBadge forChatArea={false} refreshToken={props.refreshToken} />
         </div>
     );
 }

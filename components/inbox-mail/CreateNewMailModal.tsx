@@ -66,9 +66,8 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
     }, []);
 
     const clearRouterParams = useCallback(() => {
-        if (!(projectId || chatId)) return;
         router.replace('/inbox-mail');
-    }, [projectId, chatId]);
+    }, []);
 
     const onTransitionComplete = useCallback(initModal, []);
 
