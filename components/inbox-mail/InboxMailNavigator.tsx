@@ -18,7 +18,6 @@ export default function InboxMailNavigator(props: InboxMailNavigatorProps) {
         const chatIdParam = props.chatId ? `?chatId=${props.chatId}` : '';
         const projectIdParam = props.project ? props.chatId ? `&projectId=${props.project.id}` : `?projectId=${props.project.id}` : '';
         router.push(`/inbox-mail${chatIdParam}${projectIdParam}`);
-        console.log('Navigating to /inbox-mail' + chatIdParam + projectIdParam);
     }, [props.chatId, props.project]);
 
     const isLightDesign = useMemo(() => tinycolor(props.project?.customerColorPrimary).isLight(), [props.project?.customerColorPrimary]);
