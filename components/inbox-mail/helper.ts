@@ -5,6 +5,8 @@ import { getNewInboxMailsInfo } from "./service-mail";
 
 export const MAIL_LIMIT_PER_PAGE = 8;
 
+const setInitials = (first: string, last: string) => first[0]?.toUpperCase() + last[0]?.toUpperCase();
+
 export function prepareThreadDisplayData(
     thread: InboxMailThread,
     currentUser: User,
@@ -28,9 +30,6 @@ export function prepareThreadDisplayData(
     const recipientIds = thread.participantIds.filter(
         id => id !== currentUser.id
     );
-
-    const setInitials = (first: string, last: string) =>
-        `${first[0]}${last[0]}`.toUpperCase();
 
     const setColor = (id: string) => {
         [background, text] = uuidToPastelColorWithMatchingFont(id);

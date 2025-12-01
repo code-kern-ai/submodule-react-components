@@ -63,14 +63,12 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
         setContent('');
         props.setSelectedOrganization?.(null);
         setIsImportant(false);
-    }, []);
+    }, [props.setSelectedOrganization]);
 
     const clearRouterParams = useCallback(() => {
         if (!(projectId || chatId)) return;
         router.replace('/inbox-mail');
     }, [projectId, chatId]);
-
-    const onTransitionComplete = useCallback(initModal, []);
 
     const disabledSend = useMemo(() => {
         return (props.isAdminSupportThread ? false : selectedPeople.length === 0) || subject.trim() === '' || content.trim() === '';
@@ -84,10 +82,10 @@ export default function CreateNewMailModal(props: CreateNewMailModalProps) {
         props.handleInboxMailCreation(contentRef.current, selectedPeopleRef.current.map((user) => user.id), subjectRef.current, isImportantRef.current, metaData, props.isNewThread ? undefined : props.thread?.id);
         initModal();
         clearRouterParams();
-    }, [props.thread?.id, props.isNewThread]);
+    }, [props.thread?.id, props.isNewThread, projectId, chatId]);
 
     return (
-        <Transition.Root show={props.open} as={Fragment} afterLeave={onTransitionComplete}>
+        <Transition.Root show={props.open} as={Fragment}>
             <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={props.setOpen ? props.setOpen : () => null}>
                 <Transition.Child
                     as={Fragment}
@@ -284,7 +282,7 @@ function UserSelector(props: UserSelectorProps) {
                 ).filter((u) => !props.selectedUsers.some((selected) => selected.id === u.id))
             );
         }
-    }, [inputValue, props.users]);
+    }, [inputValue, props.users, props.selectedUsers, props.showAll]);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
