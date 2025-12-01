@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const cache = {};
 
-function getEnumOptionsForLanguage<T>(enumObj: T, lookupKey: string, t: any, language: string): { name: string, value: T[keyof T] }[] {
+export function getEnumOptionsForLanguage<T>(enumObj: T, lookupKey: string, t: any, language: string): { name: string, value: T[keyof T] }[] {
     if (!(lookupKey in cache)) cache[lookupKey] = {};
     if (cache[lookupKey][language]) return cache[lookupKey][language];
     const finalArray = enumToArray(enumObj, { nameFunction: (s) => { return t(`${lookupKey}.${s}`) } });
