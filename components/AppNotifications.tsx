@@ -47,7 +47,7 @@ export default function AppNotifications(props: AppNotificationsProps) {
     }, [props.notifications, showMoreClicked]);
 
     const hasNewNotifications = useMemo(() => {
-        if (lastSeenNotification === -1) return true; // if no notification was seen
+        if (lastSeenNotification === -1) return props.notifications.length > 0;
         return props.notifications.some(notification => notification.id > lastSeenNotification);
     }, [lastSeenNotification, props.notifications]);
 
