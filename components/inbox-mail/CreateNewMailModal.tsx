@@ -275,9 +275,9 @@ function UserSelector(props: UserSelectorProps) {
             setFilteredUsers(
                 props.users.filter(
                     (u) =>
-                        u.firstName.toLowerCase().includes(lower) ||
-                        u.lastName.toLowerCase().includes(lower) ||
-                        u.mail.toLowerCase().includes(lower)
+                        (u.firstName && u.firstName.toLowerCase().includes(lower)) ||
+                        (u.lastName && u.lastName.toLowerCase().includes(lower)) ||
+                        (u.mail && u.mail.toLowerCase().includes(lower))
                 ).filter((u) => !props.selectedUsers.some((selected) => selected.id === u.id))
             );
         }
