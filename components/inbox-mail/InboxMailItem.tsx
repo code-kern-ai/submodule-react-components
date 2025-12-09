@@ -38,7 +38,7 @@ export default function ThreadMailItem(props: ThreadMailItemProps) {
                         </div>
 
                         <span className="text-sm text-gray-500">
-                            {t("inboxMail.to")}: {props.mail.recipientNames.map((name) => `${name.first} ${name.last}`).join(", ")}
+                            {t("inboxMail.to")}: {props.mail.recipientNames.map((name) => `${name?.first} ${name?.last}`).join(", ")}
                         </span>
                     </div>
                 </div>

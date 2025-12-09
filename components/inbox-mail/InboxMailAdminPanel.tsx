@@ -68,8 +68,8 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
                 {props.selectedThread.progressState !== InboxMailThreadSupportProgressState.PENDING && props.selectedThread.metaData?.supportOwnerName && (
                     <div className="bg-orange-400 text-white rounded-full px-2 py-0.5 text-xs flex items-center gap-x-2 ml-2">
                         <IconProgressCheck className="w-5 h-5" />
-                        {props.selectedThread.metaData.supportOwnerName.first}{" "}
-                        {props.selectedThread.metaData.supportOwnerName.last}
+                        {props.selectedThread.metaData.supportOwnerName?.first}{" "}
+                        {props.selectedThread.metaData.supportOwnerName?.last}
                     </div>
                 )}
             </div>
