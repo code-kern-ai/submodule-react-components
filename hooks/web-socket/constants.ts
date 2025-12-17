@@ -30,6 +30,7 @@ export enum CurrentPage {
     ENTRY_LAYOUT = "ENTRY_LAYOUT",
     ADMIN_DASHBOARD_LAYOUT = "ADMIN_DASHBOARD_LAYOUT",
     EVALUATION_RUN_DETAILS = "EVALUATION_RUN_DETAILS",
+    KNOWLEDGE_GRAPHS = "KNOWLEDGE_GRAPHS",
 }
 
 export enum CurrentPageSubKey {
@@ -104,8 +105,10 @@ export const WHITELIST_LOOKUP_REFINERY = {
     },
     [CurrentPage.NOTIFICATION_CENTER]: {
         [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'admin_message'],
-
-    }
+    },
+    [CurrentPage.KNOWLEDGE_GRAPHS]: {
+        [CurrentPageSubKey.NONE]: ['knowledge_graphs_created', 'knowledge_graphs_updated', 'knowledge_graphs_deleted'],
+    },
 }
 
 export const WHITELIST_LOOKUP_COGNITION = {
