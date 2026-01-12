@@ -230,6 +230,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                                     progressStateOptions={progressStateOptions}
                                     handleInboxMailProgressChange={handleInboxMailProgressChange}
                                     currentUser={currentUser}
+                                    refetchInboxMailOverview={refetchInboxMailOverview}
                                 />
                             }
                             {threadMails.map((mail: InboxMail) => (
