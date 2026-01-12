@@ -55,14 +55,14 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
         updateInboxMailThreadsUnreadByContent(props.selectedThread.id, (res) => {
             props.refetchInboxMailOverview();
         });
-    }, []);
+    }, [props.selectedThread?.id, props.refetchInboxMailOverview]);
 
     const handleSameProjectRead = useCallback(() => {
         updateInboxMailThreadsUnreadByProject(props.selectedThread.id, (res) => {
             props.refetchInboxMailOverview();
         });
 
-    }, []);
+    }, [props.selectedThread?.id, props.refetchInboxMailOverview]);
 
     return (
         <div>
