@@ -87,3 +87,13 @@ export function removeUserFromOrganization(userMail: string, onResult: (result: 
     const finalUrl = `${url}/organization/remove-user-from-organization`;
     jsonFetchWrapper(finalUrl, FetchType.POST, onResult, JSON.stringify({ "user_mail": userMail }));
 }
+
+export function updateInboxMailThreadsUnreadByProject(threadId: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/inbox-mail/thread/${threadId}/unread/project`;
+    jsonFetchWrapper(finalUrl, FetchType.PUT, onResult);
+}
+
+export function updateInboxMailThreadsUnreadByContent(threadId: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/inbox-mail/thread/${threadId}/unread/content`;
+    jsonFetchWrapper(finalUrl, FetchType.PUT, onResult);
+}
