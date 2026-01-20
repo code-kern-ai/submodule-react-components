@@ -52,6 +52,11 @@ export type User = {
     logoutUrl: string;
     isAdmin: boolean;
     autoLogoutMinutes: number;
+    soundSettings: {
+        soundName: string;
+        onlyForLongTasks: boolean;
+        onlyIfNotInFocus: boolean;
+    };
 }
 
 
