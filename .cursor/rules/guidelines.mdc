@@ -1,0 +1,65 @@
+---
+description: Guidelines for developing in the react-components submodule
+globs:
+---
+
+# React Components Submodule
+
+This is a shared component library. Changes here affect all consuming applications.
+
+## Directory Structure
+
+```
+components/         # UI components
+hooks/              # Custom React hooks
+helpers/            # Component helper functions
+types/              # TypeScript interfaces
+assets/             # Static assets
+```
+
+## Component Guidelines
+
+### Export Pattern
+
+Use default exports for components:
+
+```typescript
+export default function MyComponent(props: MyComponentProps) { ... }
+```
+
+### Props Interface
+
+Define interfaces in `types/` directory:
+
+```typescript
+// types/my-component.ts
+export interface MyComponentProps {
+  required: string;
+  optional?: number;
+}
+```
+
+### Styling
+
+- Use Tailwind CSS classes
+- Use `combineClassNames` from javascript-functions for conditional classes
+- Avoid inline styles
+
+## Hook Guidelines
+
+- Hooks must start with `use`
+- File name should match hook name
+- Document return types explicitly
+
+## Dependencies
+
+- `@headlessui/react` - Accessible UI primitives
+- `@nextui-org/react` - Tooltip component
+- `@tabler/icons-react` - Icon library
+
+## Testing
+
+When modifying components or hooks:
+1. Test in consuming applications
+2. Verify TypeScript types
+3. Test accessibility
