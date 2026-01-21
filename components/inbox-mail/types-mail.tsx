@@ -42,7 +42,8 @@ export type InboxMailThread = {
 }
 
 export type Settings = {
-    soundName: string;
+    soundName?: string;
+    enabled?: boolean;
     onlyForLongTasks: boolean;
     onlyIfNotInFocus: boolean;
 }
