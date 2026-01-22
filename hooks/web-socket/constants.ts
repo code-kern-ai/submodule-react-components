@@ -109,7 +109,7 @@ export const WHITELIST_LOOKUP_REFINERY = {
         [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'admin_message'],
     },
     [CurrentPage.DATA_BLOCKS]: {
-        [CurrentPageSubKey.NONE]: ['data_blocks_created', 'data_blocks_updated', 'data_blocks_deleted'],
+        [CurrentPageSubKey.NONE]: ['data_blocks_created', 'data_blocks_updated', 'data_blocks_deleted', 'calculate_attribute', 'tokenization'],
     },
 }
 
