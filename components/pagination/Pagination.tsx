@@ -69,14 +69,12 @@ export default function Pagination(props: PaginationProps) {
             ];
         }
 
-        // Near start or end: first 4 ... last 4
+        // Near start or end: first 3 ... last 3
         return [
             pageButton(1),
             pageButton(2),
             pageButton(3),
-            pageButton(4),
             ellipsis('middle'),
-            pageButton(totalPages - 3),
             pageButton(totalPages - 2),
             pageButton(totalPages - 1),
             pageButton(totalPages)
