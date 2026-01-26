@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { InboxMailThread, InboxMailThreadSupportProgressState } from "./types-mail";
 import { Tooltip } from "@nextui-org/react";
 import { MemoIconAlertTriangle, MemoIconCircleCheck, MemoIconHelpCircle, MemoIconProgressCheck, MemoIconUser } from "../kern-icons/icons";
 import { formatDisplayTimestamp } from "@/submodules/javascript-functions/date-parser";
+import { useRouter } from "next/router";
 
 interface InboxMailThreadOverviewProps {
     thread: InboxMailThread;
@@ -14,6 +15,7 @@ interface InboxMailThreadOverviewProps {
 
 export default function InboxMailThreadOverview(props: InboxMailThreadOverviewProps) {
     const t = useMemo(() => props.translator, [props.translator]);
+    const router = useRouter();
     const {
         displayName,
         displayInitials,
@@ -31,6 +33,8 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
             return props.thread.unreadMailCount
         }
     }, [props.thread, props.isAdmin]);
+
+    const clickHome = useCallback(() => router.push("/"), [router]);
 
     return (
         <div
@@ -55,7 +59,7 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
                     </div>
                 ) : (
                     <div className="self-start shrink-0 mt-1 flex items-center justify-center w-10 h-10 border rounded-md p-2 text-sm font-semibold bg-[#18181B]">
-                        <img className="h-8 w-auto" src="/cognition/kernai.svg" alt="Kern AI" />
+                        <img className="h-8 w-auto cursor-pointer" src="/cognition/kernai.svg" alt="Kern AI" onClick={clickHome} />
                     </div>
                 )}
 
