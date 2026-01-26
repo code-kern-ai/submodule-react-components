@@ -36,7 +36,15 @@
         "cancelButton": "Cancel",
         "previous": "Previous",
         "next": "Next",
-        "to": "To"
+        "to": "To",
+        "addFilter": "Add Filter",
+        "filterAllTooltip": "Selecting 'All' clears other filters",
+        "markLastUnread": "Mark last unread",
+        "filterByOrg": "Filter by Org",
+        "readAllByError": "Read all by error",
+        "readAllByProject": "Read all by project",
+        "deleteAllByContent": "Delete all by content",
+        "deleteAllByContentTooltip": "Deletes all auto-generated threads with the same content in the same organization"
     },
     "InboxMailThreadSupportProgressState": {
         "PENDING": "Pending",

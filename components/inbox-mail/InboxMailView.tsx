@@ -1,10 +1,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CreateNewMailModal from "./CreateNewMailModal";
-import { InboxMail, InboxMailThread, User, InboxMailThreadSupportProgressState } from "./types-mail";
+import { InboxMail, InboxMailThread, User, InboxMailThreadSupportProgressState, InboxMailFilter, SUPPORT_FILTERS, THREAD_TYPE_FILTERS } from "./types-mail";
 import { getInboxMailOverviewByThreadsPaginated, getInboxMailsByThread, createInboxMailByThread, updateInboxMailThreadProgress, deleteInboxMailById } from "./service-mail";
 import KernButton from "../kern-button/KernButton";
-import { MemoIconPlus, MemoIconRefresh, MemoIconHelpCircle } from "../kern-icons/icons";
+import { MemoIconPlus, MemoIconRefresh, MemoIconHelpCircle, MemoIconX } from "../kern-icons/icons";
 import useRefState from "../../hooks/useRefState";
 import { MAIL_LIMIT_PER_PAGE, prepareThreadDisplayData } from "./helper";
 import useEnumOptionsTranslated, { getEnumOptionsForLanguage } from "../../hooks/enums/useEnumOptionsTranslated";
@@ -14,6 +14,9 @@ import InboxMailAdminPanel from "./InboxMailAdminPanel";
 import { UserRole } from "@/submodules/javascript-functions/enums/enums";
 import InboxMailThreadOverview from "./InboxMailThreadOverview";
 import ThreadMailItem from "./InboxMailItem";
+import KernDropdown from "../KernDropdown";
+import { enumToArray } from "@/submodules/javascript-functions/general";
+import { caseType } from "@/submodules/javascript-functions/case-types-parser";
 
 
 interface InboxMailViewProps {
@@ -38,10 +41,75 @@ export default function InboxMailView(props: InboxMailViewProps) {
     const [organizations, setOrganizations] = useState([]);
     const [selectedOrganization, setSelectedOrganization] = useState(null);
     const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
+    const { state: currentFilter, setState: setCurrentFilter, ref: currentFilterRef } = useRefState<InboxMailFilter[]>([]);
+    const { state: filterOrgId, setState: setFilterOrgId, ref: filterOrgIdRef } = useRefState<string | null>(null);
 
     const progressStateOptions = props.translatorScope?.type === "local"
         ? getEnumOptionsForLanguage(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", t, "en")
         : props.translatorScope?.type === "i18n" ? useEnumOptionsTranslated(InboxMailThreadSupportProgressState, "InboxMailThreadSupportProgressState", "enums") : [];
+
+    const allFilterOptions = useMemo(() => enumToArray(InboxMailFilter, { caseType: caseType.CAPITALIZE_FIRST_PER_WORD }), []);
+
+    const availableFilterOptions = useMemo(() =>
+        allFilterOptions.filter(option => !currentFilter.includes(option.value)),
+        [allFilterOptions, currentFilter]
+    );
+
+    const filterTooltips = useMemo(() =>
+        availableFilterOptions.map(option =>
+            option.value === InboxMailFilter.ALL
+                ? t("inboxMail.filterAllTooltip")
+                : null
+        ),
+        [availableFilterOptions, t]
+    );
+
+    const addFilter = useCallback((option: { name: string, value: InboxMailFilter }) => {
+        const newValue = option.value;
+        let newFilters: InboxMailFilter[];
+
+        // ALL clears everything else
+        if (newValue === InboxMailFilter.ALL) {
+            newFilters = [InboxMailFilter.ALL];
+        } else {
+            let filtered = currentFilterRef.current.filter(f => f !== InboxMailFilter.ALL);
+            // Support filters are mutually exclusive
+            if (SUPPORT_FILTERS.includes(newValue)) filtered = filtered.filter(f => !SUPPORT_FILTERS.includes(f));
+
+            // Thread type filters are mutually exclusive
+            if (THREAD_TYPE_FILTERS.includes(newValue)) filtered = filtered.filter(f => !THREAD_TYPE_FILTERS.includes(f));
+
+            newFilters = [...filtered, newValue];
+        }
+        setCurrentFilter(newFilters);
+    }, []);
+
+    const removeFilter = useCallback((filter: InboxMailFilter) => {
+        const newFilters = currentFilterRef.current.filter(f => f !== filter);
+        if (newFilters.length === 0) newFilters.push(InboxMailFilter.ALL);
+        setCurrentFilter(newFilters);
+    }, []);
+
+    const getFilterDisplayName = useCallback((filter: InboxMailFilter) => {
+        return allFilterOptions.find(o => o.value === filter)?.name || filter;
+    }, [allFilterOptions]);
+
+    const orgFilterOptions = useMemo(() =>
+        organizations.map((org: any) => ({ name: org.name, value: org.id })),
+        [organizations]
+    );
+
+    const selectedOrgName = useMemo(() =>
+        organizations.find((org: any) => org.id === filterOrgId)?.name || null,
+        [organizations, filterOrgId]
+    );
+
+
+    const selectOrgFilter = useCallback((option: { name: string, value: string }) => {
+        if (option.value) setFilterOrgId(option.value);
+    }, []);
+
+    const clearOrgFilter = useCallback(() => setFilterOrgId(null), []);
 
     useEffect(() => {
         getUserInfoExtended(res => {
@@ -49,6 +117,11 @@ export default function InboxMailView(props: InboxMailViewProps) {
         });
         getIsAdmin((isAdmin) => setIsAdmin(isAdmin));
     }, []);
+
+    useEffect(() => {
+        if (isAdmin === undefined) return;
+        setCurrentFilter(isAdmin ? [InboxMailFilter.SUPPORT_PENDING] : [InboxMailFilter.ALL]);
+    }, [isAdmin]);
 
     useEffect(() => {
         if (!isAdmin) return;
@@ -64,8 +137,21 @@ export default function InboxMailView(props: InboxMailViewProps) {
     }, [isAdmin, selectedOrganization, currentUser]);
 
     useEffect(() => {
+        if (isAdmin === undefined || currentFilter.length === 0) return;
         refetchInboxMailOverview();
-    }, [currentPage]);
+    }, [currentPage, isAdmin]);
+
+    useEffect(() => {
+        if (currentFilter.length === 0) return;
+        setCurrentPage(1);
+        refetchInboxMailOverview();
+    }, [currentFilter]);
+
+    useEffect(() => {
+        if (isAdmin === undefined || currentFilter.length === 0) return;
+        setCurrentPage(1);
+        refetchInboxMailOverview();
+    }, [filterOrgId]);
 
     useEffect(() => {
         if (!selectedThread?.id) return
@@ -74,7 +160,9 @@ export default function InboxMailView(props: InboxMailViewProps) {
     }, [selectedThread?.id, props.handleInboxMailRefreshToken, isAdmin]);
 
     const refetchInboxMailOverview = useCallback(() => {
-        getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
+        const filters: string[] = [...currentFilterRef.current];
+        if (filterOrgIdRef.current) filters.push(filterOrgIdRef.current);
+        getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, filters, (res) => {
             setInboxMailThreads(res.threads);
             setFullCount(res?.totalThreads);
             props.handleInboxMailRefreshToken?.(Date.now());
@@ -87,16 +175,16 @@ export default function InboxMailView(props: InboxMailViewProps) {
             setThreadMails(res);
             if (selectedThread.unreadMailCount > 0) {
                 setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? { ...t, unreadMailCount: 0 } : t));
+                setSelectedThread(prev => prev ? { ...prev, unreadMailCount: 0 } : prev);
                 if (resetRefreshToken) props.handleInboxMailRefreshToken?.(Date.now());
             }
             if (selectedThread.isAdminSupportThread && isAdmin && selectedThread.metaData?.unreadMailCountAdmin > 0) {
+                const updatedMetaData = { ...selectedThread.metaData, unreadMailCountAdmin: 0 };
                 setInboxMailThreads(prevThreads => prevThreads.map(t => t.id === selectedThread.id ? {
                     ...t,
-                    metaData: {
-                        ...t.metaData,
-                        unreadMailCountAdmin: 0
-                    },
+                    metaData: updatedMetaData,
                 } : t));
+                setSelectedThread(prev => prev ? { ...prev, metaData: updatedMetaData } : prev);
                 if (resetRefreshToken) props.handleInboxMailRefreshToken?.(Date.now());
             }
         });
@@ -105,7 +193,9 @@ export default function InboxMailView(props: InboxMailViewProps) {
     const handleInboxMailCreation = useCallback((content: string, recipientIds?: string[], subject?: string, isImportant?: boolean, metaData?: any) => {
         createInboxMailByThread(content, (result) => {
             setOpenCreateMail(false);
-            getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, (res) => {
+            const filters: string[] = [...currentFilterRef.current];
+            if (filterOrgIdRef.current) filters.push(filterOrgIdRef.current);
+            getInboxMailOverviewByThreadsPaginated(currentPage, MAIL_LIMIT_PER_PAGE, filters, (res) => {
                 if (isNewThread && res.threads.length > 0) {
                     setSelectedThread(res.threads.find((thread) => thread.id === result.threadId));
                 }
@@ -173,31 +263,78 @@ export default function InboxMailView(props: InboxMailViewProps) {
     return (
         <div className='flex flex-col h-full overflow-hidden'>
             <props.InboxMailHeader >
-                <div className="flex items-center gap-x-2">
-                    <KernButton
-                        className="text-gray-700"
-                        icon={refreshIconFn}
-                        onClick={refretchAll}
-                        disabled={refreshing}
-                    />
-                    <KernButton
-                        text={t("inboxMail.getSupport")}
-                        icon={MemoIconHelpCircle}
-                        iconColor="red"
-                        onClick={() => {
-                            setIsNewThread(true);
-                            setOpenCreateMail(true);
-                            setIsAdminSupportThread(true);
-                        }} />
-                    <KernButton
-                        text={t("inboxMail.newMail")}
-                        iconColor="green"
-                        icon={MemoIconPlus}
-                        onClick={() => {
-                            setIsNewThread(true);
-                            setOpenCreateMail(true);
-                            setIsAdminSupportThread(false);
-                        }} />
+                <div className="flex items-center justify-end gap-2 w-full">
+                    {isAdmin && (
+                        <>
+                            <div className="flex flex-wrap items-center gap-2">
+                                {currentFilter.map(filter => (
+                                    <div key={filter} className="flex items-center gap-x-1.5 bg-gray-200 text-gray-700 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap max-w-48">
+                                        <span className="truncate">{getFilterDisplayName(filter)}</span>
+                                        {filter != InboxMailFilter.ALL && (
+                                            <button onClick={() => removeFilter(filter)} className="hover:bg-gray-300 rounded-full p-0.5 flex-shrink-0">
+                                                <MemoIconX className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                {selectedOrgName && (
+                                    <div className="flex items-center gap-x-1.5 bg-indigo-200 text-indigo-700 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap max-w-48">
+                                        <span className="truncate">{selectedOrgName}</span>
+                                        <button onClick={clearOrgFilter} className="hover:bg-indigo-300 rounded-full p-0.5 flex-shrink-0">
+                                            <MemoIconX className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex items-center gap-x-2 flex-shrink-0 whitespace-nowrap">
+                                {availableFilterOptions.length > 0 && (
+                                    <KernDropdown
+                                        buttonName={t("inboxMail.addFilter")}
+                                        options={availableFilterOptions}
+                                        selectedOption={addFilter}
+                                        dropdownWidth="w-32"
+                                        dropdownItemsWidth="w-40"
+                                        buttonClasses="py-1 px-2 text-xs whitespace-nowrap"
+                                        tooltipsArray={filterTooltips}
+                                    />
+                                )}
+                                {orgFilterOptions.length > 0 && (
+                                    <KernDropdown
+                                        buttonName={t("inboxMail.filterByOrg")}
+                                        options={orgFilterOptions}
+                                        selectedOption={selectOrgFilter}
+                                        buttonClasses="py-1 px-2 text-xs whitespace-nowrap"
+                                    />
+                                )}
+                            </div>
+                        </>
+                    )}
+                    <div className="flex items-center gap-x-2 flex-shrink-0">
+                        <KernButton
+                            className="text-gray-700"
+                            icon={refreshIconFn}
+                            onClick={refretchAll}
+                            disabled={refreshing}
+                        />
+                        <KernButton
+                            text={t("inboxMail.getSupport")}
+                            icon={MemoIconHelpCircle}
+                            iconColor="red"
+                            onClick={() => {
+                                setIsNewThread(true);
+                                setOpenCreateMail(true);
+                                setIsAdminSupportThread(true);
+                            }} />
+                        <KernButton
+                            text={t("inboxMail.newMail")}
+                            iconColor="green"
+                            icon={MemoIconPlus}
+                            onClick={() => {
+                                setIsNewThread(true);
+                                setOpenCreateMail(true);
+                                setIsAdminSupportThread(false);
+                            }} />
+                    </div>
                 </div>
             </ props.InboxMailHeader >
             {inboxMailThreads?.length === 0 ? (
@@ -231,6 +368,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                                     handleInboxMailProgressChange={handleInboxMailProgressChange}
                                     currentUser={currentUser}
                                     refetchInboxMailOverview={refetchInboxMailOverview}
+                                    translator={t}
                                 />
                             }
                             {threadMails.map((mail: InboxMail) => (
