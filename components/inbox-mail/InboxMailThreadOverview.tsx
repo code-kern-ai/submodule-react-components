@@ -35,7 +35,6 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
     }, [props.thread, props.isAdmin]);
 
     const clickHome = useCallback(() => router.push("/"), [router]);
-
     return (
         <div
             key={props.thread.id}
@@ -65,10 +64,13 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
 
                 <div className="grow min-w-0">
                     <div className="flex items-start justify-between gap-x-2 flex-nowrap">
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-x-2">
                             <div className="text-gray-800 font-medium truncate mt-0.5">
                                 {displayName ?? `<${t("inboxMail.unknownUser")}>`}
                             </div>
+                            {props.isAdmin ? <div className=" text-xs text-gray-800 font-medium truncate mt-0.5 rounded-md bg-gray-200 px-1.5 py-0.5">
+                                Org: {props.thread.organizationName}
+                            </div> : null}
                             {unreadMailCount > 0 && (
                                 <span className="ml-2 inline-flex items-center justify-center bg-slate-400 text-white text-[0.625rem] font-semibold rounded-full h-4 min-w-4 px-1.5 whitespace-nowrap">
                                     {unreadMailCount} {t("inboxMail.newBadge")}

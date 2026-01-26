@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { InboxMailThread, InboxMailThreadSupportProgressState, User } from "./types-mail";
+import { InboxMailThread, InboxMailThreadSupportProgressState, JumpDestination, User } from "./types-mail";
 import { IconExternalLink, IconProgressCheck } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
 import { addUserToOrganization, removeUserFromOrganization, updateInboxMailThreadsUnreadByContent, updateInboxMailThreadsUnreadByProject } from "./service-mail";
@@ -21,32 +21,35 @@ interface InboxMailAdminPanelProps {
 
 function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
     // No translations needed, admin only
-    const assignAndJump = useCallback((toConversation: boolean) => {
+    const assignAndJump = useCallback((destination: JumpDestination) => {
         if (!props.currentUser) return;
         const currentOrganizationId = props.currentUser?.organizationId;
         if (!currentOrganizationId) {
             addUserToOrganization(props.currentUser.mail, props.selectedThread.organizationName, (res) => {
-                jumptoConversationOrProject(toConversation);
-
+                jumpTo(destination);
             });
         } else if (currentOrganizationId === props.selectedThread.organizationId) {
-            jumptoConversationOrProject(toConversation);
-
+            jumpTo(destination);
         } else {
             removeUserFromOrganization(props.currentUser.mail, (res) => {
                 addUserToOrganization(props.currentUser.mail, props.selectedThread.organizationName, (res) => {
-                    jumptoConversationOrProject(toConversation);
+                    jumpTo(destination);
                 });
             });
         }
     }, [props.currentUser, props.selectedThread]);
 
-    const jumptoConversationOrProject = useCallback((toConversation: boolean) => {
-        if (toConversation) {
-            window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/ui/${props.selectedThread.metaData?.conversationId}`, '_blank');
-        }
-        else {
-            window.open(`/cognition/projects/${props.selectedThread.metaData.projectId}/pipeline`, '_blank');
+    const jumpTo = useCallback((destination: JumpDestination) => {
+        switch (destination) {
+            case JumpDestination.CONVERSATION:
+                window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/ui/${props.selectedThread.metaData?.conversationId}`, '_blank');
+                break;
+            case JumpDestination.PROJECT:
+                window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/pipeline`, '_blank');
+                break;
+            case JumpDestination.ORGANIZATION:
+                window.open('/cognition', '_blank');
+                break;
         }
     }, [props.selectedThread.metaData]);
 
@@ -103,6 +106,28 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
                     </div>
                 }
             </div>
+            {props.selectedThread.organizationId && (
+                <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-indigo-400/60 text-white w-fit">
+                    <div className="flex items-center gap-1.5 text-xs">
+                        <span className="font-semibold">Organization</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-xs bg-indigo-400 px-2 py-0.5 rounded-md">
+                        <span>ID:</span>
+                        <span>{props.selectedThread.organizationId}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs bg-indigo-400 px-2 py-0.5 rounded-md">
+                        <span>{props.selectedThread.organizationName}</span>
+                    </div>
+                    <button
+                        className="flex items-center gap-1.5 text-xs bg-indigo-400 px-2 py-0.5 rounded-md"
+                        onClick={() => assignAndJump(JumpDestination.ORGANIZATION)}
+                    >
+                        <IconExternalLink className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
+
             {props.selectedThread.metaData?.projectId && (
                 <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-slate-400/60 text-white w-fit">
                     <div className="flex items-center gap-1.5 text-xs">
@@ -118,39 +143,34 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
                     </div>
                     <button
                         className="flex items-center gap-1.5 text-xs bg-slate-400 px-2 py-0.5 rounded-md"
-                        onClick={() =>
-                            assignAndJump(false)
-                        }
+                        onClick={() => assignAndJump(JumpDestination.PROJECT)}
                     >
                         <IconExternalLink className="w-4 h-4" />
                     </button>
                 </div>
-            )
-            }
+            )}
 
-            {
-                props.selectedThread.metaData?.conversationId && (
-                    <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-gray-400/60 text-white w-fit">
-                        <div className="flex items-center gap-1.5 text-xs">
-                            <span className="font-semibold">Conversation</span>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
-                            <span>ID:</span>
-                            <span>{props.selectedThread.metaData.conversationId}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
-                            <span>{props.selectedThread.metaData.conversationHeader || "N/A"}</span>
-                        </div>
-                        <button
-                            className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md"
-                            onClick={() => assignAndJump(true)}
-                        >
-                            <IconExternalLink className="w-4 h-4" />
-                        </button>
+            {props.selectedThread.metaData?.conversationId && (
+                <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-gray-400/60 text-white w-fit">
+                    <div className="flex items-center gap-1.5 text-xs">
+                        <span className="font-semibold">Conversation</span>
                     </div>
-                )
-            }
+
+                    <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
+                        <span>ID:</span>
+                        <span>{props.selectedThread.metaData.conversationId}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
+                        <span>{props.selectedThread.metaData.conversationHeader || "N/A"}</span>
+                    </div>
+                    <button
+                        className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md"
+                        onClick={() => assignAndJump(JumpDestination.CONVERSATION)}
+                    >
+                        <IconExternalLink className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
         </div >
     );
 };

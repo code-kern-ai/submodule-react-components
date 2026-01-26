@@ -60,3 +60,9 @@ export enum InboxMailThreadSupportProgressState {
     IN_PROGRESS = "IN_PROGRESS",
     RESOLVED = "RESOLVED"
 }
+
+export enum JumpDestination {
+    CONVERSATION = "CONVERSATION",
+    PROJECT = "PROJECT",
+    ORGANIZATION = "ORGANIZATION"
+}
