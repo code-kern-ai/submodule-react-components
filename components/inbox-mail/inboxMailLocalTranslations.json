@@ -34,8 +34,6 @@
         "sendButton": "Send",
         "deleteButton": "Delete",
         "cancelButton": "Cancel",
-        "previous": "Previous",
-        "next": "Next",
         "to": "To",
         "addFilter": "Add Filter",
         "filterAllTooltip": "Selecting 'All' clears other filters",

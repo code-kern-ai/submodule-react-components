@@ -356,7 +356,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                             />
                         ))}
                     </div>
-                    <Pagination offset={(currentPage - 1) * MAIL_LIMIT_PER_PAGE} setOffset={setOffset} fullCount={fullCount} limit={MAIL_LIMIT_PER_PAGE} previousLabel={t("inboxMail.previous")} nextLabel={t("inboxMail.next")} reducePageNumbers />
+                    <Pagination offset={(currentPage - 1) * MAIL_LIMIT_PER_PAGE} setOffset={setOffset} fullCount={fullCount} limit={MAIL_LIMIT_PER_PAGE} reducePageNumbers />
                 </div>
                 <div className="col-span-2 overflow-y-auto pr-2 pb-12 h-0 min-h-full">
                     {selectedThread && threadMails && threadMails.length > 0 ? (

@@ -1,3 +1,4 @@
+import { combineClassNames } from '@/submodules/javascript-functions/general';
 import { PaginationProps } from '../../types/pagination'
 import { MemoIconArrowLeft, MemoIconArrowRight } from '../kern-icons/icons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -89,7 +90,7 @@ export default function Pagination(props: PaginationProps) {
                     disabled={currentPage === 1 || !totalPages}
                     className={NAV_BTN_PREV}
                 >
-                    <MemoIconArrowLeft className="mr-3 h-5 w-5 text-gray-400" />
+                    <MemoIconArrowLeft className={combineClassNames("h-5 w-5 text-gray-400", props.previousLabel ? "mr-3" : "")} />
                     {props.previousLabel}
                 </button>
             </div>
@@ -103,7 +104,7 @@ export default function Pagination(props: PaginationProps) {
                     className={NAV_BTN_NEXT}
                 >
                     {props.nextLabel}
-                    <MemoIconArrowRight className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <MemoIconArrowRight className={combineClassNames("h-5 w-5 text-gray-400", props.nextLabel ? "ml-3" : "")} aria-hidden="true" />
                 </button>
             </div>
         </nav>
