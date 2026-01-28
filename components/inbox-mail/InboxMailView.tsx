@@ -361,7 +361,7 @@ export default function InboxMailView(props: InboxMailViewProps) {
                 <div className="col-span-2 overflow-y-auto pr-2 pb-12 h-0 min-h-full">
                     {selectedThread && threadMails && threadMails.length > 0 ? (
                         <>
-                            {isAdmin &&
+                            {isAdmin && selectedThread.isAdminSupportThread &&
                                 <InboxMailAdminPanel
                                     selectedThread={selectedThread}
                                     progressStateOptions={progressStateOptions}
