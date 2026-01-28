@@ -7,7 +7,7 @@ globs:
 
 # React Components Submodule
 
-This is a shared component library. Changes here affect all consuming applications.
+This is a shared component library. Changes here affect all consuming applications. The submodules are used in the following FE repositories: cognition-ui, refinery-ui, admin-dashboard and refinery-entry.
 
 ## Directory Structure
 
@@ -29,13 +29,13 @@ Use default exports for components:
 export default function MyComponent(props: MyComponentProps) { ... }
 ```
 
-### Props Interface
+### Props Types
 
-Define interfaces in `types/` directory:
+Define types in `types/` directory:
 
 ```typescript
 // types/my-component.ts
-export interface MyComponentProps {
+export type MyComponentProps {
   required: string;
   optional?: number;
 }
@@ -70,9 +70,3 @@ See [kern-table.mdc](./kern-table.mdc) for comprehensive guidelines on using the
 - State management with hooks
 - Performance optimization
 
-## Testing
-
-When modifying components or hooks:
-1. Test in consuming applications
-2. Verify TypeScript types
-3. Test accessibility
