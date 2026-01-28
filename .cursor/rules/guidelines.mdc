@@ -57,6 +57,17 @@ export interface MyComponentProps {
 - `@nextui-org/react` - Tooltip component
 - `@tabler/icons-react` - Icon library
 
+## Component-Specific Guidelines
+
+### KernTable
+
+See [kern-table.mdc](./kern-table.mdc) for comprehensive guidelines on using the KernTable component, including:
+- Props structure and configuration
+- Table data preparation patterns
+- Sorting implementation
+- State management with hooks
+- Performance optimization
+
 ## Testing
 
 When modifying components or hooks:
