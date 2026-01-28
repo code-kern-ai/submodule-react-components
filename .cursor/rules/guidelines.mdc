@@ -1,6 +1,8 @@
 ---
 description: Guidelines for developing in the react-components submodule
+alwaysApply: true
 globs:
+  - "*"
 ---
 
 # React Components Submodule

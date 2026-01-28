@@ -1,8 +1,8 @@
 ---
 description: Guidelines for using KernTable component
+alwaysApply: true
 globs:
-  - **/components/**/*.tsx
-  - **/util/table-preparations/**/*.ts
+  - "*"
 ---
 
 # KernTable Component Guidelines
