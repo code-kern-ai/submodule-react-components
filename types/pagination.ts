@@ -5,4 +5,5 @@ export type PaginationProps = {
     limit: number;
     previousLabel?: string;
     nextLabel?: string;
+    reducePageNumbers?: boolean;
 }
