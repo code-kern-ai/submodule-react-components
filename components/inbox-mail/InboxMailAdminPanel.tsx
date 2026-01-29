@@ -1,8 +1,9 @@
-import React, { useCallback } from "react";
-import { InboxMailThread, InboxMailThreadSupportProgressState, User } from "./types-mail";
-import { IconExternalLink, IconProgressCheck } from "@tabler/icons-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { InboxMailThread, InboxMailThreadSupportProgressState, JumpDestination, User } from "./types-mail";
+import { IconExternalLink, IconProgressCheck, IconAlertTriangle } from "@tabler/icons-react";
 import KernDropdown from "../KernDropdown";
-import { addUserToOrganization, removeUserFromOrganization, updateInboxMailThreadsUnreadByContent, updateInboxMailThreadsUnreadByProject } from "./service-mail";
+import { addUserToOrganization, removeUserFromOrganization, updateInboxMailThreadsUnreadByContent, updateInboxMailThreadsUnreadByProject, updateInboxMailThreadUnreadLast, deleteInboxMailThreadsSimilar } from "./service-mail";
+import { Tooltip } from "@nextui-org/react";
 import KernButton from "../kern-button/KernButton";
 
 
@@ -17,36 +18,50 @@ interface InboxMailAdminPanelProps {
     handleInboxMailProgressChange: (value: InboxMailThreadSupportProgressState) => void;
     currentUser: User;
     refetchInboxMailOverview: () => void;
+    translator: (key: string) => string;
 }
 
 function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
-    // No translations needed, admin only
-    const assignAndJump = useCallback((toConversation: boolean) => {
+    const t = props.translator;
+    const [canMarkLastUnread, setCanMarkLastUnread] = useState(true);
+
+    useEffect(() => {
+        if (props.selectedThread.metaData?.unreadMailCountAdmin > 0) {
+            setCanMarkLastUnread(false);
+        } else {
+            setCanMarkLastUnread(true);
+        }
+    }, [props.selectedThread.id, props.selectedThread.metaData?.unreadMailCountAdmin]);
+
+    const assignAndJump = useCallback((destination: JumpDestination) => {
         if (!props.currentUser) return;
         const currentOrganizationId = props.currentUser?.organizationId;
         if (!currentOrganizationId) {
             addUserToOrganization(props.currentUser.mail, props.selectedThread.organizationName, (res) => {
-                jumptoConversationOrProject(toConversation);
-
+                jumpTo(destination);
             });
         } else if (currentOrganizationId === props.selectedThread.organizationId) {
-            jumptoConversationOrProject(toConversation);
-
+            jumpTo(destination);
         } else {
             removeUserFromOrganization(props.currentUser.mail, (res) => {
                 addUserToOrganization(props.currentUser.mail, props.selectedThread.organizationName, (res) => {
-                    jumptoConversationOrProject(toConversation);
+                    jumpTo(destination);
                 });
             });
         }
     }, [props.currentUser, props.selectedThread]);
 
-    const jumptoConversationOrProject = useCallback((toConversation: boolean) => {
-        if (toConversation) {
-            window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/ui/${props.selectedThread.metaData?.conversationId}`, '_blank');
-        }
-        else {
-            window.open(`/cognition/projects/${props.selectedThread.metaData.projectId}/pipeline`, '_blank');
+    const jumpTo = useCallback((destination: JumpDestination) => {
+        switch (destination) {
+            case JumpDestination.CONVERSATION:
+                window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/ui/${props.selectedThread.metaData?.conversationId}`, '_blank');
+                break;
+            case JumpDestination.PROJECT:
+                window.open(`/cognition/projects/${props.selectedThread.metaData?.projectId}/pipeline`, '_blank');
+                break;
+            case JumpDestination.ORGANIZATION:
+                window.open('/cognition', '_blank');
+                break;
         }
     }, [props.selectedThread.metaData]);
 
@@ -61,7 +76,18 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
         updateInboxMailThreadsUnreadByProject(props.selectedThread.id, (res) => {
             props.refetchInboxMailOverview();
         });
+    }, [props.selectedThread?.id, props.refetchInboxMailOverview]);
 
+    const handleMarkLastUnread = useCallback(() => {
+        setCanMarkLastUnread(false);
+        updateInboxMailThreadUnreadLast(props.selectedThread.id, (res) => {
+            props.refetchInboxMailOverview();
+        });
+    }, [props.selectedThread?.id, props.refetchInboxMailOverview]);
+
+    const handleDeleteSimilar = useCallback(() => {
+        if (!confirm("Are you sure you want to delete all similar inbox mails? This action cannot be undone.")) return;
+        deleteInboxMailThreadsSimilar(props.selectedThread.id, (res) => props.refetchInboxMailOverview());
     }, [props.selectedThread?.id, props.refetchInboxMailOverview]);
 
     return (
@@ -89,20 +115,61 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
                         {props.selectedThread.metaData.supportOwnerName?.last}
                     </div>
                 )}
-                {props.selectedThread?.metaData?.autoGenerated &&
-                    <div className="flex items-center gap-3 ml-auto my-2 px-3 py-1 ">
-                        <KernButton
-                            className="ml-auto"
-                            text="Read all by error"
-                            onClick={handleSameContentRead}
-                        />
-                        <KernButton
-                            text="Read all by project"
-                            onClick={handleSameProjectRead}
-                        />
-                    </div>
-                }
+                <div className="flex items-center gap-3 ml-auto my-2 px-3 py-1">
+                    {props.selectedThread?.metaData?.autoGenerated && (
+                        <>
+                            <KernButton
+                                text={t("inboxMail.readAllByError")}
+                                onClick={handleSameContentRead}
+                            />
+                            <KernButton
+                                text={t("inboxMail.readAllByProject")}
+                                onClick={handleSameProjectRead}
+                            />
+                        </>
+                    )}
+                    <KernButton
+                        text={t("inboxMail.markLastUnread")}
+                        onClick={handleMarkLastUnread}
+                        disabled={!canMarkLastUnread}
+                    />
+                    {props.selectedThread?.metaData?.autoGenerated && (
+                        <Tooltip
+                            content={<div className="w-52">{t("inboxMail.deleteAllByContentTooltip")}</div>}
+                            placement="top"
+                            color="invert"
+                        >
+                            <KernButton
+                                text={t("inboxMail.deleteAllByContent")}
+                                onClick={handleDeleteSimilar}
+                                icon={() => <IconAlertTriangle className="w-4 h-4 text-red-500" />}
+                            />
+                        </Tooltip>
+                    )}
+                </div>
             </div>
+            {props.selectedThread.organizationId && (
+                <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-indigo-400/60 text-white w-fit">
+                    <div className="flex items-center gap-1.5 text-xs">
+                        <span className="font-semibold">Organization</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-xs bg-indigo-400 px-2 py-0.5 rounded-md">
+                        <span>ID:</span>
+                        <span>{props.selectedThread.organizationId}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs bg-indigo-400 px-2 py-0.5 rounded-md">
+                        <span>{props.selectedThread.organizationName}</span>
+                    </div>
+                    <button
+                        className="flex items-center gap-1.5 text-xs bg-indigo-400 px-2 py-0.5 rounded-md"
+                        onClick={() => assignAndJump(JumpDestination.ORGANIZATION)}
+                    >
+                        <IconExternalLink className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
+
             {props.selectedThread.metaData?.projectId && (
                 <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-slate-400/60 text-white w-fit">
                     <div className="flex items-center gap-1.5 text-xs">
@@ -118,39 +185,34 @@ function InboxMailAdminPanel(props: InboxMailAdminPanelProps) {
                     </div>
                     <button
                         className="flex items-center gap-1.5 text-xs bg-slate-400 px-2 py-0.5 rounded-md"
-                        onClick={() =>
-                            assignAndJump(false)
-                        }
+                        onClick={() => assignAndJump(JumpDestination.PROJECT)}
                     >
                         <IconExternalLink className="w-4 h-4" />
                     </button>
                 </div>
-            )
-            }
+            )}
 
-            {
-                props.selectedThread.metaData?.conversationId && (
-                    <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-gray-400/60 text-white w-fit">
-                        <div className="flex items-center gap-1.5 text-xs">
-                            <span className="font-semibold">Conversation</span>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
-                            <span>ID:</span>
-                            <span>{props.selectedThread.metaData.conversationId}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
-                            <span>{props.selectedThread.metaData.conversationHeader || "N/A"}</span>
-                        </div>
-                        <button
-                            className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md"
-                            onClick={() => assignAndJump(true)}
-                        >
-                            <IconExternalLink className="w-4 h-4" />
-                        </button>
+            {props.selectedThread.metaData?.conversationId && (
+                <div className="flex items-center gap-3 ml-2 my-2 px-3 py-1 rounded-xl bg-gray-400/60 text-white w-fit">
+                    <div className="flex items-center gap-1.5 text-xs">
+                        <span className="font-semibold">Conversation</span>
                     </div>
-                )
-            }
+
+                    <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
+                        <span>ID:</span>
+                        <span>{props.selectedThread.metaData.conversationId}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md">
+                        <span>{props.selectedThread.metaData.conversationHeader || "N/A"}</span>
+                    </div>
+                    <button
+                        className="flex items-center gap-1.5 text-xs bg-gray-400 px-2 py-0.5 rounded-md"
+                        onClick={() => assignAndJump(JumpDestination.CONVERSATION)}
+                    >
+                        <IconExternalLink className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
         </div >
     );
 };
