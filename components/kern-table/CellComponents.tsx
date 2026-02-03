@@ -14,17 +14,19 @@ import { MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, M
 
 function OrganizationAndUsersCell({ organization }) {
     return (
-        <div className="grid justify-items-center">
+        <div className="flex flex-col items-center">
             <div className="text-center text-indigo-600 font-medium text-sm">{organization.name} </div>
 
-            <div className="w-5 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block font-medium text-sm" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path
-                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                </svg>
-                <span className="text-gray-500 ml-1">{organization.userCount}</span>
-            </div>
+            <Tooltip content="Total/Normal/Light" color="invert" placement="right">
+                <div className="text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block font-medium text-sm" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path
+                            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                    </svg>
+                    <span className="text-gray-500 ml-1">{!organization.userCount ? <NotApplicableBadge /> : organization.userCount.total + " / " + organization.userCount.normal + " / " + organization.userCount.light}</span>
+                </div>
+            </Tooltip>
         </div>
     )
 }
@@ -71,6 +73,12 @@ function ExportConsumptionAndDeleteCell({ organization, onClickConsumptionExport
 
 function BadgeCell({ value }) {
     return <span> {value ? (<ActiveBadge />) : (<InactiveBadge />)}</span>
+}
+
+function NulledBadgeCell({ value, tooltip, tooltipPlacement }: { value: boolean | null | undefined, tooltip?: string, tooltipPlacement?: "top" | "bottom" | "left" | "right" }) {
+    const cell = <span> {value == true ? (<ActiveBadge />) : value == false ? (<InactiveBadge />) : (<NotApplicableBadge />)}</span>
+    if (tooltip) return <Tooltip content={tooltip} color="invert" placement={tooltipPlacement}>{cell}</Tooltip>
+    else return cell;
 }
 
 function OrganizationUserCell({ userToOrganization, organizations, user, onClickRemove, onClickAdd }) {
@@ -298,6 +306,15 @@ function EtlApiTokenCell({ organization }) {
     )
 }
 
+function LightUserConfigCell({ organization }) {
+    return (
+        <div className="flex flex-row items-center justify-center">
+            {!organization.lightUserConfig ? <NotApplicableBadge /> :
+                <span className={organization.lightUserConfig?.isActive === false ? "opacity-50 line-through" : undefined}>{organization.lightUserConfig?.amount} / {organization.lightUserConfig.timeFrame}</span>}
+        </div>
+    )
+}
+
 function EmailCell({ user }) {
     const tooltipContent = useMemo(() => {
         let content = user.email;
@@ -406,4 +423,4 @@ function TaskStateCell({ value, color, tooltipValue }) {
     );
 }
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell }
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, LightUserConfigCell, ExportConsumptionAndDeleteCell, BadgeCell, NulledBadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell }

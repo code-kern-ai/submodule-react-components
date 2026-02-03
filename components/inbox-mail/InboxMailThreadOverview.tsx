@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { InboxMailThread, InboxMailThreadSupportProgressState } from "./types-mail";
 import { Tooltip } from "@nextui-org/react";
-import { MemoIconAlertTriangle, MemoIconCircleCheck, MemoIconHelpCircle, MemoIconProgressCheck, MemoIconUser } from "../kern-icons/icons";
+import { MemoIconAlertTriangle, MemoIconCircleCheck, MemoIconHelpCircle, MemoIconProgressCheck, MemoIconUser, MemoIconUsers } from "../kern-icons/icons";
 import { formatDisplayTimestamp } from "@/submodules/javascript-functions/date-parser";
 
 interface InboxMailThreadOverviewProps {
@@ -61,10 +61,17 @@ export default function InboxMailThreadOverview(props: InboxMailThreadOverviewPr
 
                 <div className="grow min-w-0">
                     <div className="flex items-start justify-between gap-x-2 flex-nowrap">
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-x-2">
                             <div className="text-gray-800 font-medium truncate mt-0.5">
                                 {displayName ?? `<${t("inboxMail.unknownUser")}>`}
                             </div>
+                            {props.isAdmin && (
+                                <Tooltip content={`Org: ${props.thread.organizationName}`} placement="top" color="invert">
+                                    <div className="flex items-center justify-center text-gray-500 cursor-help">
+                                        <MemoIconUsers className="h-4 w-4" />
+                                    </div>
+                                </Tooltip>
+                            )}
                             {unreadMailCount > 0 && (
                                 <span className="ml-2 inline-flex items-center justify-center bg-slate-400 text-white text-[0.625rem] font-semibold rounded-full h-4 min-w-4 px-1.5 whitespace-nowrap">
                                     {unreadMailCount} {t("inboxMail.newBadge")}

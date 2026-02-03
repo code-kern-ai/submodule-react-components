@@ -41,6 +41,14 @@ export type InboxMailThread = {
     }
 }
 
+export type Settings = {
+    soundName?: string;
+    enabled?: boolean;
+    onlyForLongTasks: boolean;
+    onlyIfNotInFocus: boolean;
+}
+
+
 export type User = {
     id: string;
     organizationId: string;
@@ -52,6 +60,8 @@ export type User = {
     logoutUrl: string;
     isAdmin: boolean;
     autoLogoutMinutes: number;
+    soundSettings: Settings;
+    notificationSettings: Settings;
 }
 
 
@@ -60,3 +70,23 @@ export enum InboxMailThreadSupportProgressState {
     IN_PROGRESS = "IN_PROGRESS",
     RESOLVED = "RESOLVED"
 }
+
+export enum JumpDestination {
+    CONVERSATION = "CONVERSATION",
+    PROJECT = "PROJECT",
+    ORGANIZATION = "ORGANIZATION"
+}
+
+export enum InboxMailFilter {
+    ALL = "ALL",
+    UNREAD = "UNREAD",
+    IMPORTANT = "IMPORTANT",
+    SUPPORT_PENDING = "SUPPORT_PENDING",
+    SUPPORT_IN_PROGRESS = "SUPPORT_IN_PROGRESS",
+    SUPPORT_RESOLVED = "SUPPORT_RESOLVED",
+    ONLY_USER_THREADS = "ONLY_USER_THREADS",
+    ONLY_SYSTEM_THREADS = "ONLY_SYSTEM_THREADS"
+}
+
+export const SUPPORT_FILTERS = [InboxMailFilter.SUPPORT_PENDING, InboxMailFilter.SUPPORT_IN_PROGRESS, InboxMailFilter.SUPPORT_RESOLVED];
+export const THREAD_TYPE_FILTERS = [InboxMailFilter.ONLY_USER_THREADS, InboxMailFilter.ONLY_SYSTEM_THREADS];

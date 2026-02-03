@@ -1,5 +1,5 @@
 import { FetchType, jsonFetchWrapper } from "@/submodules/javascript-functions/basic-fetch";
-import { InboxMailThreadSupportProgressState } from "./types-mail";
+import { InboxMailFilter, InboxMailThreadSupportProgressState } from "./types-mail";
 import { convertCamelToSnakeCase } from "@/submodules/javascript-functions/case-types-parser";
 
 const url = `/refinery-gateway/api/v1`;
@@ -11,8 +11,13 @@ export function createInboxMailByThread(content: string, onResult: (result: any)
 }
 
 
-export function getInboxMailOverviewByThreadsPaginated(page: number, limit: number, onResult: (result: any) => void) {
-    const fetchUrl = `${url}/inbox-mail/overview?page=${page}&limit=${limit}`;
+export function getInboxMailOverviewByThreadsPaginated(page?: number, limit?: number, filters?: string[], onResult?: (result: any) => void) {
+    const searchParams = new URLSearchParams();
+    if (page !== undefined) searchParams.append("page", page.toString());
+    if (limit !== undefined) searchParams.append("limit", limit.toString());
+    if (filters?.length) filters.forEach(filter => searchParams.append("filters", filter));
+    const queryString = searchParams.toString();
+    const fetchUrl = `${url}/inbox-mail/overview${queryString ? `?${queryString}` : ""}`;
     jsonFetchWrapper(fetchUrl, FetchType.GET, onResult);
 }
 
@@ -86,4 +91,24 @@ export function addUserToOrganization(userMail: string, organizationName: string
 export function removeUserFromOrganization(userMail: string, onResult: (result: any) => void) {
     const finalUrl = `${url}/organization/remove-user-from-organization`;
     jsonFetchWrapper(finalUrl, FetchType.POST, onResult, JSON.stringify({ "user_mail": userMail }));
+}
+
+export function updateInboxMailThreadsUnreadByProject(threadId: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/inbox-mail/thread/${threadId}/unread/project`;
+    jsonFetchWrapper(finalUrl, FetchType.PUT, onResult);
+}
+
+export function updateInboxMailThreadsUnreadByContent(threadId: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/inbox-mail/thread/${threadId}/unread/content`;
+    jsonFetchWrapper(finalUrl, FetchType.PUT, onResult);
+}
+
+export function updateInboxMailThreadUnreadLast(threadId: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/inbox-mail/thread/${threadId}/unread-last`;
+    jsonFetchWrapper(finalUrl, FetchType.PUT, onResult);
+}
+
+export function deleteInboxMailThreadsSimilar(threadId: string, onResult: (result: any) => void) {
+    const finalUrl = `${url}/inbox-mail/thread/${threadId}/similar`;
+    jsonFetchWrapper(finalUrl, FetchType.DELETE, onResult);
 }
