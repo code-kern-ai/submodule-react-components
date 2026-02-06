@@ -41,6 +41,14 @@ export type InboxMailThread = {
     }
 }
 
+export type Settings = {
+    soundName?: string;
+    enabled?: boolean;
+    onlyForLongTasks: boolean;
+    onlyIfNotInFocus: boolean;
+}
+
+
 export type User = {
     id: string;
     organizationId: string;
@@ -52,6 +60,8 @@ export type User = {
     logoutUrl: string;
     isAdmin: boolean;
     autoLogoutMinutes: number;
+    soundSettings: Settings;
+    notificationSettings: Settings;
 }
 
 
