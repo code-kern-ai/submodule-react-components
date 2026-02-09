@@ -13,7 +13,7 @@ export function useSound(volume = 1) {
             audio = new Audio(src);
             audio.volume = volume;
             audio.onerror = () => {
-                console.error(`Failed to load audio: ${src}`);
+                console.error("Failed to load audio", src);
             };
             audioCache.set(src, audio);
         } else {
@@ -22,7 +22,7 @@ export function useSound(volume = 1) {
         }
         audioRef.current = audio;
         audio.play().catch((error) => {
-            console.error(`Failed to play audio: ${src}`, error);
+            console.error("Failed to play audio", src, error);
         });
     }, [volume]);
 
