@@ -159,7 +159,7 @@ export function useLocalTranslation(translations: Record<string, any>) {
         let current: any = translations;
 
         for (const p of parts) {
-            if (current[p] === undefined) return key;
+            if (current[p] === undefined || p === "__proto__" || p === "constructor" || p === "prototype") return key;
             current = current[p];
         }
 

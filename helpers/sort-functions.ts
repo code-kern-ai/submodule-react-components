@@ -63,8 +63,9 @@ export function getPropertyValue(obj: any, path: string) {
     const parts = path.split('.');
     let value = obj;
     for (let i = 0; i < parts.length; i++) {
-        if (value[parts[i]] == null) return null;
-        value = value[parts[i]];
+        const p = parts[i];
+        if (value[p] == null || p === "__proto__" || p === "constructor" || p === "prototype") return null;
+        value = value[p];
     }
     return value;
 }

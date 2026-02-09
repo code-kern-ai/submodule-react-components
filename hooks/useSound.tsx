@@ -22,7 +22,7 @@ export function useSound(volume = 1) {
         }
         audioRef.current = audio;
         audio.play().catch((error) => {
-            console.error(`Failed to play audio: ${src}`, error);
+            console.error("Failed to play audio", src, error);
         });
     }, [volume]);
 
