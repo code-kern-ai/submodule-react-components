@@ -1,3 +1,4 @@
+import { safeAccess } from "@/submodules/javascript-functions/general";
 import { SortDirection, SortKey, SortKeyIdx } from "../types/sort";
 
 
@@ -59,12 +60,13 @@ export function sortBySortKey(arr: any[], sortKey: SortKey) {
 
 export function getPropertyValue(obj: any, path: string) {
     if (!obj || !path) return null;
-    if (path.indexOf('.') == -1) return obj[path];
+    if (path.indexOf('.') == -1) return safeAccess(obj, path);
     const parts = path.split('.');
     let value = obj;
     for (let i = 0; i < parts.length; i++) {
-        if (value[parts[i]] == null) return null;
-        value = value[parts[i]];
+        const next = safeAccess(value, parts[i]);
+        if (next == null) return null;
+        value = next;
     }
     return value;
 }
