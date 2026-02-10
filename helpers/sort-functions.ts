@@ -1,3 +1,4 @@
+import { safeAccess } from "@/submodules/javascript-functions/general";
 import { SortDirection, SortKey, SortKeyIdx } from "../types/sort";
 
 
@@ -63,8 +64,8 @@ export function getPropertyValue(obj: any, path: string) {
     const parts = path.split('.');
     let value = obj;
     for (let i = 0; i < parts.length; i++) {
-        if (value[parts[i]] == null) return null;
-        value = value[parts[i]];
+        if (safeAccess(value, parts[i]) == null) return null;
+        value = safeAccess(value, parts[i]);
     }
     return value;
 }
