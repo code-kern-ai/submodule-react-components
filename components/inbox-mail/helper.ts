@@ -1,6 +1,7 @@
 import { InboxMailThread, User } from "./types-mail";
 import { IconBug, IconUserOff } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { safeAccess } from "@/submodules/javascript-functions/general";
 import { getNewInboxMailsInfo } from "./service-mail";
 
 export const MAIL_LIMIT_PER_PAGE = 8;
@@ -159,8 +160,8 @@ export function useLocalTranslation(translations: Record<string, any>) {
         let current: any = translations;
 
         for (const p of parts) {
-            if (current[p] === undefined) return key;
-            current = current[p];
+            if (safeAccess(current, p) === undefined) return key;
+            current = safeAccess(current, p);
         }
 
         return current;
