@@ -1,4 +1,5 @@
 import { useRef, useCallback } from "react";
+import { safeConsoleError } from "../helpers/safe-log";
 
 const audioCache = new Map<string, HTMLAudioElement>();
 
@@ -13,7 +14,7 @@ export function useSound(volume = 1) {
             audio = new Audio(src);
             audio.volume = volume;
             audio.onerror = () => {
-                console.error(`Failed to load audio: ${src}`);
+                safeConsoleError("Failed to load audio", src);
             };
             audioCache.set(src, audio);
         } else {
@@ -22,7 +23,7 @@ export function useSound(volume = 1) {
         }
         audioRef.current = audio;
         audio.play().catch((error) => {
-            console.error(`Failed to play audio: ${src}`, error);
+            safeConsoleError("Failed to play audio", src, error);
         });
     }, [volume]);
 

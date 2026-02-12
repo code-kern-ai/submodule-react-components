@@ -1,0 +1,302 @@
+---
+description: Guidelines for using KernTable component
+alwaysApply: true
+globs:
+  - "*"
+---
+
+# KernTable Component Guidelines
+
+The `KernTable` component is a reusable table component that provides sorting, cell rendering, and data display functionality.
+
+## Import
+
+```typescript
+import KernTable from "@/submodules/react-components/components/kern-table/KernTable";
+```
+
+## Props Structure
+
+### KernTableProps
+
+```typescript
+{
+  headers: Header[];
+  values?: any[][];
+  config?: {
+    sortKeyIdx?: SortKeyIdx;
+    onClickSortIdx?: (idx: number) => void;
+    addBorder?: boolean;
+    noEntriesText?: string;
+  }
+}
+```
+
+### Header Structure
+
+Each header object should have:
+- `column`: string - Display text for the column header
+- `id`: string - Unique identifier for the column
+- `hasSort?`: boolean - Whether the column is sortable
+- `hasCheckboxes?`: boolean - Whether to show checkboxes in the header
+- `checked?`: boolean - Checkbox checked state
+- `onChange?`: function - Checkbox change handler
+- `tooltip?`: string - Tooltip text for the header
+- `wrapWhitespace?`: boolean - Whether to wrap whitespace in cells
+
+## Implementation Pattern
+
+### 1. Define Table Headers
+
+Create a constant array of header objects:
+
+```typescript
+export const TABLE_HEADERS = [
+  { column: "Column Name", id: "columnId", hasSort: true },
+  { column: "Date Column", id: "dateColumn", hasSort: true },
+  // ... more headers
+];
+```
+
+### 2. Prepare Table Body Data
+
+Create a preparation function that transforms raw data into table row format:
+
+```typescript
+import { 
+  toTableColumnText, 
+  toTableColumnDate, 
+  toTableColumnComponent 
+} from "@/submodules/react-components/helpers/kern-table-helper";
+
+export function prepareTableBody(data: DataType[], callback: Function) {
+  if (!data || data.length === 0) return [];
+  return data.map((item) => [
+    toTableColumnText(item.text),
+    toTableColumnDate(item.date),
+    toTableColumnComponent("ComponentName", item.value, { /* props */ })
+  ]);
+}
+```
+
+### 3. Define Default Sort Key
+
+Create a default sort key constant:
+
+```typescript
+import { SortKeyIdx } from "@/submodules/react-components/types/sort";
+import { getDefaultSortKey } from "@/src/util/helper-functions";
+
+export const DEFAULT_SORT_KEY: SortKeyIdx = getDefaultSortKey();
+```
+
+### 4. Component Implementation
+
+Use the following pattern in your table component:
+
+```typescript
+import { useCallback, useMemo, useState } from "react";
+import { useRefState } from "@/submodules/react-components/hooks/useRefState";
+import { useRefFor } from "@/submodules/react-components/hooks/useRefFor";
+import { 
+  nextSortDirectionByIdx, 
+  sortBySortKeyIdx, 
+  sortPreppedArrayByIdx 
+} from "@/submodules/react-components/helpers/sort-functions";
+import { SortDirection, SortKeyIdx } from "@/submodules/react-components/types/sort";
+
+export default function MyTable(props: MyTableProps) {
+  const { state: sortKey, setState: setSortKey, ref: sortKeyRef } = 
+    useRefState(DEFAULT_SORT_KEY);
+
+  const preparedValues = useMemo(() => {
+    const values = prepareTableBody(props.data, callback);
+    sortBySortKeyIdx(values, sortKeyRef.current);
+    return values;
+  }, [props.data]);
+
+  const preparedValuesRef = useRefFor(preparedValues);
+
+  const tableConfig = useMemo(() => {
+    function sortByPropertyIdx(idx: number) {
+      if (!preparedValuesRef.current || preparedValuesRef.current.length === 0) return;
+
+      let newSortKey: SortKeyIdx;
+      if (nextSortDirectionByIdx(idx, sortKey) === SortDirection.NO_SORT) {
+        newSortKey = { ...DEFAULT_SORT_KEY };
+        if (sortKey.idx === newSortKey.idx) newSortKey.direction = SortDirection.ASC;
+        sortBySortKeyIdx(preparedValuesRef.current, newSortKey);
+      } else {
+        newSortKey = sortPreppedArrayByIdx(preparedValuesRef.current, idx, sortKey);
+      }
+      setSortKey(newSortKey);
+    }
+
+    return {
+      sortKeyIdx: sortKey,
+      onClickSortIdx: (idx: number) => sortByPropertyIdx(idx),
+      noEntriesText: "No entries available."
+    };
+  }, [sortKey]);
+
+  return (
+    <div className="px-4 sm:px-6 lg:px-8 md:mt-0">
+      <div className="flex flex-col">
+        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block min-w-full py-2 align-middle">
+            <div className="overflow-hidden border border-gray-200 rounded-b-lg">
+              <KernTable
+                headers={TABLE_HEADERS}
+                values={preparedValues}
+                config={tableConfig}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+## Helper Functions
+
+Use helper functions from `kern-table-helper` to create column data:
+
+- `toTableColumnText(value: string)` - For text columns
+- `toTableColumnNumber(value: number)` - For numeric columns
+- `toTableColumnDate(value: string, onlyDate?: boolean)` - For date columns
+- `toTableColumnComponent(component: string, sortValue: any, props?: any)` - For custom cell components
+- `toTableColumnCheckbox(value: boolean, valueChange?: () => void)` - For checkbox columns
+- `toTableColumnInputDate(value: string, valueChange: (event) => void)` - For date input columns
+- `toTableColumnDropdown(value: string, options: any[], selectedOption?: (option: any) => void, disabled?: boolean)` - For dropdown columns
+- `extendEditFunction(column: any, editFunction: () => void)` - Add edit functionality to a column
+
+## Sorting
+
+### SortKeyIdx Pattern
+
+Use `SortKeyIdx` (index-based sorting) for prepared table data:
+
+```typescript
+type SortKeyIdx = {
+  idx: number;
+  dataType: string;
+  direction: SortDirection;
+};
+```
+
+### Sort Functions
+
+- `sortBySortKeyIdx(arr: any[], sortKey: SortKeyIdx)` - Sort prepared array by sort key
+- `sortPreppedArrayByIdx(arr: any[][], idx: number, sortKey: SortKeyIdx)` - Sort and return new sort key
+- `nextSortDirectionByIdx(idx: number, sortKey: SortKeyIdx)` - Get next sort direction
+
+### Sort Direction Cycle
+
+Sorting cycles through: `ASC` → `DESC` → `NO_SORT` → `ASC`
+
+When `NO_SORT` is reached, reset to default sort key.
+
+## State Management
+
+### useRefState
+
+Use `useRefState` for sort key state to maintain a ref alongside state:
+
+```typescript
+const { state: sortKey, setState: setSortKey, ref: sortKeyRef } = 
+  useRefState(DEFAULT_SORT_KEY);
+```
+
+### useRefFor
+
+Use `useRefFor` to create a ref for prepared values:
+
+```typescript
+const preparedValuesRef = useRefFor(preparedValues);
+```
+
+This ensures the sort function always has access to the latest prepared values.
+
+## Performance Optimization
+
+- Use `useMemo` for prepared values to avoid unnecessary recalculations
+- Use `useMemo` for table config to prevent recreating sort handlers
+- Sort prepared values in the `useMemo` dependency on data changes
+
+## Empty State
+
+### Using config.noEntriesText (Recommended)
+
+The `KernTable` component automatically uses `NoTableEntriesYet` when the values array is empty and `config.noEntriesText` is provided:
+
+```typescript
+const tableConfig = useMemo(() => {
+  return {
+    sortKeyIdx: sortKey,
+    onClickSortIdx: (idx: number) => sortByPropertyIdx(idx),
+    noEntriesText: "No entries available." // This will use NoTableEntriesYet internally
+  };
+}, [sortKey]);
+
+<KernTable
+  headers={TABLE_HEADERS}
+  values={preparedValues}
+  config={tableConfig}
+/>
+```
+
+When `values?.length === 0` and `config.noEntriesText` is set, `KernTable` automatically renders `NoTableEntriesYet` with the provided text.
+
+### Using NoTableEntriesYet Directly
+
+If you need more control over the empty state, you can use `NoTableEntriesYet` directly:
+
+```typescript
+import { NoTableEntriesYet } from "@/submodules/react-components/components/NoTableEntriesYet";
+
+// In your component render:
+{props.data?.length > 0 ? (
+  <KernTable headers={headers} values={preparedValues} config={tableConfig} />
+) : (
+  <div className="p-5 text-sm text-gray-500">No entries available.</div>
+)}
+```
+
+### NoTableEntriesYet Props
+
+```typescript
+type NoTableEntriesYetProps = {
+  tableColumns: number;              // Required: Number of columns to span
+  text?: string;                      // Text to display (default: 'No data yet')
+  heightClass?: string;               // Height class (default: 'h-16')
+  backgroundColorClass?: string;       // Background color (default: 'bg-gray-50')
+  textColorClass?: string;            // Text color (default: 'text-gray-700')
+  marginBottomClass?: string;         // Margin bottom class (default: '')
+  loading?: boolean;                  // Show loading spinner (default: false)
+  loadingColorClass?: string;         // Loading spinner color class
+}
+```
+
+**Note**: Prefer using `config.noEntriesText` in `KernTable` config rather than manually rendering `NoTableEntriesYet`, as it's simpler and maintains consistency.
+
+## Cell Components
+
+Available cell components include:
+- `BadgeCell`, `IconCell`, `LinkCell`, `EmailCell`
+- `DeleteCell`, `ViewCell`, `EditIntegrationCell`
+- `LevelCell`, `StatusModelCell`, `TaskStateCell`
+- And many more - see `CellComponents.tsx` for full list
+
+Use `toTableColumnComponent` with the component name and required props.
+
+## Best Practices
+
+1. **Separate Concerns**: Keep table preparation logic in separate utility files (`util/table-preparations/`)
+2. **Consistent Naming**: Use `TABLE_HEADERS` and `prepareTableBody` naming convention
+3. **Type Safety**: Define proper TypeScript interfaces for table props
+4. **Memoization**: Always memoize prepared values and table config
+5. **Default Sort**: Always define and use a default sort key
+6. **Empty States**: Handle empty data with appropriate messaging
+7. **Ref Management**: Use refs for values accessed in callbacks to avoid stale closures

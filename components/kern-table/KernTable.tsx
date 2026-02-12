@@ -1,6 +1,6 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import { KernTableProps } from "../../types/kern-table";
-import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteCell, EditDeleteOrgButtonCell, EmailCell, EtlApiTokenCell, LightUserConfigCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, NulledBadgeCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteCell, EditDeleteOrgButtonCell, EmailCell, EtlApiTokenCell, LightUserConfigCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, NulledBadgeCell, DataBlockColumnDetailsCell } from "./CellComponents";
 import { Fragment, useMemo } from "react";
 import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
@@ -172,6 +172,8 @@ function ComponentMapper(cell: any) {
                     return <JumpToConversationAndAssignCell {...cell} />;
                 case 'TaskStateCell':
                     return <TaskStateCell {...cell} />;
+                case 'DataBlockColumnDetailsCell':
+                    return <DataBlockColumnDetailsCell {...cell} />;
                 case '@provided@':
                     return cell.jsx ?? <NotApplicableBadge />;
             }

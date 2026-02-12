@@ -30,6 +30,9 @@ export enum CurrentPage {
     ENTRY_LAYOUT = "ENTRY_LAYOUT",
     ADMIN_DASHBOARD_LAYOUT = "ADMIN_DASHBOARD_LAYOUT",
     EVALUATION_RUN_DETAILS = "EVALUATION_RUN_DETAILS",
+    DATA_BLOCKS = "DATA_BLOCKS",
+    DATA_BLOCKS_DETAILS = "DATA_BLOCKS_DETAILS",
+    DATA_BLOCKS_COLUMNS = "DATA_BLOCKS_COLUMNS",
 }
 
 export enum CurrentPageSubKey {
@@ -104,8 +107,13 @@ export const WHITELIST_LOOKUP_REFINERY = {
     },
     [CurrentPage.NOTIFICATION_CENTER]: {
         [CurrentPageSubKey.NONE]: ['notification_created', 'project_deleted', 'admin_message'],
-
-    }
+    },
+    [CurrentPage.DATA_BLOCKS_COLUMNS]: {
+        [CurrentPageSubKey.NONE]: ['data_blocks_created', 'data_blocks_updated', 'data_blocks_deleted', 'calculate_attribute'],
+    },
+    [CurrentPage.DATA_BLOCKS_DETAILS]: {
+        [CurrentPageSubKey.NONE]: ['calculate_attribute'],
+    },
 }
 
 export const WHITELIST_LOOKUP_COGNITION = {

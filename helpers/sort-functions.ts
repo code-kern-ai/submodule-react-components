@@ -1,3 +1,4 @@
+import { safeAccess } from "@/submodules/javascript-functions/general";
 import { SortDirection, SortKey, SortKeyIdx } from "../types/sort";
 
 
@@ -63,8 +64,8 @@ export function getPropertyValue(obj: any, path: string) {
     const parts = path.split('.');
     let value = obj;
     for (let i = 0; i < parts.length; i++) {
-        if (value[parts[i]] == null) return null;
-        value = value[parts[i]];
+        if (safeAccess(value, parts[i]) == null) return null;
+        value = safeAccess(value, parts[i]);
     }
     return value;
 }
@@ -124,16 +125,16 @@ export function sortBySortKeyIdx(arr: any[], sortKey: SortKeyIdx) {
 
 
 export function sortString(a: string, b: string, order: SortDirection) {
-    if (!a && a != '') return -1;
-    if (!b && b != '') return 1;
-    switch (order) {
-        case SortDirection.ASC:
-            return a.localeCompare(b);
-        case SortDirection.DESC:
-            return a.localeCompare(b) * -1;
-        case SortDirection.NO_SORT:
-            return 0;
-    }
+    if (order === SortDirection.NO_SORT) return 0;
+
+    const aNull = a == null;
+    const bNull = b == null;
+
+    if (aNull && bNull) return 0;
+    if (aNull) return order === SortDirection.ASC ? -1 : 1;
+    if (bNull) return order === SortDirection.ASC ? 1 : -1;
+
+    return order === SortDirection.ASC ? a.localeCompare(b) : a.localeCompare(b) * -1;
 }
 
 export function sortNumber(a: number, b: number, order: SortDirection) {
