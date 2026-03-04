@@ -96,6 +96,10 @@ export type KernDropdownProps = {
     forceOverwriteOpen?: boolean;
     truncateButtonName?: boolean;
     placeholder?: string;
+    /** Optional data-cy for the trigger button (e.g. for E2E tests). */
+    buttonDataCy?: string;
+    /** Optional data-cy for each option (same order as options; e.g. for E2E tests). */
+    optionDataCy?: string[];
 }
 
 export type AppSelectionDropdownProps = {
