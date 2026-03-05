@@ -2,10 +2,11 @@ import { dateAsUTCDate, parseUTC } from "@/submodules/javascript-functions/date-
 
 
 //edit function can be added to any column automatically adding an icon to the column if it exists (e.g. org table admin-dashboard)
-export function extendEditFunction(column: any, editFunction: () => void) {
+export function extendEditFunction(column: any, editFunction: () => void, useClickIcon: boolean = false) {
     return {
         ...column,
-        editFunction: editFunction
+        editFunction: editFunction,
+        useClickIcon: useClickIcon
     }
 }
 
