@@ -18,6 +18,7 @@ import React from "react";
  * @tooltipsArray {string[]} - The array of tooltips that will be applied to the dropdown items (needs to be the exact same length as the optionArray)
  * @tooltipArrayPlacement {string} - The placement of the tooltips in the dropdown items
  * @hasSearchBar {boolean} - If the dropdown has a search bar
+ * @clearSearchOnSelect {boolean} - If true, clears the search field after selecting an option (hasSearchBar)
  * @onSearchChange {function} - The function that will be called when the search bar value changes
  * @searchDefaultValue {string} - The default value of the search bar
  * @hasCheckboxes {boolean} - If the dropdown has checkboxes
@@ -64,6 +65,7 @@ export type KernDropdownProps = {
     tooltipsArray?: string[];
     tooltipArrayPlacement?: "bottom" | "left" | "right" | "top" | "topStart" | "topEnd" | "leftStart" | "leftEnd" | "bottomStart" | "bottomEnd" | "rightStart" | "rightEnd";
     hasSearchBar?: boolean;
+    clearSearchOnSelect?: boolean;
     onSearchChange?: (value: string) => void;
     searchDefaultValue?: string;
     hasCheckboxes?: boolean;

@@ -21,7 +21,22 @@ function isReload() {
 };
 
 const AUTH_BASE_URI = '/.ory/kratos/public/self-service/';
+
+const SKIP_LAST_CLOSED_ON_UNLOAD_SESSION_KEY = "autoLogoutSkipUnloadStamp";
+
+function markIntentionalBrowserLogout() {
+    try {
+        sessionStorage.setItem(SKIP_LAST_CLOSED_ON_UNLOAD_SESSION_KEY, "1");
+    } catch {
+    }
+    try {
+        localStorage.removeItem("lastClosedAt");
+    } catch {
+    }
+}
+
 function logout() {
+    markIntentionalBrowserLogout();
     const url = `${AUTH_BASE_URI}logout/browser`;
     jsonFetchWrapper(url, FetchType.GET, (result) => { window.location.href = result.logout_url });
 }
@@ -33,43 +48,65 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
     const progressBarRef = useRef(null);
 
     const lastInteractionRef = useRef(Date.now());
+    const inactivityConfigRef = useRef({ totalSeconds: 0, warnSeconds: 0 });
 
     useEffect(() => {
-        const resetTimer = () => {
-            lastInteractionRef.current = Date.now();
-            progressBarRef.current?.resetTimer();
+        try {
+            sessionStorage.removeItem(SKIP_LAST_CLOSED_ON_UNLOAD_SESSION_KEY);
+        } catch {
         }
+    }, []);
+
+    useEffect(() => {
+        const onInteractionReset = () => {
+            lastInteractionRef.current = Date.now();
+            const { totalSeconds, warnSeconds } = inactivityConfigRef.current;
+            if (!totalSeconds) return;
+            const inactiveSeconds = (Date.now() - lastInteractionRef.current) / 1000;
+            const secondsLeft = totalSeconds - inactiveSeconds;
+            const shouldShow = secondsLeft <= warnSeconds + 0.5;
+            setShowProgressBar(shouldShow);
+            if (shouldShow) {
+                progressBarRef.current?.resetTimer();
+            }
+        };
 
         const onKeyDownEvent = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
-            // used for the chat input (we want to trigger rest on typing)
             if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
-                resetTimer();
+                onInteractionReset();
             }
         };
-        window.addEventListener("click", resetTimer);
-        window.addEventListener("keydown", onKeyDownEvent)
+        window.addEventListener("click", onInteractionReset);
+        window.addEventListener("keydown", onKeyDownEvent);
         return () => {
-            window.removeEventListener("click", resetTimer);
-            window.removeEventListener("keydown", onKeyDownEvent)
+            window.removeEventListener("click", onInteractionReset);
+            window.removeEventListener("keydown", onKeyDownEvent);
         };
     }, []);
 
     useEffect(() => {
         const autoLogoutMinutes = props?.autoLogoutMinutes;
         if (!autoLogoutMinutes) {
+            inactivityConfigRef.current = { totalSeconds: 0, warnSeconds: 0 };
             setShowProgressBar(false);
             setRemainingMinutes(0);
             return;
         }
 
-        setRemainingMinutes(autoLogoutMinutes <= 5 ? autoLogoutMinutes : 5);
+        const totalMinutes = Number(autoLogoutMinutes);
+        const barDurationMinutes = totalMinutes <= 5 ? totalMinutes : 5;
+        setRemainingMinutes(barDurationMinutes);
+
+        const totalSeconds = totalMinutes * 60;
+        const warnSeconds = Math.min(5 * 60, totalSeconds);
+        inactivityConfigRef.current = { totalSeconds, warnSeconds };
 
         const checkInactivity = () => {
             const now = Date.now();
-            const inactiveMinutes = (now - lastInteractionRef.current) / 1000 / 60;
-            const minutesLeft = autoLogoutMinutes - inactiveMinutes;
-            setShowProgressBar(minutesLeft <= 5);
+            const inactiveSeconds = (now - lastInteractionRef.current) / 1000;
+            const secondsLeft = totalSeconds - inactiveSeconds;
+            setShowProgressBar(secondsLeft <= warnSeconds + 0.5);
         };
 
         checkInactivity();
@@ -100,6 +137,10 @@ export default function AutoLogoutProgressBar(props: AutoLogoutProgressBarProps)
             return;
         }
         const handleBeforeUnload = () => {
+            try {
+                if (sessionStorage.getItem(SKIP_LAST_CLOSED_ON_UNLOAD_SESSION_KEY)) return;
+            } catch {
+            }
             const nowIso = new Date().toISOString();
             if (!localStorage.getItem("lastClosedAt") && !completeCalled) localStorage.setItem("lastClosedAt", nowIso);
         };

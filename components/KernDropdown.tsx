@@ -28,6 +28,7 @@ export default function KernDropdown(props: KernDropdownProps) {
 
     const [defaultProps] = useDefaults<{ fontSizeClass: string }>(props, DEFAULTS);
     const forceOpenRef = useRefFor(props.forceOverwriteOpen);
+    const clearSearchAfterCloseRef = useRef(false);
 
     // catches all isOpen changes & sets the value if it is not forced to be open
     const setIsOpen = useCallback((value: boolean) => { if ((!value && !forceOpenRef.current) || value) setIsOpen_(value) }, [])
@@ -47,6 +48,14 @@ export default function KernDropdown(props: KernDropdownProps) {
     useEffect(() => {
         setSearchText(props.searchDefaultValue ?? '');
     }, [props.searchDefaultValue]);
+
+    useEffect(() => {
+        if (!isOpen && clearSearchAfterCloseRef.current) {
+            clearSearchAfterCloseRef.current = false;
+            const id = window.setTimeout(() => setSearchText(''), 100);
+            return () => clearTimeout(id);
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         const prepareOptions = prepareDropdownOptionsToArray(props.options, props.hasSearchBar, props.valuePropertyPath);
@@ -174,7 +183,11 @@ export default function KernDropdown(props: KernDropdownProps) {
         if (props.selectedOption) {
             if (props.hoverBoxList) setHoverBoxPosition(null);
             if (props.hasSearchBar) {
-                setSearchText(option);
+                if (props.clearSearchOnSelect) {
+                    clearSearchAfterCloseRef.current = true;
+                } else {
+                    setSearchText(option);
+                }
                 props.selectedOption(props.options[searchIndexes[index]]);
             } else {
                 props.selectedOption(props.options[index]);
