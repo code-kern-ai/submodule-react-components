@@ -1,4 +1,5 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
+import Pagination from "@/submodules/react-components/components/pagination/Pagination";
 import { KernTableProps } from "../../types/kern-table";
 import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteCell, EditDeleteOrgButtonCell, EmailCell, EtlApiTokenCell, LightUserConfigCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, NulledBadgeCell, DataBlockColumnDetailsCell } from "./CellComponents";
 import { Fragment, useMemo } from "react";
@@ -19,8 +20,8 @@ export default function KernTable(props: KernTableProps) {
         const x = props.headers.map((header, idx) => {
             if (!header.hasSort) return undefined;
             if (!props.config) return undefined;
-            if (props.config.sortKey && props.config.onClickSort) return () => props.config.onClickSort(header.id);
-            if (props.config.sortKeyIdx && props.config.onClickSortIdx) return () => props.config.onClickSortIdx(idx);
+            if (props.config.sortKey != null && props.config.onClickSort != null) return () => props.config.onClickSort(header.id);
+            if (props.config.sortKeyIdx != null && props.config.onClickSortIdx != null) return () => props.config.onClickSortIdx(idx);
             throw new Error("KernTable: No onClickSort or onClickSortIdx provided in config for sortable header: " + header.id);
             return undefined;
         })
@@ -30,7 +31,7 @@ export default function KernTable(props: KernTableProps) {
     const sortArrowLookup = useMemo(() => {
         if (!props.headers) return undefined;
         return props.headers.map((header, idx) => {
-            if (!props.config || !(props.config.sortKeyIdx || props.config.sortKey)) return undefined;
+            if (!props.config || (props.config.sortKeyIdx == null && props.config.sortKey == null)) return undefined;
             if (!header.hasSort) return undefined;
             if (props.config.sortKey) return <SortArrows sortKey={props.config.sortKey} property={header.id} />;
             if (props.config.sortKeyIdx) return <SortArrowsIdx sortKey={props.config.sortKeyIdx} idx={idx} />;
@@ -39,6 +40,7 @@ export default function KernTable(props: KernTableProps) {
     }, [props.config, props.headers])
 
     return (
+        <>
         <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config && props.config?.addBorder ? 'border border-gray-300' : ''}`}>
             <thead className="bg-gray-50">
                 <tr>
@@ -85,6 +87,8 @@ export default function KernTable(props: KernTableProps) {
                     </tr>))}
             </tbody>
         </table>
+        {props.pagination ? <Pagination {...props.pagination} /> : null}
+        </>
     )
 }
 

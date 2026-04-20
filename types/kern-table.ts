@@ -1,3 +1,4 @@
+import { PaginationProps } from "./pagination";
 import { SortKey, SortKeyIdx } from "./sort";
 
 export type KernTableProps = {
@@ -10,5 +11,7 @@ export type KernTableProps = {
         onClickSortIdx?: (idx: number) => void;
         addBorder?: boolean;
         noEntriesText?: string;
-    }
+    };
+    /** When set, renders {@link Pagination} below the table (e.g. server-driven paging). */
+    pagination?: PaginationProps;
 }

@@ -24,10 +24,12 @@ export default function Pagination(props: PaginationProps) {
         setCurrentPage(props.offset / props.limit + 1);
     }, [props.offset, props.limit]);
 
-    // Sync offset back to parent when currentPage changes
+    // Sync offset back to parent when currentPage changes.
+    // Do not list props.setOffset in deps: parent callbacks often change identity (e.g. when wrapping fetch);
+    // re-running would spam setOffset(0) and duplicate network requests.
     useEffect(() => {
         props.setOffset((currentPage - 1) * props.limit);
-    }, [currentPage, props.limit, props.setOffset]);
+    }, [currentPage, props.limit]);
 
     const handlePrevious = useCallback(() => {
         setCurrentPage(prev => prev - 1);
