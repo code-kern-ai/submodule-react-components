@@ -11,6 +11,7 @@ export type KernTableProps = {
         onClickSortIdx?: (idx: number) => void;
         addBorder?: boolean;
         noEntriesText?: string;
+        specificDesign?: boolean;
     };
     /** When set, renders {@link Pagination} below the table (e.g. server-driven paging). */
     pagination?: PaginationProps;

@@ -1,7 +1,8 @@
 import SortArrows from "@/submodules/react-components/components/kern-table/SortArrows";
 import Pagination from "@/submodules/react-components/components/pagination/Pagination";
+import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { KernTableProps } from "../../types/kern-table";
-import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, DeleteModelCell, DeleteCell, EditDeleteOrgButtonCell, EmailCell, EtlApiTokenCell, LightUserConfigCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, IconCell, JumpToConversationCell, LabelCell, LevelCell, MaxRowsColsCharsCell, ModelDateCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, ViewCell, ViewStackCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, NulledBadgeCell, DataBlockColumnDetailsCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, ConfigReleaseNotificationCell, ConversationsCountDotCell, ConversationsInitialMessageCell, ConversationsJumpToCell, ConversationsShowLogsCell, DataBlockColumnDetailsCell, DatasetOverviewActionsCell, DatasetOverviewCreatedAtCell, DatasetOverviewDescriptionCell, DatasetOverviewRowCheckboxCell, DeleteCell, DeleteModelCell, EditDeleteOrgButtonCell, EditIntegrationCell, EmailCell, EnvVarDescriptionCell, EnvVarEditCell, EtlApiTokenCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExpiredTokenCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, GraphRAGOverviewStateCell, GraphRAGSearchPickCreatedAtCell, GraphRAGSearchPickDescriptionCell, GraphRAGSearchPickNameCell, GraphRAGSearchPickSelectCell, GraphRAGSearchPickStateCell, IconCell, IntegrationsOverviewConfigsCell, IntegrationsOverviewEditCell, IntegrationsOverviewRefineryProjectCell, IntegrationsOverviewSharepointCell, IntegrationsOverviewShowCell, IntegrationsOverviewStateCell, IntegrationsOverviewSyncCell, JumpToConversationAndAssignCell, JumpToConversationCell, LabelCell, LevelCell, LightUserConfigCell, LinkCell, MaxRowsColsCharsCell, ModelDateCell, NulledBadgeCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, TaskStateCell, TruncateAndTooltipCell, ViewCell, ViewStackCell } from "./CellComponents";
 import { Fragment, useMemo } from "react";
 import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
@@ -12,6 +13,7 @@ import { MemoIconCell, MemoIconClick, MemoIconEdit } from "../kern-icons/icons";
 import SortArrowsIdx from "./SortArrowsIdx";
 
 export default function KernTable(props: KernTableProps) {
+    const legacy = props.config?.specificDesign === true;
     const length = useMemo(() => props.headers?.length || 5, [props.headers?.length]);
 
 
@@ -41,53 +43,82 @@ export default function KernTable(props: KernTableProps) {
 
     return (
         <>
-        <table className={`min-w-full divide-y divide-gray-300 rounded-b-lg ${props.config && props.config?.addBorder ? 'border border-gray-300' : ''}`}>
-            <thead className="bg-gray-50">
-                <tr>
-                    {props.headers.map((header, idx) => (
-                        <th scope="col"
-                            className={`px-3 py-2 text-center text-xs font-medium uppercase tracking-wide text-gray-500 ${header.hasSort ? 'hover:text-gray-700 cursor-pointer' : ''}`}
-                            id={header.id} key={header.id}
-                            onClick={onClickSortLookup[idx]}
-                        >
-                            {header.hasCheckboxes ? <>
-                                <input
-                                    type="checkbox"
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
-                                    checked={header.checked}
-                                    onChange={header.onChange}
-                                />
-                            </> : <div className="inline-flex flex-row items-center">
-                                {!header.tooltip ? header.column :
-                                    <div className="flex w-full justify-center">
-                                        <Tooltip
-                                            content={<MultilineTooltipAutoContent tooltip="True positives / (True positives + False positives)\nfor the reference data you labeled" splitOn="\n" />}
-                                            color="invert"
-                                            placement="top">Est. Precision</Tooltip>
-                                    </div>}
-                                {sortArrowLookup[idx]}
-                            </div>}
-                        </th>))}
-                </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-                {props.values?.length === 0 && props.config?.noEntriesText && <NoTableEntriesYet tableColumns={length} text={props.config.noEntriesText} marginBottomClass='-mb-4' />}
-                {props.values?.map((row, index) => (
-                    <tr key={index} className={index % 2 != 0 ? "bg-gray-50" : "bg-white"}>
-                        {row.map((cell, index) => {
-                            return <Fragment key={index}>
-                                <td className={"text-center px-3 py-2 text-sm text-gray-500 " + (props.headers[index].wrapWhitespace ? "whitespace-normal" : "whitespace-nowrap")}>
-                                    <div className="flex flex-row items-center justify-center gap-x-2">
-                                        <ComponentMapper {...cell} />
-                                        {cell.editFunction ? cell.useClickIcon ? <MemoIconClick className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} /> : <MemoIconEdit className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} /> : null}
-                                    </div>
-                                </td>
-                            </Fragment>
-                        })}
-                    </tr>))}
-            </tbody>
-        </table>
-        {props.pagination ? <Pagination {...props.pagination} /> : null}
+            <table className={combineClassNames(
+                'min-w-full divide-y divide-gray-300',
+                legacy && 'table-fixed',
+                !legacy && 'rounded-b-lg',
+                props.config?.addBorder && 'border border-gray-300',
+            )}>
+                <thead className={legacy ? '' : 'bg-gray-50'}>
+                    <tr>
+                        {props.headers.map((header, idx) => (
+                            <th scope="col"
+                                className={combineClassNames(
+                                    header.hasCheckboxes && legacy && 'px-3 py-4',
+                                    header.hasCheckboxes && !legacy && 'px-3 py-2 text-center text-xs font-medium uppercase tracking-wide text-gray-500',
+                                    !header.hasCheckboxes && legacy && 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900',
+                                    !header.hasCheckboxes && !legacy && 'px-3 py-2 text-center text-xs font-medium uppercase tracking-wide text-gray-500',
+                                    header.hasSort && 'cursor-pointer hover:text-gray-700',
+                                )}
+                                id={header.id} key={header.id}
+                                onClick={onClickSortLookup[idx]}
+                            >
+                                {header.hasCheckboxes ? (
+                                    legacy ? (
+                                        <div className="relative px-7 sm:w-12 sm:px-6">
+                                            <input
+                                                type="checkbox"
+                                                className="absolute left-4 top-1/2 -mt-2 h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                                checked={header.checked}
+                                                onChange={header.onChange}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <input
+                                            type="checkbox"
+                                            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                            checked={header.checked}
+                                            onChange={header.onChange}
+                                        />
+                                    )
+                                ) : <div className={combineClassNames('inline-flex flex-row items-center', !legacy && 'w-full justify-center')}>
+                                    {!header.tooltip ? header.column :
+                                        <div className={combineClassNames('flex w-full', legacy ? 'justify-start' : 'justify-center')}>
+                                            <Tooltip
+                                                content={<MultilineTooltipAutoContent tooltip="True positives / (True positives + False positives)\nfor the reference data you labeled" splitOn="\n" />}
+                                                color="invert"
+                                                placement="top">Est. Precision</Tooltip>
+                                        </div>}
+                                    {sortArrowLookup[idx]}
+                                </div>}
+                            </th>))}
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                    {props.values?.length === 0 && props.config?.noEntriesText && <NoTableEntriesYet tableColumns={length} text={props.config.noEntriesText} marginBottomClass='-mb-4' />}
+                    {props.values?.map((row, index) => (
+                        <tr key={index} className={legacy ? 'bg-white' : (index % 2 != 0 ? "bg-gray-50" : "bg-white")}>
+                            {row.map((cell, index) => {
+                                return <Fragment key={index}>
+                                    <td className={combineClassNames(
+                                        'text-sm text-gray-500',
+                                        legacy ? 'px-3 py-4 text-left' : 'px-3 py-2 text-center',
+                                        props.headers[index].wrapWhitespace ? 'whitespace-normal' : 'whitespace-nowrap',
+                                    )}>
+                                        <div className={combineClassNames(
+                                            'flex flex-row items-center gap-x-2',
+                                            legacy ? 'justify-start' : 'justify-center',
+                                        )}>
+                                            <ComponentMapper {...cell} />
+                                            {cell.editFunction ? cell.useClickIcon ? <MemoIconClick className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} /> : <MemoIconEdit className="h-5 w-5 text-gray-500 cursor-pointer" onClick={cell.editFunction} /> : null}
+                                        </div>
+                                    </td>
+                                </Fragment>
+                            })}
+                        </tr>))}
+                </tbody>
+            </table>
+            {props.pagination ? <Pagination {...props.pagination} /> : null}
         </>
     )
 }
@@ -178,6 +209,52 @@ function ComponentMapper(cell: any) {
                     return <TaskStateCell {...cell} />;
                 case 'DataBlockColumnDetailsCell':
                     return <DataBlockColumnDetailsCell {...cell} />;
+                case 'DatasetOverviewRowCheckboxCell':
+                    return <DatasetOverviewRowCheckboxCell {...cell} />;
+                case 'DatasetOverviewCreatedAtCell':
+                    return <DatasetOverviewCreatedAtCell {...cell} />;
+                case 'DatasetOverviewDescriptionCell':
+                    return <DatasetOverviewDescriptionCell {...cell} />;
+                case 'DatasetOverviewActionsCell':
+                    return <DatasetOverviewActionsCell {...cell} />;
+                case 'IntegrationsOverviewStateCell':
+                    return <IntegrationsOverviewStateCell {...cell} />;
+                case 'IntegrationsOverviewRefineryProjectCell':
+                    return <IntegrationsOverviewRefineryProjectCell {...cell} />;
+                case 'IntegrationsOverviewConfigsCell':
+                    return <IntegrationsOverviewConfigsCell {...cell} />;
+                case 'IntegrationsOverviewEditCell':
+                    return <IntegrationsOverviewEditCell {...cell} />;
+                case 'IntegrationsOverviewSyncCell':
+                    return <IntegrationsOverviewSyncCell {...cell} />;
+                case 'IntegrationsOverviewSharepointCell':
+                    return <IntegrationsOverviewSharepointCell {...cell} />;
+                case 'IntegrationsOverviewShowCell':
+                    return <IntegrationsOverviewShowCell {...cell} />;
+                case 'ConversationsInitialMessageCell':
+                    return <ConversationsInitialMessageCell {...cell} />;
+                case 'ConversationsCountDotCell':
+                    return <ConversationsCountDotCell {...cell} />;
+                case 'ConversationsShowLogsCell':
+                    return <ConversationsShowLogsCell {...cell} />;
+                case 'ConversationsJumpToCell':
+                    return <ConversationsJumpToCell {...cell} />;
+                case 'EnvVarDescriptionCell':
+                    return <EnvVarDescriptionCell {...cell} />;
+                case 'EnvVarEditCell':
+                    return <EnvVarEditCell {...cell} />;
+                case 'GraphRAGSearchPickNameCell':
+                    return <GraphRAGSearchPickNameCell {...cell} />;
+                case 'GraphRAGSearchPickDescriptionCell':
+                    return <GraphRAGSearchPickDescriptionCell {...cell} />;
+                case 'GraphRAGSearchPickStateCell':
+                    return <GraphRAGSearchPickStateCell {...cell} />;
+                case 'GraphRAGSearchPickCreatedAtCell':
+                    return <GraphRAGSearchPickCreatedAtCell {...cell} />;
+                case 'GraphRAGSearchPickSelectCell':
+                    return <GraphRAGSearchPickSelectCell {...cell} />;
+                case 'GraphRAGOverviewStateCell':
+                    return <GraphRAGOverviewStateCell {...cell} />;
                 case '@provided@':
                     return cell.jsx ?? <NotApplicableBadge />;
             }
