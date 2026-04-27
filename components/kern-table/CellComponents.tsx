@@ -415,15 +415,7 @@ function DatasetOverviewDescriptionCell({ value }: { value: string }) {
     return <span className="max-w-sm truncate text-gray-500">{value}</span>;
 }
 
-function DatasetOverviewActionsCell({
-    onEdit,
-    onDisplayConfig,
-    onShow,
-}: {
-    onEdit: () => void;
-    onDisplayConfig: () => void;
-    onShow: () => void;
-}) {
+function DatasetOverviewActionsCell({ onEdit, onDisplayConfig, onShow }: { onEdit: () => void; onDisplayConfig: () => void; onShow: () => void }) {
     return (
         <div className="flex flex-row items-center justify-center gap-x-2">
             <KernButton
@@ -442,15 +434,7 @@ function DatasetOverviewActionsCell({
     );
 }
 
-function IntegrationOverviewStateTimeline({
-    state,
-    startedAt,
-    finishedAt,
-}: {
-    state: IntegrationState;
-    startedAt: string;
-    finishedAt?: string;
-}) {
+function IntegrationOverviewStateTimeline({ state, startedAt, finishedAt }: { state: IntegrationState; startedAt: string; finishedAt?: string }) {
     const [timeElapsed, setTimeElapsed] = useState(0);
 
     useEffect(() => {
@@ -504,19 +488,7 @@ function IntegrationOverviewStateTimeline({
     );
 }
 
-function IntegrationsOverviewStateCell({
-    state,
-    startedAt,
-    finishedAt,
-    failedTooltip,
-    clockTooltip,
-}: {
-    state: IntegrationState;
-    startedAt: string;
-    finishedAt?: string;
-    failedTooltip: string;
-    clockTooltip: string;
-}) {
+function IntegrationsOverviewStateCell({ state, startedAt, finishedAt, failedTooltip, clockTooltip }: { state: IntegrationState; startedAt: string; finishedAt?: string; failedTooltip: string; clockTooltip: string }) {
     const timeline = (
         <IntegrationOverviewStateTimeline state={state} startedAt={startedAt} finishedAt={finishedAt} />
     );
@@ -538,13 +510,7 @@ function IntegrationsOverviewStateCell({
     );
 }
 
-function IntegrationsOverviewRefineryProjectCell({
-    projectLabel,
-    showMissingProjectHint,
-}: {
-    projectLabel: string;
-    showMissingProjectHint: boolean;
-}) {
+function IntegrationsOverviewRefineryProjectCell({ projectLabel, showMissingProjectHint }: { projectLabel: string; showMissingProjectHint: boolean }) {
     return (
         <div className="flex flex-wrap items-center justify-center gap-x-1 text-gray-500">
             {showMissingProjectHint ? (
@@ -580,13 +546,7 @@ function IntegrationsOverviewEditCell({ onEdit, disabled }: { onEdit: () => void
     );
 }
 
-function IntegrationsOverviewSyncCell({
-    isSynced,
-    onSync,
-}: {
-    isSynced: boolean | null;
-    onSync: () => void;
-}) {
+function IntegrationsOverviewSyncCell({ isSynced, onSync }: { isSynced: boolean | null; onSync: () => void }) {
     return (
         <Tooltip
             color="invert"
@@ -605,15 +565,7 @@ function IntegrationsOverviewSyncCell({
     );
 }
 
-function IntegrationsOverviewSharepointCell({
-    syncActive,
-    syncBusy,
-    onAdjustSync,
-}: {
-    syncActive: boolean;
-    syncBusy: boolean;
-    onAdjustSync: () => void;
-}) {
+function IntegrationsOverviewSharepointCell({ syncActive, syncBusy, onAdjustSync }: { syncActive: boolean; syncBusy: boolean; onAdjustSync: () => void }) {
     return (
         <div className="flex items-center justify-center">
             <div className="flex items-center gap-x-2 rounded-md border border-gray-200 bg-gray-50 pl-2">
@@ -654,13 +606,7 @@ function ConversationsInitialMessageCell({ value }: { value: string }) {
     );
 }
 
-function ConversationsCountDotCell({
-    count,
-    variant,
-}: {
-    count: number;
-    variant: 'green' | 'red';
-}) {
+function ConversationsCountDotCell({ count, variant }: { count: number; variant: 'green' | 'red' }) {
     const dotClass = variant === 'green' ? 'bg-green-500' : 'bg-red-500';
     return (
         <div className="flex items-center justify-center gap-x-2">
@@ -707,13 +653,7 @@ function GraphRAGSearchPickStateCell({ state }: { state: string }) {
     return <span className="text-gray-500">{state}</span>;
 }
 
-function GraphRAGSearchPickCreatedAtCell({
-    displayValue,
-    isHighlighted,
-}: {
-    displayValue: string;
-    isHighlighted: boolean;
-}) {
+function GraphRAGSearchPickCreatedAtCell({ displayValue, isHighlighted }: { displayValue: string; isHighlighted: boolean }) {
     return (
         <span className={combineClassNames('text-gray-500', isHighlighted && 'font-medium text-indigo-700')}>
             {displayValue}
@@ -721,15 +661,7 @@ function GraphRAGSearchPickCreatedAtCell({
     );
 }
 
-function GraphRAGSearchPickSelectCell({
-    isRowSelected,
-    disabled,
-    onSelect,
-}: {
-    isRowSelected: boolean;
-    disabled: boolean;
-    onSelect: () => void;
-}) {
+function GraphRAGSearchPickSelectCell({ isRowSelected, disabled, onSelect }: { isRowSelected: boolean; disabled: boolean; onSelect: () => void }) {
     return (
         <ButtonAsText
             text={isRowSelected ? 'Selected' : 'Select'}

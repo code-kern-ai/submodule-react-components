@@ -13,6 +13,5 @@ export type KernTableProps = {
         noEntriesText?: string;
         specificDesign?: boolean;
     };
-    /** When set, renders {@link Pagination} below the table (e.g. server-driven paging). */
     pagination?: PaginationProps;
 }
