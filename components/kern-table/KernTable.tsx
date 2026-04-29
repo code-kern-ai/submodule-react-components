@@ -2,7 +2,7 @@ import SortArrows from "@/submodules/react-components/components/kern-table/Sort
 import Pagination from "@/submodules/react-components/components/pagination/Pagination";
 import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { KernTableProps } from "../../types/kern-table";
-import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, ConfigReleaseNotificationCell, ConversationsCountDotCell, ConversationsInitialMessageCell, ConversationsJumpToCell, ConversationsShowLogsCell, DataBlockColumnDetailsCell, DatasetOverviewActionsCell, DatasetOverviewCreatedAtCell, DatasetOverviewDescriptionCell, DatasetOverviewRowCheckboxCell, DeleteCell, DeleteModelCell, EditDeleteOrgButtonCell, EditIntegrationCell, EmailCell, EnvVarDescriptionCell, EnvVarEditCell, EtlApiTokenCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExpiredTokenCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, GraphRAGOverviewStateCell, GraphRAGSearchPickCreatedAtCell, GraphRAGSearchPickDescriptionCell, GraphRAGSearchPickNameCell, GraphRAGSearchPickSelectCell, GraphRAGSearchPickStateCell, IconCell, IntegrationsOverviewConfigsCell, IntegrationsOverviewEditCell, IntegrationsOverviewRefineryProjectCell, IntegrationsOverviewSharepointCell, IntegrationsOverviewShowCell, IntegrationsOverviewStateCell, IntegrationsOverviewSyncCell, JumpToConversationAndAssignCell, JumpToConversationCell, LabelCell, LevelCell, LightUserConfigCell, LinkCell, MaxRowsColsCharsCell, ModelDateCell, NulledBadgeCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, TaskStateCell, TruncateAndTooltipCell, ViewCell, ViewStackCell } from "./CellComponents";
+import { AbortSessionButtonCell, ArchiveReasonCell, BadgeCell, CancelTaskCell, CommentsCell, ConfigCell, ConfigReleaseNotificationCell, ConversationsCountDotCell, ConversationsInitialMessageCell, ConversationsJumpToCell, ConversationsShowLogsCell, DataBlockColumnDetailsCell, DatasetOverviewActionsCell, DatasetOverviewCreatedAtCell, DatasetOverviewDescriptionCell, DatasetOverviewRowCheckboxCell, DeleteCell, DeleteModelCell, EditDeleteOrgButtonCell, EditIntegrationCell, EmailCell, EnvVarDescriptionCell, EnvVarEditCell, EtlApiTokenCell, EvaluationRunDetailsCell, EvaluationRunStateCell, ExpiredTokenCell, ExportConsumptionAndDeleteCell, ExternalLinkCell, FeedbackMessageCell, FeedbackMessageTextCell, FileSizeCell, GraphRAGOverviewStateCell, GraphRAGSearchPickCreatedAtCell, GraphRAGSearchPickDescriptionCell, GraphRAGSearchPickNameCell, GraphRAGSearchPickSelectCell, GraphRAGSearchPickStateCell, IconCell, IntegrationsOverviewConfigsCell, IntegrationsOverviewEditCell, IntegrationsOverviewRefineryProjectCell, IntegrationsOverviewSharepointCell, IntegrationsOverviewShowCell, IntegrationsOverviewStateCell, IntegrationsOverviewSyncCell, JumpToConversationAndAssignCell, JumpToConversationCell, LabelCell, LevelCell, LightUserConfigCell, LinkCell, MarkdownOverviewDownloadCell, MarkdownOverviewParsingScopeCell, MarkdownOverviewReviewedCell, MarkdownOverviewRunCell, MarkdownOverviewShowCell, MarkdownOverviewStateCell, MaxRowsColsCharsCell, ModelDateCell, NulledBadgeCell, OrganizationAndUsersCell, OrganizationUserCell, ProjectNameTaskCell, RemoteVersionCell, StatusModelCell, TaskStateCell, TruncateAndTooltipCell, ViewCell, ViewStackCell } from "./CellComponents";
 import { Fragment, useMemo } from "react";
 import KernDropdown from "../KernDropdown";
 import { NotApplicableBadge } from "@/submodules/react-components/components/Badges";
@@ -255,8 +255,18 @@ function ComponentMapper(cell: any) {
                     return <GraphRAGSearchPickSelectCell {...cell} />;
                 case 'GraphRAGOverviewStateCell':
                     return <GraphRAGOverviewStateCell {...cell} />;
-                case '@provided@':
-                    return cell.jsx ?? <NotApplicableBadge />;
+                case 'MarkdownOverviewStateCell':
+                    return <MarkdownOverviewStateCell {...cell} />;
+                case 'MarkdownOverviewReviewedCell':
+                    return <MarkdownOverviewReviewedCell {...cell} />;
+                case 'MarkdownOverviewParsingScopeCell':
+                    return <MarkdownOverviewParsingScopeCell {...cell} />;
+                case 'MarkdownOverviewRunCell':
+                    return <MarkdownOverviewRunCell {...cell} />;
+                case 'MarkdownOverviewDownloadCell':
+                    return <MarkdownOverviewDownloadCell {...cell} />;
+                case 'MarkdownOverviewShowCell':
+                    return <MarkdownOverviewShowCell {...cell} />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>

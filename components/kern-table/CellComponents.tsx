@@ -10,7 +10,7 @@ import { AdminMessageLevel } from "../../types/admin-messages";
 import { FeedbackType, IntegrationState, IntegrationStateColor, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
 import { EvaluationRunState } from "../../types/evaluationRun";
-import { MemoIconAdjustmentsHorizontal, MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCircleCheck, MemoIconCircleCheckFilled, MemoIconCircleOff, MemoIconClock, MemoIconEdit, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconRefresh, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX } from "../kern-icons/icons";
+import { MemoIconAdjustmentsHorizontal, MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCheck, MemoIconCircleCheck, MemoIconCircleCheckFilled, MemoIconCircleOff, MemoIconClock, MemoIconEdit, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconPlayerPlay, MemoIconRefresh, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX, MemoIconX } from "../kern-icons/icons";
 import ButtonAsText from "../kern-button/ButtonAsText";
 import IconButton from "../kern-button/IconButton";
 import { InfoButton } from "../InfoButton";
@@ -18,6 +18,9 @@ import { InfoButton } from "../InfoButton";
 const INTEGRATION_STATES_ORDER = Object.values(IntegrationState);
 const INTEGRATION_STATE_COLORS_ORDER = Object.values(IntegrationStateColor);
 const INTEGRATION_TIMEZONE_OFFSET_MS = new Date().getTimezoneOffset() * 60000;
+const MARKDOWN_ETL_STATES = ['QUEUE', 'STARTED', 'EXTRACTING', 'TOKENIZING', 'SPLITTING', 'TRANSFORMING', 'FINISHED'];
+const MARKDOWN_ETL_STATE_COLORS = ['purple', 'blue', 'pink', 'yellow', 'orange', 'indigo', 'green'];
+const MARKDOWN_TIMEZONE_OFFSET_MS = new Date().getTimezoneOffset() * 60000;
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -434,6 +437,122 @@ function DatasetOverviewActionsCell({ onEdit, onDisplayConfig, onShow }: { onEdi
     );
 }
 
+function MarkdownOverviewStateCell({ state, startedAt, finishedAt, failedTooltip }: { state: string; startedAt: string; finishedAt?: string; failedTooltip: string }) {
+    const [timeElapsed, setTimeElapsed] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const start = new Date(startedAt).getTime();
+            let end = finishedAt ? new Date(finishedAt).getTime() : now;
+            if (!finishedAt) end += MARKDOWN_TIMEZONE_OFFSET_MS;
+            setTimeElapsed(Math.floor((end - start) / 1000));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [state, startedAt, finishedAt]);
+
+    const minutes = Math.floor(timeElapsed / 60).toString().padStart(2, '0');
+    const seconds = (timeElapsed % 60).toString().padStart(2, '0');
+
+    if (state === 'FAILED') {
+        return (
+            <Tooltip color="invert" content={failedTooltip}>
+                <div className="h-5 w-fit rounded-md border border-red-300 bg-red-100 px-2 text-xs font-semibold text-red-800">
+                    <span>{state}</span>
+                </div>
+            </Tooltip>
+        );
+    }
+
+    return (
+        <div className="flex min-w-[16rem] max-w-[min(100%,28rem)] flex-nowrap gap-x-1.5 overflow-x-auto rounded-md bg-gray-50 p-1">
+            {MARKDOWN_ETL_STATES.map((s, index) => (
+                <Tooltip key={s} content={s} placement="top" color="invert" className="cursor-default shrink-0">
+                    <div
+                        className={combineClassNames(
+                            'flex h-5 shrink-0 items-center justify-center rounded-md text-xs font-semibold',
+                            index <= MARKDOWN_ETL_STATES.indexOf(state)
+                                ? combineClassNames(
+                                    `border bg-${MARKDOWN_ETL_STATE_COLORS[index]}-100 border-${MARKDOWN_ETL_STATE_COLORS[index]}-300 text-${MARKDOWN_ETL_STATE_COLORS[index]}-800`,
+                                    state === s ? 'min-w-[6.75rem] px-2' : 'w-5 min-w-[1.25rem]',
+                                )
+                                : 'w-5 min-w-[1.25rem] bg-gray-100 text-gray-800',
+                        )}
+                    >
+                        {state === s ? (
+                            <div className="flex items-center gap-x-1 whitespace-nowrap">
+                                <span>{s}</span>
+                                <span className="tabular-nums">{`${minutes}:${seconds}`}</span>
+                            </div>
+                        ) : null}
+                    </div>
+                </Tooltip>
+            ))}
+        </div>
+    );
+}
+
+function MarkdownOverviewReviewedCell({ isReviewed }: { isReviewed: boolean }) {
+    return (
+        <div className='flex items-center justify-center'>
+            {isReviewed ? (
+                <MemoIconCheck className="w-5 h-5 text-green-500" />
+            ) : (
+                <MemoIconX className="w-5 h-5 text-red-500" />
+            )}
+        </div>
+    );
+}
+
+function MarkdownOverviewParsingScopeCell({ scopeReadable }: { scopeReadable?: string }) {
+    return (
+        <div className='flex items-center justify-center'>
+            <Tooltip content={scopeReadable ?? "n/a"} placement='top' color='invert'>
+                <MemoIconInfoCircle className="h-5 w-5 text-gray-500" />
+            </Tooltip>
+        </div>
+    );
+}
+
+function MarkdownOverviewRunCell({ state, isStale, isActive, etlTaskSubmitted, etlStaleChecking, onRun }: { state: string; isStale: boolean; isActive: boolean | null; etlTaskSubmitted: boolean; etlStaleChecking: boolean; onRun: () => void }) {
+    return (
+        <div className='flex items-center justify-center'>
+            <KernButton
+                icon={MemoIconPlayerPlay}
+                className='border-none'
+                iconColor={isStale ? 'yellow' : 'green'}
+                disabled={(state !== 'FAILED' && state !== 'FINISHED') || (!isStale && (etlTaskSubmitted || isActive === null || isActive || state === 'FINISHED'))}
+                onClick={onRun}
+                loading={etlTaskSubmitted || etlStaleChecking || (state !== 'FAILED' && state !== 'FINISHED')}
+            />
+        </div>
+    );
+}
+
+function MarkdownOverviewDownloadCell({ state, onDownload }: { state: string; onDownload: () => void }) {
+    return (
+        <div className='flex items-center justify-center'>
+            <KernButton
+                icon={MemoIconFileDownload}
+                iconColor='gray'
+                disabled={state !== 'FINISHED'}
+                onClick={onDownload}
+            />
+        </div>
+    );
+}
+
+function MarkdownOverviewShowCell({ state, onShow }: { state: string; onShow: () => void }) {
+    return (
+        <ButtonAsText
+            text='Show'
+            color='indigo'
+            onClick={onShow}
+            disabled={state !== 'FINISHED'}
+        />
+    );
+}
+
 function IntegrationOverviewStateTimeline({ state, startedAt, finishedAt }: { state: IntegrationState; startedAt: string; finishedAt?: string }) {
     const [timeElapsed, setTimeElapsed] = useState(0);
 
@@ -745,4 +864,4 @@ function DataBlockColumnDetailsCell({ userCreated, onClick }) {
 }
 
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, NulledBadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, DataBlockColumnDetailsCell, LightUserConfigCell, DatasetOverviewRowCheckboxCell, DatasetOverviewCreatedAtCell, DatasetOverviewDescriptionCell, DatasetOverviewActionsCell, IntegrationsOverviewStateCell, IntegrationsOverviewRefineryProjectCell, IntegrationsOverviewConfigsCell, IntegrationsOverviewEditCell, IntegrationsOverviewSyncCell, IntegrationsOverviewSharepointCell, IntegrationsOverviewShowCell, ConversationsInitialMessageCell, ConversationsCountDotCell, ConversationsShowLogsCell, ConversationsJumpToCell, EnvVarDescriptionCell, EnvVarEditCell, GraphRAGSearchPickNameCell, GraphRAGSearchPickDescriptionCell, GraphRAGSearchPickStateCell, GraphRAGSearchPickCreatedAtCell, GraphRAGSearchPickSelectCell, GraphRAGOverviewStateCell }
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, NulledBadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, DataBlockColumnDetailsCell, LightUserConfigCell, DatasetOverviewRowCheckboxCell, DatasetOverviewCreatedAtCell, DatasetOverviewDescriptionCell, DatasetOverviewActionsCell, MarkdownOverviewStateCell, MarkdownOverviewReviewedCell, MarkdownOverviewParsingScopeCell, MarkdownOverviewRunCell, MarkdownOverviewDownloadCell, MarkdownOverviewShowCell, IntegrationsOverviewStateCell, IntegrationsOverviewRefineryProjectCell, IntegrationsOverviewConfigsCell, IntegrationsOverviewEditCell, IntegrationsOverviewSyncCell, IntegrationsOverviewSharepointCell, IntegrationsOverviewShowCell, ConversationsInitialMessageCell, ConversationsCountDotCell, ConversationsShowLogsCell, ConversationsJumpToCell, EnvVarDescriptionCell, EnvVarEditCell, GraphRAGSearchPickNameCell, GraphRAGSearchPickDescriptionCell, GraphRAGSearchPickStateCell, GraphRAGSearchPickCreatedAtCell, GraphRAGSearchPickSelectCell, GraphRAGOverviewStateCell }
