@@ -1,17 +1,26 @@
 import { ActiveBadge, InactiveBadge, NotApplicableBadge } from "@/submodules/react-components/components/Badges"
+import { combineClassNames } from "@/submodules/javascript-functions/general";
 import { Link, Tooltip } from "@nextui-org/react";
 import KernDropdown from "../KernDropdown";
 import { Application } from "../../hooks/web-socket/constants";
 import SVGIcon from "../SVGIcon";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import KernButton from "../kern-button/KernButton";
 import { AdminMessageLevel } from "../../types/admin-messages";
-import { FeedbackType, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
+import { FeedbackType, IntegrationState, IntegrationStateColor, ModelsDownloadedStatus } from "@/submodules/javascript-functions/enums/enums";
 import LoadingIcon from "@/submodules/react-components/components/LoadingIcon";
 import { EvaluationRunState } from "../../types/evaluationRun";
-import { MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCircleCheckFilled, MemoIconEdit, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX } from "../kern-icons/icons";
+import { MemoIconAdjustmentsHorizontal, MemoIconAlertCircle, MemoIconAlertTriangleFilled, MemoIconArrowRight, MemoIconCheck, MemoIconCircleCheck, MemoIconCircleCheckFilled, MemoIconCircleOff, MemoIconClock, MemoIconEdit, MemoIconExternalLink, MemoIconFileDownload, MemoIconInfoCircle, MemoIconInfoSquare, MemoIconLoader, MemoIconNotes, MemoIconPlayerPlay, MemoIconRefresh, MemoIconTag, MemoIconThumbDownFilled, MemoIconThumbUpFilled, MemoIconTrash, MemoIconUserX, MemoIconX } from "../kern-icons/icons";
 import ButtonAsText from "../kern-button/ButtonAsText";
+import IconButton from "../kern-button/IconButton";
+import { InfoButton } from "../InfoButton";
 
+const INTEGRATION_STATES_ORDER = Object.values(IntegrationState);
+const INTEGRATION_STATE_COLORS_ORDER = Object.values(IntegrationStateColor);
+const INTEGRATION_TIMEZONE_OFFSET_MS = new Date().getTimezoneOffset() * 60000;
+const MARKDOWN_ETL_STATES = ['QUEUE', 'STARTED', 'EXTRACTING', 'TOKENIZING', 'SPLITTING', 'TRANSFORMING', 'FINISHED'];
+const MARKDOWN_ETL_STATE_COLORS = ['purple', 'blue', 'pink', 'yellow', 'orange', 'indigo', 'green'];
+const MARKDOWN_TIMEZONE_OFFSET_MS = new Date().getTimezoneOffset() * 60000;
 
 function OrganizationAndUsersCell({ organization }) {
     return (
@@ -383,6 +392,421 @@ function TruncateAndTooltipCell({ value, hasError = false }) {
     </div>;
 }
 
+function DatasetOverviewRowCheckboxCell({ isSelected, onToggle }: { isSelected: boolean; onToggle: () => void }) {
+    return (
+        <div className="relative px-7 sm:w-12 sm:px-6">
+            {isSelected ? <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" /> : null}
+            <input
+                type="checkbox"
+                className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                checked={isSelected}
+                onChange={onToggle}
+            />
+        </div>
+    );
+}
+
+function DatasetOverviewCreatedAtCell({ displayValue, isSelected }: { displayValue: string; isSelected: boolean }) {
+    return (
+        <span className={combineClassNames('font-medium', isSelected ? 'text-indigo-600' : 'text-gray-900')}>
+            {displayValue}
+        </span>
+    );
+}
+
+function DatasetOverviewDescriptionCell({ value }: { value: string }) {
+    return <span className="max-w-sm truncate text-gray-500">{value}</span>;
+}
+
+function DatasetOverviewActionsCell({ onEdit, onDisplayConfig, onShow }: { onEdit: () => void; onDisplayConfig: () => void; onShow: () => void }) {
+    return (
+        <div className="flex flex-row items-center justify-center gap-x-2">
+            <KernButton
+                text="Edit"
+                onClick={onEdit}
+                icon={MemoIconEdit}
+                iconColor="indigo"
+                className="ml-auto"
+                size="small"
+            />
+            <Tooltip color="invert" content="Display dataset configuration" className="m-auto">
+                <IconButton icon={MemoIconInfoCircle} iconColor="black" onClick={onDisplayConfig} size="small" />
+            </Tooltip>
+            <ButtonAsText text="Show" color="indigo" onClick={onShow} />
+        </div>
+    );
+}
+
+function MarkdownOverviewStateCell({ state, startedAt, finishedAt, failedTooltip }: { state: string; startedAt: string; finishedAt?: string; failedTooltip: string }) {
+    const [timeElapsed, setTimeElapsed] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const start = new Date(startedAt).getTime();
+            let end = finishedAt ? new Date(finishedAt).getTime() : now;
+            if (!finishedAt) end += MARKDOWN_TIMEZONE_OFFSET_MS;
+            setTimeElapsed(Math.floor((end - start) / 1000));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [state, startedAt, finishedAt]);
+
+    const minutes = Math.floor(timeElapsed / 60).toString().padStart(2, '0');
+    const seconds = (timeElapsed % 60).toString().padStart(2, '0');
+
+    if (state === 'FAILED') {
+        return (
+            <Tooltip color="invert" content={failedTooltip}>
+                <div className="h-5 w-fit rounded-md border border-red-300 bg-red-100 px-2 text-xs font-semibold text-red-800">
+                    <span>{state}</span>
+                </div>
+            </Tooltip>
+        );
+    }
+
+    return (
+        <div className="flex min-w-[16rem] max-w-[min(100%,28rem)] flex-nowrap gap-x-1.5 overflow-x-auto rounded-md bg-gray-50 p-1">
+            {MARKDOWN_ETL_STATES.map((s, index) => (
+                <Tooltip key={s} content={s} placement="top" color="invert" className="cursor-default shrink-0">
+                    <div
+                        className={combineClassNames(
+                            'flex h-5 shrink-0 items-center justify-center rounded-md text-xs font-semibold',
+                            index <= MARKDOWN_ETL_STATES.indexOf(state)
+                                ? combineClassNames(
+                                    `border bg-${MARKDOWN_ETL_STATE_COLORS[index]}-100 border-${MARKDOWN_ETL_STATE_COLORS[index]}-300 text-${MARKDOWN_ETL_STATE_COLORS[index]}-800`,
+                                    state === s ? 'min-w-[6.75rem] px-2' : 'w-5 min-w-[1.25rem]',
+                                )
+                                : 'w-5 min-w-[1.25rem] bg-gray-100 text-gray-800',
+                        )}
+                    >
+                        {state === s ? (
+                            <div className="flex items-center gap-x-1 whitespace-nowrap">
+                                <span>{s}</span>
+                                <span className="tabular-nums">{`${minutes}:${seconds}`}</span>
+                            </div>
+                        ) : null}
+                    </div>
+                </Tooltip>
+            ))}
+        </div>
+    );
+}
+
+function MarkdownOverviewReviewedCell({ isReviewed }: { isReviewed: boolean }) {
+    return (
+        <div className='flex items-center justify-center'>
+            {isReviewed ? (
+                <MemoIconCheck className="w-5 h-5 text-green-500" />
+            ) : (
+                <MemoIconX className="w-5 h-5 text-red-500" />
+            )}
+        </div>
+    );
+}
+
+function MarkdownOverviewParsingScopeCell({ scopeReadable }: { scopeReadable?: string }) {
+    return (
+        <div className='flex items-center justify-center'>
+            <Tooltip content={scopeReadable ?? "n/a"} placement='top' color='invert'>
+                <MemoIconInfoCircle className="h-5 w-5 text-gray-500" />
+            </Tooltip>
+        </div>
+    );
+}
+
+function MarkdownOverviewRunCell({ state, isStale, isActive, etlTaskSubmitted, etlStaleChecking, onRun }: { state: string; isStale: boolean; isActive: boolean | null; etlTaskSubmitted: boolean; etlStaleChecking: boolean; onRun: () => void }) {
+    return (
+        <div className='flex items-center justify-center'>
+            <KernButton
+                icon={MemoIconPlayerPlay}
+                className='border-none'
+                iconColor={isStale ? 'yellow' : 'green'}
+                disabled={(state !== 'FAILED' && state !== 'FINISHED') || (!isStale && (etlTaskSubmitted || isActive === null || isActive || state === 'FINISHED'))}
+                onClick={onRun}
+                loading={etlTaskSubmitted || etlStaleChecking || (state !== 'FAILED' && state !== 'FINISHED')}
+            />
+        </div>
+    );
+}
+
+function MarkdownOverviewDownloadCell({ state, onDownload }: { state: string; onDownload: () => void }) {
+    return (
+        <div className='flex items-center justify-center'>
+            <KernButton
+                icon={MemoIconFileDownload}
+                iconColor='gray'
+                disabled={state !== 'FINISHED'}
+                onClick={onDownload}
+            />
+        </div>
+    );
+}
+
+function MarkdownOverviewShowCell({ state, onShow }: { state: string; onShow: () => void }) {
+    return (
+        <ButtonAsText
+            text='Show'
+            color='indigo'
+            onClick={onShow}
+            disabled={state !== 'FINISHED'}
+        />
+    );
+}
+
+function IntegrationOverviewStateTimeline({ state, startedAt, finishedAt }: { state: IntegrationState; startedAt: string; finishedAt?: string }) {
+    const [timeElapsed, setTimeElapsed] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const start = new Date(startedAt).getTime();
+            let end = finishedAt ? new Date(finishedAt).getTime() : now;
+            if (!finishedAt) end += INTEGRATION_TIMEZONE_OFFSET_MS;
+            setTimeElapsed(Math.floor((end - start) / 1000));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [state, startedAt, finishedAt]);
+
+    const minutes = Math.floor(timeElapsed / 60)
+        .toString()
+        .padStart(2, '0');
+    const seconds = (timeElapsed % 60).toString().padStart(2, '0');
+
+    if (state === IntegrationState.FAILED) {
+        return (
+            <div className="flex h-5 w-fit items-center justify-center rounded-md border border-red-300 bg-red-100 px-2 text-xs font-semibold text-red-800">
+                <span>{state}</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex w-fit gap-x-2 rounded-md bg-gray-50 p-1">
+            {INTEGRATION_STATES_ORDER.map((s, index) => (
+                <Tooltip key={s} content={s} placement="top" color="invert" className="cursor-default">
+                    <div
+                        className={combineClassNames(
+                            'flex h-5 items-center justify-center rounded-md text-xs font-semibold',
+                            index <= INTEGRATION_STATES_ORDER.indexOf(state)
+                                ? `w-fit border bg-${INTEGRATION_STATE_COLORS_ORDER[index]}-100 border-${INTEGRATION_STATE_COLORS_ORDER[index]}-300 px-2 text-${INTEGRATION_STATE_COLORS_ORDER[index]}-800`
+                                : 'w-5 bg-gray-100 text-gray-800',
+                        )}
+                    >
+                        {state === s && (
+                            <div className="flex items-center gap-x-1">
+                                <span>{s}</span>
+                                <span>
+                                    {minutes}:{seconds}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                </Tooltip>
+            ))}
+        </div>
+    );
+}
+
+function IntegrationsOverviewStateCell({ state, startedAt, finishedAt, failedTooltip, clockTooltip }: { state: IntegrationState; startedAt: string; finishedAt?: string; failedTooltip: string; clockTooltip: string }) {
+    const timeline = (
+        <IntegrationOverviewStateTimeline state={state} startedAt={startedAt} finishedAt={finishedAt} />
+    );
+    return (
+        <div className="flex items-center justify-center gap-x-2">
+            {state === IntegrationState.FAILED ? (
+                <Tooltip color="invert" content={failedTooltip}>
+                    {timeline}
+                </Tooltip>
+            ) : (
+                timeline
+            )}
+            <div className="ml-auto">
+                <Tooltip content={clockTooltip} color="invert" placement="top" className="cursor-auto">
+                    <MemoIconClock className="h-5 w-5 text-black-500" />
+                </Tooltip>
+            </div>
+        </div>
+    );
+}
+
+function IntegrationsOverviewRefineryProjectCell({ projectLabel, showMissingProjectHint }: { projectLabel: string; showMissingProjectHint: boolean }) {
+    return (
+        <div className="flex flex-wrap items-center justify-center gap-x-1 text-gray-500">
+            {showMissingProjectHint ? (
+                <InfoButton
+                    content="Please ensure that the project is created in Refinery before using the integration."
+                    divPosition="top"
+                    addClasses="w-80 text-black-500"
+                    infoButtonSize="sm"
+                />
+            ) : null}
+            {projectLabel}
+        </div>
+    );
+}
+
+function IntegrationsOverviewConfigsCell({ onDisplayConfig }: { onDisplayConfig: () => void }) {
+    return (
+        <Tooltip color="invert" content="Display transformation configuration">
+            <IconButton icon={MemoIconInfoCircle} iconColor="black" onClick={onDisplayConfig} size="small" />
+        </Tooltip>
+    );
+}
+
+function IntegrationsOverviewEditCell({ onEdit, disabled }: { onEdit: () => void; disabled: boolean }) {
+    return (
+        <KernButton
+            text="Edit"
+            onClick={onEdit}
+            icon={MemoIconEdit}
+            iconColor="indigo"
+            disabled={disabled}
+        />
+    );
+}
+
+function IntegrationsOverviewSyncCell({ isSynced, onSync }: { isSynced: boolean | null; onSync: () => void }) {
+    return (
+        <Tooltip
+            color="invert"
+            content={isSynced ? 'Integration is synced' : 'New changes detected, click to sync'}
+            className="cursor-auto"
+        >
+            <KernButton
+                text={isSynced ? 'Synced' : 'Sync'}
+                disabled={isSynced || isSynced === null}
+                onClick={onSync}
+                icon={isSynced ? MemoIconCircleCheck : MemoIconRefresh}
+                iconColor={isSynced ? 'green' : undefined}
+                loading={isSynced === null}
+            />
+        </Tooltip>
+    );
+}
+
+function IntegrationsOverviewSharepointCell({ syncActive, syncBusy, onAdjustSync }: { syncActive: boolean; syncBusy: boolean; onAdjustSync: () => void }) {
+    return (
+        <div className="flex items-center justify-center">
+            <div className="flex items-center gap-x-2 rounded-md border border-gray-200 bg-gray-50 pl-2">
+                <Tooltip
+                    className="cursor-auto"
+                    color="invert"
+                    content={syncActive ? 'Active' : 'Inactive'}
+                >
+                    {syncActive ? (
+                        <MemoIconCircleCheck className="h-5 w-5 text-gray-600" />
+                    ) : (
+                        <MemoIconCircleOff className="h-5 w-5 text-gray-400" />
+                    )}
+                </Tooltip>
+                <Tooltip color="invert" content="Adjust sharepoint property sync" className="cursor-auto">
+                    <KernButton
+                        text="Sync Props"
+                        onClick={onAdjustSync}
+                        icon={MemoIconAdjustmentsHorizontal}
+                        disabled={syncBusy}
+                        className="rounded-l-none border-0 hover:bg-gray-50"
+                    />
+                </Tooltip>
+            </div>
+        </div>
+    );
+}
+
+function IntegrationsOverviewShowCell({ onShow, disabled }: { onShow: () => void; disabled: boolean }) {
+    return <ButtonAsText text="Show" color="indigo" disabled={disabled} onClick={onShow} />;
+}
+
+function ConversationsInitialMessageCell({ value }: { value: string }) {
+    return (
+        <span className="max-w-sm truncate text-gray-500" title={value}>
+            {value}
+        </span>
+    );
+}
+
+function ConversationsCountDotCell({ count, variant }: { count: number; variant: 'green' | 'red' }) {
+    const dotClass = variant === 'green' ? 'bg-green-500' : 'bg-red-500';
+    return (
+        <div className="flex items-center justify-center gap-x-2">
+            <div className={combineClassNames('h-2 w-2 rounded-full', dotClass)} />
+            <span>{count}</span>
+        </div>
+    );
+}
+
+function ConversationsShowLogsCell({ onShowLogs }: { onShowLogs: () => void }) {
+    return <ButtonAsText text="Show Logs" color="indigo" onClick={onShowLogs} />;
+}
+
+function ConversationsJumpToCell({ onJumpTo }: { onJumpTo: () => void }) {
+    return <ButtonAsText text="Jump to" color="indigo" onClick={onJumpTo} />;
+}
+
+function EnvVarDescriptionCell({ value }: { value: string }) {
+    return <span className="line-clamp-2 max-w-md text-left text-gray-500">{value}</span>;
+}
+
+function EnvVarEditCell({ onEdit }: { onEdit: () => void }) {
+    return <ButtonAsText text="Edit" color="indigo" onClick={onEdit} />;
+}
+
+function GraphRAGSearchPickNameCell({ name, isHighlighted }: { name: string; isHighlighted: boolean }) {
+    return (
+        <span
+            className={combineClassNames(
+                'max-w-xs truncate text-gray-500',
+                isHighlighted && 'font-semibold text-indigo-700',
+            )}
+        >
+            {name}
+        </span>
+    );
+}
+
+function GraphRAGSearchPickDescriptionCell({ value }: { value: string }) {
+    return <span className="max-w-md truncate text-gray-500">{value}</span>;
+}
+
+function GraphRAGSearchPickStateCell({ state }: { state: string }) {
+    return <span className="text-gray-500">{state}</span>;
+}
+
+function GraphRAGSearchPickCreatedAtCell({ displayValue, isHighlighted }: { displayValue: string; isHighlighted: boolean }) {
+    return (
+        <span className={combineClassNames('text-gray-500', isHighlighted && 'font-medium text-indigo-700')}>
+            {displayValue}
+        </span>
+    );
+}
+
+function GraphRAGSearchPickSelectCell({ isRowSelected, disabled, onSelect }: { isRowSelected: boolean; disabled: boolean; onSelect: () => void }) {
+    return (
+        <ButtonAsText
+            text={isRowSelected ? 'Selected' : 'Select'}
+            color="indigo"
+            disabled={disabled}
+            onClick={onSelect}
+        />
+    );
+}
+
+function GraphRAGOverviewStateCell({ state, errorInfo }: { state: string; errorInfo?: string }) {
+    return (
+        <div className="flex flex-nowrap items-center justify-start gap-x-2">
+            <span className="text-gray-500">{state}</span>
+            {errorInfo ? (
+                <InfoButton
+                    content={'Error: ' + errorInfo}
+                    infoButtonSize="sm"
+                    divPosition="left"
+                    addClasses="max-h-52 overflow-y-auto whitespace-pre-line"
+                />
+            ) : null}
+        </div>
+    );
+}
+
 function JumpToConversationAndAssignCell({ onClick, jumpTo }) {
     return <div className="flex justify-center">
         <Tooltip content={`Assign user to the org and jump to ${jumpTo}`} color="invert" className="cursor-auto">
@@ -440,4 +864,4 @@ function DataBlockColumnDetailsCell({ userCreated, onClick }) {
 }
 
 
-export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, NulledBadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, DataBlockColumnDetailsCell, LightUserConfigCell }
+export { OrganizationAndUsersCell, MaxRowsColsCharsCell, CommentsCell, ExportConsumptionAndDeleteCell, BadgeCell, NulledBadgeCell, OrganizationUserCell, DeleteCell, LevelCell, ArchiveReasonCell, ProjectNameTaskCell, CancelTaskCell, IconCell, ConfigCell, EditDeleteOrgButtonCell, ViewStackCell, AbortSessionButtonCell, FeedbackMessageCell, FeedbackMessageTextCell, JumpToConversationCell, RemoteVersionCell, ExternalLinkCell, ModelDateCell, FileSizeCell, StatusModelCell, DeleteModelCell, LabelCell, ViewCell, EvaluationRunStateCell, EvaluationRunDetailsCell, EtlApiTokenCell, EmailCell, EditIntegrationCell, ExpiredTokenCell, LinkCell, ConfigReleaseNotificationCell, TruncateAndTooltipCell, JumpToConversationAndAssignCell, TaskStateCell, DataBlockColumnDetailsCell, LightUserConfigCell, DatasetOverviewRowCheckboxCell, DatasetOverviewCreatedAtCell, DatasetOverviewDescriptionCell, DatasetOverviewActionsCell, MarkdownOverviewStateCell, MarkdownOverviewReviewedCell, MarkdownOverviewParsingScopeCell, MarkdownOverviewRunCell, MarkdownOverviewDownloadCell, MarkdownOverviewShowCell, IntegrationsOverviewStateCell, IntegrationsOverviewRefineryProjectCell, IntegrationsOverviewConfigsCell, IntegrationsOverviewEditCell, IntegrationsOverviewSyncCell, IntegrationsOverviewSharepointCell, IntegrationsOverviewShowCell, ConversationsInitialMessageCell, ConversationsCountDotCell, ConversationsShowLogsCell, ConversationsJumpToCell, EnvVarDescriptionCell, EnvVarEditCell, GraphRAGSearchPickNameCell, GraphRAGSearchPickDescriptionCell, GraphRAGSearchPickStateCell, GraphRAGSearchPickCreatedAtCell, GraphRAGSearchPickSelectCell, GraphRAGOverviewStateCell }
