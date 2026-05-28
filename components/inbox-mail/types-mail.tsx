@@ -61,7 +61,6 @@ export type User = {
     isAdmin: boolean;
     autoLogoutMinutes: number;
     soundSettings: Settings;
-    notificationSettings: Settings;
 }
 
 
