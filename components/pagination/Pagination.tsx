@@ -1,7 +1,7 @@
 import { combineClassNames } from '@/submodules/javascript-functions/general';
 import { PaginationProps } from '../../types/pagination'
 import { MemoIconArrowLeft, MemoIconArrowRight } from '../kern-icons/icons';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 const PAGE_BTN_BASE = 'inline-flex items-center border-t-2 px-4 pt-4 text-sm font-medium';
 const PAGE_BTN_ACTIVE = `${PAGE_BTN_BASE} border-indigo-500 text-indigo-600`;
@@ -12,32 +12,29 @@ const NAV_BTN_PREV = `${NAV_BTN_BASE} pr-1`;
 const NAV_BTN_NEXT = `${NAV_BTN_BASE} pl-1`;
 
 export default function Pagination(props: PaginationProps) {
-    const [currentPage, setCurrentPage] = useState(1);
-
     const totalPages = useMemo(() =>
         Math.ceil(props.fullCount / props.limit),
         [props.fullCount, props.limit]
     );
 
-    // Sync currentPage when props change
-    useEffect(() => {
-        setCurrentPage(props.offset / props.limit + 1);
-    }, [props.offset, props.limit]);
+    const currentPage = useMemo(() => {
+        if (!totalPages) return 1;
+        return Math.min(Math.floor(props.offset / props.limit) + 1, totalPages);
+    }, [props.offset, props.limit, totalPages]);
 
-    // Sync offset back to parent when currentPage changes.
-    // Do not list props.setOffset in deps: parent callbacks often change identity (e.g. when wrapping fetch);
-    // re-running would spam setOffset(0) and duplicate network requests.
     useEffect(() => {
-        props.setOffset((currentPage - 1) * props.limit);
-    }, [currentPage, props.limit]);
+        if (!totalPages) return;
+        const maxOffset = (totalPages - 1) * props.limit;
+        if (props.offset > maxOffset) props.setOffset(maxOffset);
+    }, [props.offset, props.limit, props.setOffset, totalPages]);
 
     const handlePrevious = useCallback(() => {
-        setCurrentPage(prev => prev - 1);
-    }, []);
+        props.setOffset(Math.max(props.offset - props.limit, 0));
+    }, [props.offset, props.limit, props.setOffset]);
 
     const handleNext = useCallback(() => {
-        setCurrentPage(prev => prev + 1);
-    }, []);
+        props.setOffset(Math.min(props.offset + props.limit, (totalPages - 1) * props.limit));
+    }, [props.offset, props.limit, props.setOffset, totalPages]);
 
     const pageButtons = useMemo(() => {
         const ellipsis = (key: string) => (
@@ -47,7 +44,7 @@ export default function Pagination(props: PaginationProps) {
         const pageButton = (page: number) => (
             <button
                 key={page}
-                onClick={() => setCurrentPage(page)}
+                onClick={() => props.setOffset((page - 1) * props.limit)}
                 className={currentPage === page ? PAGE_BTN_ACTIVE : PAGE_BTN_INACTIVE}
             >
                 {page}
@@ -82,7 +79,7 @@ export default function Pagination(props: PaginationProps) {
             pageButton(totalPages - 1),
             pageButton(totalPages)
         ];
-    }, [totalPages, currentPage, props.reducePageNumbers]);
+    }, [totalPages, currentPage, props.reducePageNumbers, props.limit, props.setOffset]);
 
     return (
         <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
