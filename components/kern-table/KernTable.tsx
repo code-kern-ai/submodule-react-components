@@ -267,6 +267,8 @@ function ComponentMapper(cell: any) {
                     return <MarkdownOverviewDownloadCell {...cell} />;
                 case 'MarkdownOverviewShowCell':
                     return <MarkdownOverviewShowCell {...cell} />;
+                case '@provided@':
+                    return cell.jsx ?? <NotApplicableBadge />;
             }
         case 'text':
             return <span>{cell.value ?? <NotApplicableBadge />}</span>
