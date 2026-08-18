@@ -23,6 +23,8 @@ interface KernButtonProps {
     confirm?: boolean;
     className?: string;
     asDiv?: boolean;
+    /** Optional data-testid for E2E tests */
+    dataTestId?: string;
 }
 
 export default function KernButton(props: KernButtonProps) {
@@ -69,7 +71,8 @@ export default function KernButton(props: KernButtonProps) {
         className: buttonClasses,
         ref: props.innerRef,
         disabled: props.disabled,
-        type: props.type || 'submit'
+        type: props.type || 'submit',
+        ...(props.dataTestId && { 'data-testid': props.dataTestId }),
     }
 
     const children = <Tooltip className={"flex gap-x-2 items-center " + (props.disabled ? "cursor-not-allowed" : "")} color="invert" content={props.tooltip} placement={props.tooltipPlacement || "bottom"} >
